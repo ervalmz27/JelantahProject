@@ -19,11 +19,13 @@ import Chelsea from '../../assets/Images/jersey/chelsea.svg';
 import Juve from '../../assets/Images/jersey/juve.svg';
 import Milan from '../../assets/Images/jersey/milan.svg';
 import Liverpool from '../../assets/Images/jersey/liverpool.svg';
+import {useDispatch, useSelector} from 'react-redux';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const Dashboar = () => {
   const [searchQuery, setSearchQuery] = useState('');
-
+  const globalState = useSelector(state => state);
+  console.log('username Terdaftar : ', globalState);
   const onChangeSearch = query => setSearchQuery(query);
   return (
     <>

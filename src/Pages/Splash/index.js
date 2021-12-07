@@ -1,12 +1,14 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, ImageBackground, Dimensions} from 'react-native';
 import {SplashBackground} from '../../assets';
+import HomeNavigator from '../../routes/Home';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const Splash = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
-      navigation.replace('indexAuth');
+      navigation.replace(HomeNavigator);
     }, 3000);
   }, [navigation]);
   return (

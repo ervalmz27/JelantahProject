@@ -8,23 +8,37 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import axios from 'axios';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Logo from '../../assets/Images/Logo.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ilustrasi from '../../assets/Images/Ilustrasi.svg';
 import {ScrollView} from 'react-native-gesture-handler';
+import {getUsersRequest} from '../../Apis/actions/users';
+import {connect} from 'react-redux';
+import {getUsersSuccess, getLoginUsers} from '../../Apis/actions/users';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const Auth = ({navigation}) => {
+const Auth = ({navigation, props, users}) => {
   const globalState = useSelector(state => state);
   const [status, setStatus] = useState(false);
+  console.log('-----', users.items);
   const [Login, setLogin] = useState({
     username: '',
     password: '',
   });
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
     setLogin({...Login, username: '', password: ''});
   }, []);
+  useEffect(async () => {
+    const validate = async () => {
+      const login = await AsyncStorage.getItem('token');
+      return login;
+    };
+  }, []);
+
   console.log('username Terdaftar : ', globalState);
   const userLogin = async (email, password) => {
     try {
@@ -35,11 +49,11 @@ const Auth = ({navigation}) => {
       const res = await axios
         .post('https://reqres.in/api/login', data)
         .then(res => {
-          console.log('Res', res.data);
-          const jsonToken = res.data;
-          setStatus(true);
-          navigation.navigate('Dashboard');
-          AsyncStorage.setItem('token', jsonToken);
+          // navigation.navigate('Dashboard');
+          const jsonValue = JSON.stringify(res.data);
+          AsyncStorage.setItem('token', jsonValue);
+          dispatch(getUsersSuccess(res.data));
+          dispatch(getLoginUsers(true));
         })
         .catch(err => {
           console.log(err);
@@ -47,7 +61,6 @@ const Auth = ({navigation}) => {
             'Username atau Password anda tidak ditemukan mohon untuk diperiksa Kembali',
           );
         });
-      return res;
     } catch (error) {
       console.log('Mess Error : ', error);
     }
@@ -55,6 +68,7 @@ const Auth = ({navigation}) => {
   const handleOpen = (email, password) => {
     userLogin(email, password);
   };
+
   return (
     <>
       <ScrollView>
@@ -106,7 +120,10 @@ const Auth = ({navigation}) => {
   );
 };
 
-export default Auth;
+// export default Auth;
+export default connect(({users}) => ({users}), {
+  getUsersRequest,
+})(Auth);
 
 const styles = StyleSheet.create({
   container: {flex: 1, alignItems: 'center', padding: 24},

@@ -1,12 +1,14 @@
 import React from 'react';
-
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Provider} from 'react-redux';
 import AppNavContainer from './src/routes';
-import {store} from './src/Apis';
+import {createStore, applyMiddleware} from 'redux';
+import createSagaMiddleware from 'redux-saga';
+import axios from 'axios';
+import reducers from './src/Apis/reducers';
+const sagaMiddleware = createSagaMiddleware();
+const store = createStore(reducers, applyMiddleware(sagaMiddleware));
+axios.defaults.baseURL = 'https://reqres.in/api';
 
-const Stack = createNativeStackNavigator();
 const App = () => {
   return (
     <Provider store={store}>
