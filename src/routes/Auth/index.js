@@ -1,17 +1,20 @@
 import React, {useEffect} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import HomeNavigator from '../Home';
+
 import Auth from '../../Pages/Auth';
-import Splash from '../../Pages/Splash';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import Login from '../../Pages/Auth/Login';
+import Register from '../../Pages/Auth/register';
+import RegisterMitraUsaha from '../../Pages/Auth/register/mitrausaha';
 const AuthNavigator = () => {
   const AuthStack = createStackNavigator();
 
   return (
     <AuthStack.Navigator screenOptions={{headerShown: false}}>
-      <AuthStack.Screen name={'Splash'} component={Splash} />
       <AuthStack.Screen name={'indexAuth'} component={Auth} />
-      {/* <AuthStack.Screen name={'Dashboard'} component={HomeNavigator} /> */}
+      <AuthStack.Screen name={'Loginscreen'} component={Login} />
+      <AuthStack.Screen name={'Registerscreen'} component={Register} />
+      <AuthStack.Screen name={'MitraUsaha'} component={RegisterMitraUsaha} />
     </AuthStack.Navigator>
   );
 };

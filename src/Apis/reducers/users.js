@@ -1,8 +1,9 @@
 import {Types} from '../actions/users';
 
 const initialState = {
-  login: false,
+  login: [],
   items: '',
+  dashboard: [],
 };
 
 export const usersReducer = (state = initialState, action) => {
@@ -16,6 +17,11 @@ export const usersReducer = (state = initialState, action) => {
       return {
         ...state,
         login: action.payload,
+      };
+    case Types.DASHBOARD_SUCCESS:
+      return {
+        ...state,
+        dashboard: action.payload,
       };
     default:
       return state;

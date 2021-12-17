@@ -13,11 +13,16 @@ const AppNavContainer = () => {
 
   const globalState = useSelector(state => state);
   console.log('username Terrr : ', globalState);
-
+  const Stack = createStackNavigator();
   return (
     <NavigationContainer>
-      {/* <Slash.Screen name={'Splash'} component={Splash} /> */}
-      {jsonValue != null ? <HomeNavigator /> : <AuthNavigator />}
+      <Stack.Navigator
+        initialRouteName="Splash"
+        screenOptions={{headerShown: false}}>
+        <Stack.Screen name={'Splash'} component={Splash} />
+        <Stack.Screen name={'Home'} component={HomeNavigator} />
+        <Stack.Screen name={'Auth'} component={AuthNavigator} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

@@ -1,3 +1,3 @@
-import SplashBackground from './SpashScreen.jpeg';
+import SplashBackground from './SplashScreen.jpeg';
 
 export {SplashBackground};

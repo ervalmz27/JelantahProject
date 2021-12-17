@@ -1,129 +1,441 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Dimensions,
   TouchableOpacity,
+  ImageBackground,
+  Image,
+  StatusBar,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import Slider from '../../assets/Images/Header/Slider.svg';
-import {Searchbar} from 'react-native-paper';
-import Table from '../../assets/Images/table.svg';
-import Premier from '../../assets/Images/Dashboard/premierleague.svg';
-import Laliga from '../../assets/Images/Dashboard/laliga.svg';
-import Seria from '../../assets/Images/Dashboard/seriea.svg';
-import Bundes from '../../assets/Images/Dashboard/bundesliga.svg';
-import Background from '../../assets/Images/jersey/Background.svg';
-import Chelsea from '../../assets/Images/jersey/chelsea.svg';
-import Juve from '../../assets/Images/jersey/juve.svg';
-import Milan from '../../assets/Images/jersey/milan.svg';
-import Liverpool from '../../assets/Images/jersey/liverpool.svg';
+import Dompet from '../../assets/Images/Icon/Dompet.svg';
 import {useDispatch, useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CardContent from './componen';
+import Swiper from 'react-native-swiper';
+import {LineChart} from 'react-native-chart-kit';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import {Datainfo, DataProfile} from './api';
+import Minyak from '../../assets/Images/home/Minyak.svg';
+import {styles} from './style';
+import Coin from '../../assets/Images/Icon/Coin.svg';
+import Geolocation from '@react-native-community/geolocation';
+import SampleJson from '../../Apis/Json/sampleStatistik.json';
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-const Dashboar = () => {
+const image = {uri: 'https://reactjs.org/logo-og.png'};
+const Dashboar = ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const globalState = useSelector(state => state);
-  console.log('username Terdaftar : ', globalState);
+
   const onChangeSearch = query => setSearchQuery(query);
+  const [walet, setWalet] = useState([]);
+  const [rupiah, setRupiah] = useState('');
+  const [profile, setProfile] = useState([]);
+  const [point, setPoint] = useState('');
+  const [notif, setNotif] = useState('');
+  const [statisti, setStatistik] = useState({
+    data: [],
+    labels: [],
+  });
+  useEffect(() => {
+    console.log('sample', SampleJson.datasets[0].data);
+    setStatistik({
+      ...statisti,
+      labels: SampleJson.labels,
+      data: SampleJson.datasets[0].data,
+    });
+
+    Geolocation.getCurrentPosition(info => console.log(info));
+    dataPost();
+  }, []);
+
+  const dataPost = async () => {
+    const user = await AsyncStorage.getItem('user_id');
+    const Password = await AsyncStorage.getItem('user_password');
+    DataProfile(user, Password).then(res => {
+      const dataLogin = res.data.data;
+      setProfile(dataLogin);
+      dataLogin.forEach(el => {
+        setPoint(el.user_poin);
+        Datainfo(el.id_token).then(res => {
+          let data = res.data.data;
+          setWalet(data);
+          data.forEach(item => {
+            setNotif(item.user_pesan);
+            const numb = item.user_wallet;
+            const format = numb.toString().split('').reverse().join('');
+            const convert = format.match(/\d{1,3}/g);
+            const rupiah =
+              'Rp ' + convert.join('.').split('').reverse().join('');
+            setRupiah(rupiah);
+          });
+        });
+        // Notif(el.id_token).then(res => {
+        //   setNotif(res.data.data);
+        // });
+      });
+    });
+  };
   return (
     <>
       <ScrollView>
-        <View style={styles.background}>
-          <View style={styles.nav}>
-            <Searchbar
-              placeholder="Cari Jersey. . ."
-              onChangeText={onChangeSearch}
-              value={searchQuery}
-              style={styles.searchBar}
-            />
-            <View style={styles.icon}>
-              <Table width={24} height={24} />
+        <StatusBar animated={true} backgroundColor="#51C091" />
+        <ImageBackground
+          source={require('../../assets/Images/bghomge.jpg')}
+          style={styles.background}>
+          <View style={styles.rowContent}>
+            <View style={{flexDirection: 'row', flex: 1, padding: 10}}>
+              <Image
+                source={require('../../assets/Images/home/profile.jpg')}
+                style={styles.img}
+              />
+              <View style={{marginLeft: 10}}>
+                {profile.map((i, idx) => {
+                  return (
+                    <View key={idx}>
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontFamily: 'Poppins-Reguler',
+                          fontSize: 14,
+                          fontWeight: '600',
+                        }}>
+                        {i.user_fnama}
+                      </Text>
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontFamily: 'Poppins-Reguler',
+                          fontSize: 12,
+                          fontWeight: '600',
+                        }}>
+                        {i.user_level_nama}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('notification');
+              }}>
+              <View style={styles.notifit}>
+                <Text style={{fontSize: 10, color: '#fff', fontWeight: '700'}}>
+                  {notif}
+                </Text>
+              </View>
+
+              <View style={{zIndex: -1}}>
+                <Icon name="bell" size={24} color="#fff" solid />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
+        <View style={[styles.card, styles.content]}>
+          <View
+            style={{
+              flexDirection: 'row',
+            }}>
+            <Dompet height={30} width={30} />
+            <View style={{flexDirection: 'column', marginLeft: 10}}>
+              <Text style={styles.textJersey}>Saldo Dompet</Text>
+              <Text style={[styles.textJersey, {color: '#000'}]}>{rupiah}</Text>
             </View>
           </View>
-          <View style={styles.slide}>
-            <Slider width={windowWidth * 0.9} height={132} />
+          <View style={styles.poin}>
+            <View
+              style={{
+                borderRadius: 100,
+                width: 40,
+                height: 40,
+                borderWidth: 3,
+                borderColor: '#51C091',
+                padding: 3,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Bold',
+                  fontSize: 16,
+                  color: '#51C091',
+                }}>
+                JP
+              </Text>
+            </View>
+            <View style={{flexDirection: 'column', marginLeft: 10}}>
+              <Text style={styles.textJersey}>Jelanta Points</Text>
+              <Text style={[styles.textJersey, {color: '#000'}]}>
+                {point} Poin
+              </Text>
+            </View>
           </View>
         </View>
-
-        <View style={styles.container}>
-          <Text style={styles.header}>Pilih Liga</Text>
+        <CardContent onSetor={() => navigation.navigate('Setor')} />
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: 20,
+            marginTop: 10,
+          }}>
+          <Text
+            style={[
+              styles.fontContent,
+              {color: '#000', fontFamily: 'Poppins-Bold'},
+            ]}>
+            Info Terkini
+          </Text>
+          <TouchableOpacity
+            style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{color: '#51C091B2'}}>Info Lainnya</Text>
+            <Icon
+              name="chevron-right"
+              color="#51C091B2"
+              style={{marginLeft: 5}}
+            />
+          </TouchableOpacity>
         </View>
-        <View style={styles.liga}>
-          {/* Premier Liga */}
-          <TouchableOpacity style={styles.card}>
-            <Premier height={57} width={57} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.card}>
-            <Laliga height={57} width={57} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.card}>
-            <Seria height={57} width={57} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.card}>
-            <Bundes height={57} width={57} />
-          </TouchableOpacity>
-          {/* End Section Premier Liga */}
+        <View style={{marginTop: 20, height: 150}}>
+          <Swiper showsButtons={false} showsPagination={false}>
+            <View>
+              <Image
+                style={styles.tinyLogo}
+                source={require('../../assets/Images/banner.png')}
+              />
+            </View>
+            <View>
+              <Image
+                style={styles.tinyLogo}
+                source={require('../../assets/Images/banner.png')}
+              />
+            </View>
+            <View>
+              <Image
+                style={styles.tinyLogo}
+                source={require('../../assets/Images/banner.png')}
+              />
+            </View>
+          </Swiper>
         </View>
-        {/* Pilihan Jerseyyyy */}
-        <View style={[styles.liga, {marginTop: 10}]}>
-          <Text style={styles.header}>Pilih Jersey Yang Anda Inginkan</Text>
+        <View style={{marginHorizontal: 20}}>
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 10,
+            }}>
+            <Text
+              style={[
+                styles.fontContent,
+                {color: '#000', fontFamily: 'Poppins-Bold'},
+              ]}>
+              Statistik Setoran
+            </Text>
+            <TouchableOpacity
+              style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={{color: '#51C091B2'}}>Detail</Text>
+              <Icon
+                name="chevron-right"
+                color="#51C091B2"
+                style={{marginLeft: 5}}
+              />
+            </TouchableOpacity>
+          </View>
+          <LineChart
+            data={{
+              labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+              datasets: [
+                {
+                  data: [
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                  ],
+                },
+              ],
+            }}
+            width={windowWidth * 0.9} // from react-native
+            height={220}
+            // yAxisLabel="$"
+            // yAxisSuffix="k"
+            yAxisInterval={1} // optional, defaults to 1
+            chartConfig={{
+              backgroundColor: '#51C091',
+              backgroundGradientFrom: '#51C091',
+              backgroundGradientTo: '#51C091',
+              decimalPlaces: 2, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+              propsForDots: {
+                r: '6',
+                strokeWidth: '2',
+                stroke: '#ffa726',
+              },
+            }}
+            bezier
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
         </View>
         <View
-          style={[
-            styles.liga,
-            {marginTop: 10, flexWrap: 'wrap', justifyContent: 'space-between'},
-          ]}>
-          {/* chelsea */}
-          <View style={styles.jarak}>
-            <Background width={150} height={180} />
-            <View style={styles.jersey}>
-              <Chelsea height={124} width={124} />
-              <Text style={styles.textJersey}>Chelsea 3RD 2018-2019</Text>
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: 20,
+            marginTop: 10,
+          }}>
+          <Text
+            style={[
+              styles.fontContent,
+              {color: '#000', fontFamily: 'Poppins-Bold'},
+            ]}>
+            Aktivitas Terakhir
+          </Text>
+          <TouchableOpacity
+            style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{color: '#51C091B2'}}>Semua</Text>
+            <Icon
+              name="chevron-right"
+              color="#51C091B2"
+              style={{marginLeft: 5}}
+            />
+          </TouchableOpacity>
+        </View>
+        {/* ================Aktivitas Terakhir */}
+        <View
+          style={{
+            padding: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-evenly',
+            width: '100%',
+          }}>
+          <View>
+            <View style={[styles.ball]}>
+              <Minyak height={28} width={28} />
             </View>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.TextButton}>Detail</Text>
-            </TouchableOpacity>
           </View>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'column',
+              marginLeft: 5,
+            }}>
+            <Text style={styles.fontContent}>Setor Minyak Jelanta 5 Kg</Text>
+            <Text>Hari ini • 07:00</Text>
+          </View>
+          <View>
+            <Text style={[styles.fontContent, {color: '#6FCF97'}]}>
+              + Rp10.000
+            </Text>
 
-          {/* End Chelsea */}
-          {/* Liverpool */}
-          <View style={styles.jarak}>
-            <Background width={150} height={180} />
-            <View style={styles.jersey}>
-              <Liverpool height={124} width={124} />
-              <Text style={styles.textJersey}>Liverpool Away 2018-2019</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Coin height={18} width={18} />
+              <Text
+                style={[styles.fontContent, {color: '#FFC727', marginLeft: 5}]}>
+                50 Poin
+              </Text>
             </View>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.TextButton}>Detail</Text>
-            </TouchableOpacity>
           </View>
-          {/* End Liverpool */}
-          {/* Juve */}
-          <View style={styles.jarak}>
-            <Background width={150} height={180} />
-            <View style={styles.jersey}>
-              <Juve height={124} width={124} />
-              <Text style={styles.textJersey}>Juve 3RD 2018-2019</Text>
+        </View>
+        <View
+          style={{
+            padding: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-evenly',
+            width: '100%',
+          }}>
+          <View>
+            <View style={[styles.ball]}>
+              <Minyak height={28} width={28} />
             </View>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.TextButton}>Detail</Text>
-            </TouchableOpacity>
           </View>
-          {/* End Juve */}
-          {/* Milan */}
-          <View style={styles.jarak}>
-            <Background width={150} height={180} />
-            <View style={styles.jersey}>
-              <Milan height={124} width={124} />
-              <Text style={styles.textJersey}>Milan 3RD 2018-2019</Text>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'column',
+              marginLeft: 5,
+            }}>
+            <Text style={styles.fontContent}>Setor Minyak Jelanta 5 Kg</Text>
+            <Text>Hari ini • 07:00</Text>
+          </View>
+          <View>
+            <Text style={[styles.fontContent, {color: '#6FCF97'}]}>
+              + Rp10.000
+            </Text>
+            {/* #FFC727 */}
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Coin height={18} width={18} />
+              <Text
+                style={[styles.fontContent, {color: '#FFC727', marginLeft: 5}]}>
+                50 Poin
+              </Text>
             </View>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.TextButton}>Detail</Text>
-            </TouchableOpacity>
           </View>
-          {/* End Milan */}
+        </View>
+        {/* end aktifitas */}
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: 20,
+            marginTop: 10,
+          }}>
+          <Text
+            style={[
+              styles.fontContent,
+              {color: '#000', fontFamily: 'Poppins-Bold'},
+            ]}>
+            Seputar Limbah
+          </Text>
+          <TouchableOpacity
+            style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{color: '#51C091B2'}}>Semua</Text>
+            <Icon
+              name="chevron-right"
+              color="#51C091B2"
+              style={{marginLeft: 5}}
+            />
+          </TouchableOpacity>
+          {/* Swipper */}
+        </View>
+        <View>
+          <Swiper style={styles.wrapper} showsButtons={false}>
+            <View style={{flexDirection: 'row'}}>
+              <Image
+                style={styles.contentLimbah}
+                resizeMode="contain"
+                source={require('../../assets/Images/home/contenlimbah.jpg')}
+                style={{width: 150}}
+              />
+              <Image
+                style={styles.contentLimbah}
+                resizeMode="contain"
+                style={{width: 150, marginLeft: 15}}
+                source={require('../../assets/Images/home/contenLimbah1.png')}
+              />
+            </View>
+          </Swiper>
         </View>
       </ScrollView>
     </>
@@ -131,109 +443,3 @@ const Dashboar = () => {
 };
 
 export default Dashboar;
-
-const styles = StyleSheet.create({
-  background: {
-    backgroundColor: '#22668A',
-    height: windowHeight * 0.19,
-    alignItems: 'center',
-
-    justifyContent: 'center',
-  },
-  searchBar: {
-    width: windowWidth * 0.75,
-    borderRadius: 5,
-  },
-  icon: {
-    backgroundColor: '#fff',
-    height: 48,
-    width: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 5,
-    marginLeft: 5,
-  },
-  nav: {
-    flexDirection: 'row',
-    marginTop: 40,
-  },
-  slide: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    borderRadius: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-
-    elevation: 2,
-    marginTop: 80,
-  },
-  container: {
-    marginHorizontal: 20,
-    marginTop: 105,
-  },
-  liga: {
-    marginHorizontal: 20,
-    flexDirection: 'row',
-  },
-  header: {
-    fontFamily: 'Lato-Bold',
-    fontSize: 18,
-    color: '#000',
-  },
-  card: {
-    backgroundColor: '#fff',
-    height: 80,
-    width: 80,
-    marginHorizontal: 3,
-    borderRadius: 5,
-    marginTop: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-
-    elevation: 2,
-  },
-  jersey: {
-    marginTop: -165,
-    alignItems: 'center',
-  },
-  textJersey: {
-    textAlign: 'center',
-    fontSize: 12,
-    fontWeight: '600',
-    fontFamily: 'Lato-Bold',
-    color: '#000',
-    width: 90,
-  },
-  jarak: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10,
-  },
-  button: {
-    marginTop: 20,
-    width: 150,
-    height: 30,
-    borderRadius: 5,
-    backgroundColor: '#22668A',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  TextButton: {
-    fontSize: 13,
-    fontFamily: 'Lato-Bold',
-    color: '#fff',
-  },
-});

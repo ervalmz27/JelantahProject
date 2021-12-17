@@ -1,0 +1,215 @@
+import axios from 'axios';
+import React, {useState, useEffect} from 'react';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import {API_URL} from '../../config/env';
+import Header from '../component/Header';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useSelector, useDispatch} from 'react-redux';
+import {getLoginUsers} from '../../Apis/actions/users';
+const Login = ({navigation}) => {
+  const jsonValue = AsyncStorage.getItem('token');
+  console.log('sssss', jsonValue);
+  const globalState = useSelector(state => state);
+  const dispatch = useDispatch();
+  const [security, setSecurity] = useState(true);
+  const [form, setForm] = useState({
+    user_id: '',
+    user_password: '',
+  });
+  const handleBack = () => {
+    navigation.goBack();
+  };
+  const postLogin = async (user_id, user_password) => {
+    try {
+      AsyncStorage.setItem('user_id', user_id);
+      AsyncStorage.setItem('user_password', user_password);
+      const data = {
+        user_id: user_id,
+        user_password: user_password,
+      };
+
+      await axios
+        .post(`${API_URL}act_loginAndroid.php`, data)
+        .then(res => {
+          dispatch(getLoginUsers(res.data.data));
+          res.data.data.forEach(res => {
+            if (res.msg != 'userid not found') {
+              AsyncStorage.setItem('token', res.id_token);
+              navigation.navigate('Home');
+            } else {
+              alert('Username/Password Tidak Ditemukan');
+            }
+          });
+
+          setForm({...form, user_id: '', user_password: ''});
+        })
+        .catch(err => {
+          console.log('error', err);
+        });
+    } catch (error) {
+      console.log('Message Error : ', error);
+      alert(
+        'Username atau Password Yang Anda Masukan Tidak Terdapat Mohon Dicheck Kembali',
+      );
+    }
+  };
+  const handleLogin = (user_id, user_password) => {
+    postLogin(user_id, user_password);
+  };
+  return (
+    <>
+      <Header
+        icon={'chevron-left'}
+        name={'Masuk'}
+        onClick={() => handleBack()}
+      />
+      <ScrollView>
+        <View style={styles.header}>
+          <Text style={styles.textHeader}>
+            Masuk dengan akun yang terdaftar!
+          </Text>
+        </View>
+        <View style={styles.container}>
+          <Icon
+            name="user-alt"
+            size={15}
+            color="#51C091"
+            style={{marginLeft: 10}}
+          />
+          <TextInput
+            placeholder="Email atau Nomor HP"
+            style={styles.input}
+            value={form.user_id}
+            onChangeText={e => {
+              setForm({...form, user_id: e});
+            }}
+          />
+        </View>
+        <View style={[styles.container, {justifyContent: 'space-between'}]}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Icon
+              name="lock"
+              size={15}
+              color="#51C091"
+              style={{marginLeft: 10}}
+            />
+            <TextInput
+              placeholder="Password"
+              style={styles.input}
+              value={form.user_password}
+              secureTextEntry={security}
+              onChangeText={p => {
+                setForm({...form, user_password: p});
+              }}
+            />
+          </View>
+          {security == true ? (
+            <TouchableOpacity
+              onPress={() => {
+                setSecurity(!security);
+              }}>
+              <Icon
+                name="eye-slash"
+                size={15}
+                color="#51C091"
+                style={{marginLeft: 10}}
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => {
+                setSecurity(!security);
+              }}>
+              <Icon
+                name="eye"
+                size={15}
+                color="#51C091"
+                style={{marginLeft: 10}}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+        <TouchableOpacity style={styles.lupas}>
+          <Text style={[styles.textHeader, {color: '#51C091'}]}>
+            Lupa Password?
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            postLogin(form.user_id, form.user_password);
+          }}>
+          <Text style={[styles.fontReguler, {color: '#fff'}]}>Masuk</Text>
+        </TouchableOpacity>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            flex: 1,
+            justifyContent: 'center',
+          }}>
+          <Text>Belum punya akun?</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Registerscreen')}>
+            <Text
+              style={[styles.fontReguler, {color: '#51C091', marginLeft: 5}]}>
+              Daftar
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </>
+  );
+};
+
+export default Login;
+
+const styles = StyleSheet.create({
+  header: {
+    padding: 20,
+  },
+  fontReguler: {
+    fontFamily: 'Poppins-Regular',
+  },
+  button: {
+    backgroundColor: '#51C091',
+    borderRadius: 5,
+    marginVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    marginHorizontal: 20,
+  },
+  textHeader: {
+    fontFamily: 'Poppins-Bold',
+    color: '#455A6480',
+  },
+  input: {
+    fontFamily: 'Poppins-Reguler',
+    color: '#010101',
+    padding: 10,
+    marginLeft: 5,
+  },
+  container: {
+    marginHorizontal: 20,
+    flex: 1,
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#51C091',
+    alignItems: 'center',
+  },
+  lupas: {
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    margin: 10,
+  },
+});
