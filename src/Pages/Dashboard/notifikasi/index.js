@@ -1,9 +1,30 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useSelector} from 'react-redux';
+import {getDataInfoPesanDetail} from '../../../Apis/api';
 import Header from '../../component/Header';
-
+const a = new Date('2021-12-17 18:03:40');
+let time = a.getHours();
+const d = new Date('2021-11-22 18:03:40');
+let hour = d.getHours();
+console.log('====', time, hour);
 const Notificat = ({navigation}) => {
+  const dataLogin = useSelector(state => state.users.login);
+  const [notification, setNotification] = useState([]);
+  useEffect(() => {
+    dataLogin.forEach(el => {
+      // console.log('Message', el.id_token);
+      fetchMessage(el.id_token);
+    });
+  }, []);
+
+  const fetchMessage = async token => {
+    const Response = await getDataInfoPesanDetail(token);
+    console.log('Response : ', Response.data.notifikasi);
+    setNotification(Response.data.notifikasi);
+  };
+
   return (
     <>
       <Header
@@ -14,102 +35,26 @@ const Notificat = ({navigation}) => {
         }}
       />
       <ScrollView>
-        <TouchableOpacity
-          style={styles.container}
-          onPress={() => {
-            navigation.navigate('detailNotif');
-          }}>
-          <Text style={styles.title}>Jadwal setoran berhasil diterima</Text>
-          <Text numberOfLines={1}>
-            Jadwal kamu sudah diterima, silakan cek kode QR nya
-          </Text>
-          <Text style={styles.texttime}>5 jam lalu</Text>
-          <View
-            style={{
-              borderBottomColor: '#E5E5E5',
-              borderBottomWidth: 1,
-              marginTop: 5,
-            }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.container}>
-          <Text style={styles.title}>Yeay, kamu baru aja dapat Rp50.000</Text>
-          <Text numberOfLines={1}>
-            Habis jual limbah langsung dapat uang, yuk cek sekarang juga
-          </Text>
-          <Text style={styles.texttime}>5 jam lalu</Text>
-          <View
-            style={{
-              borderBottomColor: '#E5E5E5',
-              borderBottomWidth: 1,
-              marginTop: 5,
-            }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.container}>
-          <Text style={styles.title}>
-            Selamat! kamu berhak mendapatkan hadiah
-          </Text>
-          <Text numberOfLines={1}>
-            Kamu telah menyelesaikan tugas dengan baik
-          </Text>
-          <Text style={styles.texttime}>5 jam lalu</Text>
-          <View
-            style={{
-              borderBottomColor: '#E5E5E5',
-              borderBottomWidth: 1,
-              marginTop: 5,
-            }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.container}>
-          <Text style={styles.title}>
-            Selamat! kamu berhak mendapatkan hadiah
-          </Text>
-          <Text numberOfLines={1}>
-            Kamu telah menyelesaikan tugas dengan baik
-          </Text>
-          <Text style={styles.texttime}>5 jam lalu</Text>
-          <View
-            style={{
-              borderBottomColor: '#E5E5E5',
-              borderBottomWidth: 1,
-              marginTop: 5,
-            }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.container}>
-          <Text style={styles.title}>
-            Selamat! kamu berhak mendapatkan hadiah
-          </Text>
-          <Text numberOfLines={1}>
-            Kamu telah menyelesaikan tugas dengan baik
-          </Text>
-          <Text style={styles.texttime}>5 jam lalu</Text>
-          <View
-            style={{
-              borderBottomColor: '#E5E5E5',
-              borderBottomWidth: 1,
-              marginTop: 5,
-            }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.container}>
-          <Text style={styles.title}>
-            Selamat! kamu berhak mendapatkan hadiah
-          </Text>
-          <Text numberOfLines={1}>
-            Kamu telah menyelesaikan tugas dengan baik
-          </Text>
-          <Text style={styles.texttime}>5 jam lalu</Text>
-          <View
-            style={{
-              borderBottomColor: '#E5E5E5',
-              borderBottomWidth: 1,
-              marginTop: 5,
-            }}
-          />
-        </TouchableOpacity>
+        {notification.map((items, idx) => {
+          return (
+            <TouchableOpacity
+              style={styles.container}
+              onPress={() => {
+                navigation.navigate('detailNotif');
+              }}>
+              <Text style={styles.title}>{items.judul}</Text>
+              <Text numberOfLines={1}>{items.pesan}</Text>
+              <Text style={styles.texttime}>{}</Text>
+              <View
+                style={{
+                  borderBottomColor: '#E5E5E5',
+                  borderBottomWidth: 1,
+                  marginTop: 5,
+                }}
+              />
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
     </>
   );

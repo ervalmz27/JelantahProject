@@ -6,6 +6,7 @@ import {
   TextInput,
   View,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -13,11 +14,14 @@ import {API_URL} from '../../config/env';
 import Header from '../component/Header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSelector, useDispatch} from 'react-redux';
-import {getLoginUsers} from '../../Apis/actions/users';
+import {getLoginUsers, getUsersSuccess} from '../../Apis/actions/users';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 const Login = ({navigation}) => {
   const jsonValue = AsyncStorage.getItem('token');
-  console.log('sssss', jsonValue);
+
   const globalState = useSelector(state => state);
+  console.log('sssss', globalState);
   const dispatch = useDispatch();
   const [security, setSecurity] = useState(true);
   const [form, setForm] = useState({
@@ -41,9 +45,28 @@ const Login = ({navigation}) => {
         .then(res => {
           dispatch(getLoginUsers(res.data.data));
           res.data.data.forEach(res => {
-            if (res.msg != 'userid not found') {
+            console.log('rrrrrrrrrrrrrr', res);
+            const mitra = res.user_level_nama;
+            dispatch(getUsersSuccess(mitra));
+            // if (
+            //   mitra == 'Mitra RW' ||
+            //   mitra == 'Mitra Kelurahan' ||
+            //   mitra == 'Mitra Kecamatan'
+            // ) {
+            //   console.log('hallo');
+            //   alert('anda bukan Mitra Personal');
+            // } else
+
+            if (
+              res.msg != 'userid not found' &&
+              res.msg != 'password incorrect'
+              // mitra == 'Mitra RW' ||
+              // mitra == 'Mitra Kelurahan' ||
+              // mitra == 'Mitra Kecamatan'
+            ) {
               AsyncStorage.setItem('token', res.id_token);
               navigation.navigate('Home');
+              console.log('home');
             } else {
               alert('Username/Password Tidak Ditemukan');
             }
@@ -88,6 +111,7 @@ const Login = ({navigation}) => {
             placeholder="Email atau Nomor HP"
             style={styles.input}
             value={form.user_id}
+            autoCapitalize="none"
             onChangeText={e => {
               setForm({...form, user_id: e});
             }}
@@ -197,6 +221,7 @@ const styles = StyleSheet.create({
     color: '#010101',
     padding: 10,
     marginLeft: 5,
+    width: windowWidth * 0.6,
   },
   container: {
     marginHorizontal: 20,

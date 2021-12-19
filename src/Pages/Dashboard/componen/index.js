@@ -16,7 +16,7 @@ import Coin from '../../../assets/Images/Icon/Coin.svg';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const CardContent = ({onSetor}) => {
+const CardContent = ({onSetor, onJadwal, cekJadwal}) => {
   return (
     <>
       <View style={[styles.card, styles.content]}>
@@ -32,7 +32,7 @@ const CardContent = ({onSetor}) => {
           <Coin height={24} width={24} />
           <Text style={styles.font}>Tukar Poin</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.eco}>
+        <TouchableOpacity style={styles.eco} onPress={onJadwal}>
           <TerimaJadwal height={24} width={24} />
           <Text style={styles.font}>Terima Jadwal</Text>
         </TouchableOpacity>
@@ -40,12 +40,11 @@ const CardContent = ({onSetor}) => {
           <TerimaSetoran height={24} width={24} />
           <Text style={styles.font}>Terima Setoran</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.eco}>
+        <TouchableOpacity style={styles.eco} onPress={cekJadwal}>
           <JadwalSetor height={24} width={24} />
-          <Text style={styles.font}>Jadwal Setor</Text>
+          <Text style={styles.font}>Cek Jadwal</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.eco, {marginRight: windowWidth * 0.56}]}>
+        <TouchableOpacity style={[styles.eco]}>
           <Laporan height={24} width={24} />
           <Text style={styles.font}>Cek Laporan</Text>
         </TouchableOpacity>

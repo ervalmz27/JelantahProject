@@ -1,4 +1,4 @@
-package com.loginapp;
+package com.jelantah;
 
 import android.app.Application;
 import android.content.Context;

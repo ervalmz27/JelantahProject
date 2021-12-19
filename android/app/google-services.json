@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "349770745552",
+    "project_id": "jelantah-33712",
+    "storage_bucket": "jelantah-33712.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:349770745552:android:13433497b0496eb347c0d5",
+        "android_client_info": {
+          "package_name": "com.jelantah"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "349770745552-m001qlo9iica53oko6mg067q2859mna7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jelantah",
+            "certificate_hash": "a1c51b787e8210624abd98220a096f45cfdc8ea8"
+          }
+        },
+        {
+          "client_id": "349770745552-5u7v5d2vhmltl74bqqbqg054ribeb572.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfvr_RHH7vnLxq_dh8tEwVvLLmaevmRSk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "349770745552-5u7v5d2vhmltl74bqqbqg054ribeb572.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

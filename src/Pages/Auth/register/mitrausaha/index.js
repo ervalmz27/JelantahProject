@@ -54,9 +54,13 @@ const RegisterMitraUsaha = ({navigation}) => {
         .then(res => {
           console.log('response : ', res.data);
           if (
-            user_nohp !=
-              'Pendaftaran gagal, No HP 022123124 sudah terdaftar!' &&
-            code_ref != 'Pendaftaran gagal, Code Refferal tidak ditemukan !'
+            'Pendaftaran gagal, No HP 022123124 sudah terdaftar!' &&
+            code_ref != 'Pendaftaran gagal, Code Refferal tidak ditemukan !' &&
+            form.user_email != '' &&
+            form.user_fullname != '' &&
+            form.user_nohp != '' &&
+            form.user_password != '' &&
+            form.usaha_name != ''
           ) {
             navigation.navigate('Home');
           }

@@ -1,4 +1,4 @@
-package com.loginapp;
+package com.jelantah;
 
 import com.facebook.react.ReactActivity;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "loginApp";
+    return "Jelantah";
   }
   @Override
 protected void onCreate(Bundle savedInstanceState) {

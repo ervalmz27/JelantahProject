@@ -69,7 +69,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: -30,
-    marginHorizontal: 20,
+    width: windowWidth * 0.87,
+    marginHorizontal: windowWidth * 0.2,
   },
   fontContent: {
     fontWeight: '600',

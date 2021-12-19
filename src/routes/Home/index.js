@@ -10,6 +10,8 @@ import NotifikasiNavigator from './notifikation';
 import User from '../../Pages/User';
 import QrCode from '../../Pages/QRCode';
 import ScannerNavigator from '../ScannerQr';
+import TerimaJadwalNavigator from './TerimaJadwal';
+import JadwalSetorNavigator from './JadwalSetor';
 
 const HomeNavigator = ({navigation}) => {
   const HomeStack = createStackNavigator();
@@ -21,8 +23,6 @@ const HomeNavigator = ({navigation}) => {
       style={{top: -20, justifyContent: 'center', alignItems: 'center'}}>
       <LinearGradient
         colors={['#51C091', '#1B7FDC']}
-        // start={{x: 0, y: 0}}
-        // end={{x: 1.2, y: 1}}
         style={{borderRadius: 100}}>
         <View style={{width: 70, height: 70, borderRadius: 35}}>
           {children}
@@ -207,6 +207,8 @@ const HomeNavigator = ({navigation}) => {
       <Tab.Screen name={'Setor'} component={SetorLimbahNavigator} />
       <Tab.Screen name={'notification'} component={NotifikasiNavigator} />
       <Tab.Screen name={'codeQr'} component={ScannerNavigator} />
+      <Tab.Screen name={'TerimaJadwal'} component={TerimaJadwalNavigator} />
+      <Tab.Screen name={'CekJadwal'} component={JadwalSetorNavigator} />
     </HomeStack.Navigator>
   );
 };

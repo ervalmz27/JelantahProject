@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -18,11 +18,16 @@ import Tanggal from '../../../assets/Images/Icon/Tanggal.svg';
 import Jam from '../../../assets/Images/Icon/Jam.svg';
 import Timbangan from '../../../assets/Images/Icon/Timbangan.svg';
 import Line from '../../../assets/Images/Line.svg';
+import Geolocation from '@react-native-community/geolocation';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {getDataRTNearby} from '../../../Apis/api';
+import {useSelector} from 'react-redux';
 
 const SetorLimbah = ({navigation}) => {
+  const token = useSelector(state => state.users.login);
+  // console.log(token);
   const [dropdown, setDropdown] = useState(true);
   const [placeholder, setPlaceholder] = useState({
     Rukun: 'Pilih RT Terdekat',
@@ -37,6 +42,11 @@ const SetorLimbah = ({navigation}) => {
     user_password: '',
     code_ref: null,
   });
+  const [latt, setLatt] = useState({
+    lantitude: null,
+    longitude: null,
+  });
+  //  =========================== State ============================
   const [timbangan, setTimbangan] = useState('');
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
@@ -45,25 +55,34 @@ const SetorLimbah = ({navigation}) => {
   const [time, setTime] = useState(new Date());
   const [modeTime, setModeTime] = useState('time');
   const [disable, setDisable] = useState(true);
+  const [dist, setToken] = useState('');
+  const [alamat, setAlamat] = useState([]);
+  const [limbah, setLimbah] = useState(true);
+  //  =========================== End State ==========================
 
-  const RT = [
-    {
-      id: 1,
-      rt: ' 01',
-    },
-    {
-      id: 2,
-      rt: '02',
-    },
-    {
-      id: 3,
-      rt: '03',
-    },
-    {
-      id: 4,
-      rt: '04',
-    },
-  ];
+  useEffect(() => {
+    Geolocation.getCurrentPosition(info => {
+      token.forEach((item, i) => {
+        const all = item.id_token;
+
+        setToken(all);
+      });
+      console.log(info);
+      setLatt({
+        ...latt,
+        lantitude: info.coords.latitude,
+        longitude: info.coords.longitude,
+      });
+      fetchDataRTNearby();
+    });
+  }, []);
+
+  const fetchDataRTNearby = async (Token, latt, long) => {
+    const Response = await getDataRTNearby(Token, latt, long);
+
+    const nestedRt = Response.data.nearby_rt;
+    setAlamat(nestedRt);
+  };
 
   // on Chahnge Tanggal
   const onChange = (event, selectedDate) => {
@@ -123,7 +142,12 @@ const SetorLimbah = ({navigation}) => {
         </View>
 
         {/* username */}
-        <View style={styles.container}>
+        <TouchableOpacity
+          onPress={() => {
+            setDropdown(!dropdown);
+            fetchDataRTNearby(dist, latt.lantitude, latt.longitude);
+          }}
+          style={styles.container}>
           <View>
             <House height={20} width={20} />
           </View>
@@ -138,7 +162,9 @@ const SetorLimbah = ({navigation}) => {
                 width: '92%',
               },
             ]}>
-            <Text style={styles.textInput}>{placeholder.Rukun}</Text>
+            <View style={{width: windowWidth * 0.72}}>
+              <Text style={styles.textInput}>{placeholder.Rukun}</Text>
+            </View>
             {dropdown == false ? (
               <TouchableOpacity
                 onPress={() => {
@@ -154,6 +180,7 @@ const SetorLimbah = ({navigation}) => {
               <TouchableOpacity
                 onPress={() => {
                   setDropdown(!dropdown);
+                  fetchDataRTNearby(dist, latt.lantitude, latt.longitude);
                 }}>
                 <Icon
                   name="play"
@@ -163,7 +190,7 @@ const SetorLimbah = ({navigation}) => {
               </TouchableOpacity>
             )}
           </View>
-        </View>
+        </TouchableOpacity>
         {/* dropdown */}
         {dropdown == false ? (
           <View
@@ -172,16 +199,33 @@ const SetorLimbah = ({navigation}) => {
               marginHorizontal: 20,
               padding: 10,
             }}>
-            {RT.map((i, idx) => {
+            {alamat.map((i, idx) => {
               return (
                 <TouchableOpacity
                   onPress={() => {
-                    setPlaceholder({...placeholder, Rukun: i.rt});
+                    setPlaceholder({
+                      ...placeholder,
+                      Rukun:
+                        i.nama_rt +
+                        '/' +
+                        i.nama_rw +
+                        '/' +
+                        i.nama_kel +
+                        '/' +
+                        i.nama_kec +
+                        '/' +
+                        i.nama_kota +
+                        '/' +
+                        i.nama_prov,
+                    });
                     setDropdown(!dropdown);
                   }}
                   key={idx}
                   style={[styles.container, {padding: 10}]}>
-                  <Text style={styles.textInput}>{i.rt}</Text>
+                  <Text style={styles.textInput}>
+                    {i.nama_rt}/{i.nama_rw}/{i.nama_kel}/{i.nama_kec}/
+                    {i.nama_kota}/{i.nama_prov}
+                  </Text>
                 </TouchableOpacity>
               );
             })}
@@ -205,10 +249,10 @@ const SetorLimbah = ({navigation}) => {
               },
             ]}>
             <Text style={styles.textInput}>{placeholder.limbah}</Text>
-            {dropdown == false ? (
+            {limbah == false ? (
               <TouchableOpacity
                 onPress={() => {
-                  setDropdown(!dropdown);
+                  setLimbah(!limbah);
                 }}>
                 <Icon
                   name="play"
@@ -219,7 +263,7 @@ const SetorLimbah = ({navigation}) => {
             ) : (
               <TouchableOpacity
                 onPress={() => {
-                  setDropdown(!dropdown);
+                  setLimbah(!limbah);
                 }}>
                 <Icon
                   name="play"
@@ -230,7 +274,24 @@ const SetorLimbah = ({navigation}) => {
             )}
           </View>
         </View>
-        {/* ===================l */}
+        {limbah == false ? (
+          <View
+            style={{
+              backgroundColor: '#fff',
+              marginHorizontal: 20,
+              padding: 10,
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                setPlaceholder({...placeholder, limbah: 'Minyak Jelantah'});
+                setLimbah(!limbah);
+              }}
+              style={[styles.container, {padding: 10}]}>
+              <Text style={styles.textInput}>Minyak Jelantah</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
+        {/* =================== End Limbah ============== */}
         <View
           style={{
             flexDirection: 'row',

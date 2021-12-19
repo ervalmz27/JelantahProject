@@ -17,19 +17,23 @@ import CardContent from './componen';
 import Swiper from 'react-native-swiper';
 import {LineChart} from 'react-native-chart-kit';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {Datainfo, DataProfile} from './api';
+import {Datainfo, DataProfile} from '../../Apis/api';
 import Minyak from '../../assets/Images/home/Minyak.svg';
 import {styles} from './style';
 import Coin from '../../assets/Images/Icon/Coin.svg';
-import Geolocation from '@react-native-community/geolocation';
+import {getLoginUsers} from '../../Apis/actions/users';
+
 import SampleJson from '../../Apis/Json/sampleStatistik.json';
+import Mitra_Personal_Usaha from './componen/Mitra_Personal_Usaha';
 const windowWidth = Dimensions.get('window').width;
-const image = {uri: 'https://reactjs.org/logo-og.png'};
+
 const Dashboar = ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
 
+  // console.log('Reduxxx ', dataLogin);
+  const dispatch = useDispatch();
   const onChangeSearch = query => setSearchQuery(query);
-  const [walet, setWalet] = useState([]);
+  const [mintra, setMitra] = useState('');
   const [rupiah, setRupiah] = useState('');
   const [profile, setProfile] = useState([]);
   const [point, setPoint] = useState('');
@@ -39,14 +43,13 @@ const Dashboar = ({navigation}) => {
     labels: [],
   });
   useEffect(() => {
-    console.log('sample', SampleJson.datasets[0].data);
+    // console.log('sample', SampleJson.datasets[0].data);
     setStatistik({
       ...statisti,
       labels: SampleJson.labels,
       data: SampleJson.datasets[0].data,
     });
 
-    Geolocation.getCurrentPosition(info => console.log(info));
     dataPost();
   }, []);
 
@@ -55,12 +58,19 @@ const Dashboar = ({navigation}) => {
     const Password = await AsyncStorage.getItem('user_password');
     DataProfile(user, Password).then(res => {
       const dataLogin = res.data.data;
+      // console.log(dataLogin);
       setProfile(dataLogin);
+      dispatch(getLoginUsers(dataLogin));
+      console.log('dataLogin', dataLogin);
       dataLogin.forEach(el => {
+        // console.log('mitra', el.user_level_nama);
+
+        let mitra = el.user_level_nama;
+        setMitra(mitra);
         setPoint(el.user_poin);
         Datainfo(el.id_token).then(res => {
           let data = res.data.data;
-          setWalet(data);
+
           data.forEach(item => {
             setNotif(item.user_pesan);
             const numb = item.user_wallet;
@@ -71,9 +81,6 @@ const Dashboar = ({navigation}) => {
             setRupiah(rupiah);
           });
         });
-        // Notif(el.id_token).then(res => {
-        //   setNotif(res.data.data);
-        // });
       });
     });
   };
@@ -85,19 +92,23 @@ const Dashboar = ({navigation}) => {
           source={require('../../assets/Images/bghomge.jpg')}
           style={styles.background}>
           <View style={styles.rowContent}>
-            <View style={{flexDirection: 'row', flex: 1, padding: 10}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                flex: 1,
+              }}>
               <Image
                 source={require('../../assets/Images/home/profile.jpg')}
                 style={styles.img}
               />
-              <View style={{marginLeft: 10}}>
+              <View>
                 {profile.map((i, idx) => {
                   return (
-                    <View key={idx}>
+                    <View key={idx} style={{marginLeft: 5}}>
                       <Text
                         style={{
                           color: '#fff',
-                          fontFamily: 'Poppins-Reguler',
+                          fontFamily: 'Poppins-SemiBold',
                           fontSize: 14,
                           fontWeight: '600',
                         }}>
@@ -173,7 +184,22 @@ const Dashboar = ({navigation}) => {
             </View>
           </View>
         </View>
-        <CardContent onSetor={() => navigation.navigate('Setor')} />
+        {mintra == 'Mitra RT' ||
+        mintra == 'Mitra Budaya' ||
+        mintra == 'Mitra RW' ||
+        mintra == 'Mitra Kelurahan' ||
+        mintra == 'Mitra Kecamatan' ? (
+          <CardContent
+            onSetor={() => navigation.push('Setor')}
+            onJadwal={() => {
+              navigation.navigate('TerimaJadwal');
+            }}
+            cekJadwal={() => navigation.navigate('CekJadwal')}
+          />
+        ) : (
+          <Mitra_Personal_Usaha onSetor={() => navigation.push('Setor')} />
+        )}
+
         <View
           style={{
             flex: 1,
@@ -200,7 +226,14 @@ const Dashboar = ({navigation}) => {
             />
           </TouchableOpacity>
         </View>
-        <View style={{marginTop: 20, height: 150}}>
+        <View
+          style={{
+            marginTop: 20,
+            height: 150,
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: windowWidth * 1,
+          }}>
           <Swiper showsButtons={false} showsPagination={false}>
             <View>
               <Image
