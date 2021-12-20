@@ -24,13 +24,14 @@ const windowHeight = Dimensions.get('window').height;
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {getDataRTNearby} from '../../../Apis/api';
 import {useSelector} from 'react-redux';
+import {getLimbah} from '../../../Apis/api/SetorLimbah';
 
 const SetorLimbah = ({navigation}) => {
   const token = useSelector(state => state.users.login);
   // console.log(token);
   const [dropdown, setDropdown] = useState(true);
   const [placeholder, setPlaceholder] = useState({
-    Rukun: 'Pilih RT Terdekat',
+    Rukun: 'Pilih Mitra Terdekat',
     limbah: 'Pilih Jenis Limbah',
     tanggal: 'Pilih Tanggal',
     jam: 'Pilih Jam',
@@ -58,6 +59,7 @@ const SetorLimbah = ({navigation}) => {
   const [dist, setToken] = useState('');
   const [alamat, setAlamat] = useState([]);
   const [limbah, setLimbah] = useState(true);
+  const [dataLimbah, setDataLimbah] = useState([]);
   //  =========================== End State ==========================
 
   useEffect(() => {
@@ -67,7 +69,6 @@ const SetorLimbah = ({navigation}) => {
 
         setToken(all);
       });
-      console.log(info);
       setLatt({
         ...latt,
         lantitude: info.coords.latitude,
@@ -75,6 +76,7 @@ const SetorLimbah = ({navigation}) => {
       });
       fetchDataRTNearby();
     });
+    Limbah();
   }, []);
 
   const fetchDataRTNearby = async (Token, latt, long) => {
@@ -123,6 +125,11 @@ const SetorLimbah = ({navigation}) => {
 
   const showDatepicker = () => {
     showMode('date');
+  };
+  const Limbah = async () => {
+    const Response = await getLimbah();
+    console.log('Response -> ', Response.data.limbah);
+    setDataLimbah(Response.data.limbah);
   };
 
   return (
@@ -281,14 +288,19 @@ const SetorLimbah = ({navigation}) => {
               marginHorizontal: 20,
               padding: 10,
             }}>
-            <TouchableOpacity
-              onPress={() => {
-                setPlaceholder({...placeholder, limbah: 'Minyak Jelantah'});
-                setLimbah(!limbah);
-              }}
-              style={[styles.container, {padding: 10}]}>
-              <Text style={styles.textInput}>Minyak Jelantah</Text>
-            </TouchableOpacity>
+            {dataLimbah.map((i, idx) => {
+              return (
+                <TouchableOpacity
+                  key={idx}
+                  onPress={() => {
+                    setPlaceholder({...placeholder, limbah: 'Minyak Jelantah'});
+                    setLimbah(!limbah);
+                  }}
+                  style={[styles.container, {padding: 10}]}>
+                  <Text style={styles.textInput}>{i.limbah_nama}</Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         ) : null}
         {/* =================== End Limbah ============== */}

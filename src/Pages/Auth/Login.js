@@ -48,21 +48,9 @@ const Login = ({navigation}) => {
             console.log('rrrrrrrrrrrrrr', res);
             const mitra = res.user_level_nama;
             dispatch(getUsersSuccess(mitra));
-            // if (
-            //   mitra == 'Mitra RW' ||
-            //   mitra == 'Mitra Kelurahan' ||
-            //   mitra == 'Mitra Kecamatan'
-            // ) {
-            //   console.log('hallo');
-            //   alert('anda bukan Mitra Personal');
-            // } else
-
             if (
               res.msg != 'userid not found' &&
               res.msg != 'password incorrect'
-              // mitra == 'Mitra RW' ||
-              // mitra == 'Mitra Kelurahan' ||
-              // mitra == 'Mitra Kecamatan'
             ) {
               AsyncStorage.setItem('token', res.id_token);
               navigation.navigate('Home');
@@ -161,7 +149,9 @@ const Login = ({navigation}) => {
             </TouchableOpacity>
           )}
         </View>
-        <TouchableOpacity style={styles.lupas}>
+        <TouchableOpacity
+          style={styles.lupas}
+          onPress={() => navigation.navigate('LupaPassword')}>
           <Text style={[styles.textHeader, {color: '#51C091'}]}>
             Lupa Password?
           </Text>

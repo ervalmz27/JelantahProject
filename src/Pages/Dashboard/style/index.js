@@ -47,7 +47,7 @@ export const styles = StyleSheet.create({
   info: {},
   ball: {
     borderRadius: 100,
-    backgroundColor: '#FFC72740',
+
     width: 56,
     height: 56,
     flex: 1,
@@ -133,6 +133,14 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     color: '#000',
   },
+  textLimbah: {
+    fontFamily: 'Poppins-SemiBold',
+    fontWeight: '500',
+    fontSize: 10,
+    lineHeight: 15,
+    color: '#263238',
+    marginBottom: 15,
+  },
   card: {
     backgroundColor: '#fff',
     height: 80,
@@ -165,6 +173,8 @@ export const styles = StyleSheet.create({
 
   tinyLogo: {
     width: windowWidth * 0.9,
+    height: 100,
+    // width: 100,
     marginHorizontal: 20,
     shadowColor: '#000',
     shadowOffset: {

@@ -64,3 +64,16 @@ export const getDataInfoPesanDetail = async id_token => {
     console.log('Message Error', error);
   }
 };
+
+export const getStatistik = async id_token => {
+  try {
+    const Token = {
+      id_token: id_token,
+    };
+    const Response = await axios.post(`${API_URL}getDataStatistik.php`, Token);
+    return Response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
