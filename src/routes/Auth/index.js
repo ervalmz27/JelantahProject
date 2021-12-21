@@ -7,6 +7,8 @@ import Login from '../../Pages/Auth/Login';
 import Register from '../../Pages/Auth/register';
 import RegisterMitraUsaha from '../../Pages/Auth/register/mitrausaha';
 import LupaPassword from '../../Pages/Auth/LupaPasword';
+import SendOTP from '../../Pages/Auth/LupaPasword/SendOTP';
+import UbahPassword from '../../Pages/Auth/LupaPasword/UbahPassword';
 const AuthNavigator = () => {
   const AuthStack = createStackNavigator();
 
@@ -17,6 +19,8 @@ const AuthNavigator = () => {
       <AuthStack.Screen name={'Registerscreen'} component={Register} />
       <AuthStack.Screen name={'MitraUsaha'} component={RegisterMitraUsaha} />
       <AuthStack.Screen name={'LupaPassword'} component={LupaPassword} />
+      <AuthStack.Screen name={'sendotp'} component={SendOTP} />
+      <AuthStack.Screen name={'ubahPassword'} component={UbahPassword} />
     </AuthStack.Navigator>
   );
 };

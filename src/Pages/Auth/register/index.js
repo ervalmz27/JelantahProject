@@ -18,6 +18,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const Register = ({navigation}) => {
   const [security, setSecurity] = useState(true);
+  const [rege, setRegex] = useState(false);
   const [form, setForm] = useState({
     user_fullname: '',
     user_email: '',
@@ -28,6 +29,19 @@ const Register = ({navigation}) => {
   console.log(form);
   const handleBack = () => {
     navigation.goBack();
+  };
+  const regex = event => {
+    console.log('===========', event);
+    const nameRegex = new RegExp(
+      /^(\()?(08)(\d{2,3})?\)?[ .-]?\d{2,4}[ .-]?\d{2,4}[ .-]?\d{2,4}/,
+    );
+    if (nameRegex.test(event)) {
+      setRegex(true);
+      return true;
+    } else {
+      setRegex(false);
+      return false;
+    }
   };
 
   const Register = async (
@@ -136,7 +150,9 @@ const Register = ({navigation}) => {
             value={form.user_nohp}
             onChangeText={no => {
               setForm({...form, user_nohp: no});
+              regex(no);
             }}
+            maxLength={14}
           />
         </View>
         {/* end Nomor Handphon */}
@@ -205,13 +221,24 @@ const Register = ({navigation}) => {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            Register(
-              form.user_fullname,
-              form.user_email,
-              form.user_nohp,
-              form.user_password,
-              form.code_ref,
-            );
+            if (
+              rege == true &&
+              form.user_fullname != '' &&
+              form.user_email != '' &&
+              form.user_nohp != '' &&
+              form.user_password != '' &&
+              form.code_ref != ''
+            ) {
+              Register(
+                form.user_fullname,
+                form.user_email,
+                form.user_nohp,
+                form.user_password,
+                form.code_ref,
+              );
+            } else {
+              alert('periksa lagi format yang anda masukan!');
+            }
           }}>
           <Text style={[styles.fontReguler, {color: '#fff'}]}>Daftar</Text>
         </TouchableOpacity>

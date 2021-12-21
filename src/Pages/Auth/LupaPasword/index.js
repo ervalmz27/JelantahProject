@@ -53,7 +53,12 @@ const LupaPassword = ({navigation}) => {
         </View>
       </ScrollView>
       <View>
-        <TouchableOpacity style={styles.button} onPress={() => Forgot(email)}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            Forgot(email);
+            navigation.navigate('sendotp');
+          }}>
           <Text style={styles.text}>Selanjutnya</Text>
         </TouchableOpacity>
       </View>

@@ -25,8 +25,7 @@ import Minyak from '../../assets/Images/home/Minyak.svg';
 import {styles} from './style';
 import Coin from '../../assets/Images/Icon/Coin.svg';
 import {getLoginUsers} from '../../Apis/actions/users';
-
-import SampleJson from '../../Apis/Json/sampleStatistik.json';
+import moment from 'moment';
 import Mitra_Personal_Usaha from './componen/Mitra_Personal_Usaha';
 import {Modal} from 'react-native-paper';
 import {
@@ -52,13 +51,12 @@ const Dashboar = ({navigation}) => {
   const [infoTerkini, setInfoTerkini] = useState([]);
   const [seputarinfo, setSeputarinfo] = useState([]);
   const [aktivitas, setAktivitas] = useState([]);
-  const [rp, setRp] = useState();
   const [statisti, setStatistik] = useState({
     labels: [],
   });
   useEffect(() => {
     const backAction = () => {
-      Alert.alert('Hold on!', 'Are you sure you want to go back?', [
+      Alert.alert('Apakah Anda Ingin Keluar Dari Aplikasi?', [
         {
           text: 'Cancel',
           onPress: () => null,
@@ -161,7 +159,12 @@ const Dashboar = ({navigation}) => {
 
   return (
     <>
-      <StatusBar animated={true} backgroundColor="#51C091" />
+      <StatusBar
+        animated={true}
+        backgroundColor="#51C091"
+        translucent
+        backgroundColor="transparent"
+      />
       {loading == true ? (
         <Modal
           visible={loading}
@@ -328,7 +331,10 @@ const Dashboar = ({navigation}) => {
               justifyContent: 'center',
               width: windowWidth * 1,
             }}>
-            <Swiper showsButtons={false} showsPagination={false}>
+            <Swiper
+              autoplay={true}
+              showsButtons={false}
+              showsPagination={false}>
               {/* <ScrollView horizontal={true}> */}
               {infoTerkini.map((i, idx) => {
                 return (
@@ -460,7 +466,7 @@ const Dashboar = ({navigation}) => {
                     marginLeft: 5,
                   }}>
                   <Text style={styles.fontContent}>{item.activity}</Text>
-                  <Text>{item.datetime}</Text>
+                  <Text>{moment(item.datetime).format('HH:mm')}</Text>
                 </View>
                 <View>
                   <Text style={[styles.fontContent, {color: '#6FCF97'}]}>

@@ -7,6 +7,7 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
+  Alert,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -159,7 +160,11 @@ const Login = ({navigation}) => {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            postLogin(form.user_id, form.user_password);
+            if (form.user_id != '' && form.user_password != '') {
+              postLogin(form.user_id, form.user_password);
+            } else {
+              Alert.alert('Data Belum Diisi!');
+            }
           }}>
           <Text style={[styles.fontReguler, {color: '#fff'}]}>Masuk</Text>
         </TouchableOpacity>
