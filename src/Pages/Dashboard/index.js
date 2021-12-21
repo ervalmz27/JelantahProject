@@ -165,389 +165,394 @@ const Dashboar = ({navigation}) => {
         translucent
         backgroundColor="transparent"
       />
-      {loading == true ? (
+      {/* {loading == true ? (
         <Modal
           visible={loading}
           contentContainerStyle={{
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
+            backgroundColor: '#51C091',
           }}>
           <ActivityIndicator size="large" color="#00ff00" />
         </Modal>
-      ) : (
-        <ScrollView>
-          <ImageBackground
-            source={require('../../assets/Images/bghomge.jpg')}
-            style={styles.background}>
-            <View style={styles.rowContent}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  flex: 1,
-                }}>
-                <Image
-                  source={require('../../assets/Images/home/profile.jpg')}
-                  style={styles.img}
-                />
-                <View>
-                  {profile.map((i, idx) => {
-                    return (
-                      <View key={idx} style={{marginLeft: 5}}>
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontFamily: 'Poppins-SemiBold',
-                            fontSize: 14,
-                            fontWeight: '600',
-                          }}>
-                          {i.user_fnama}
-                        </Text>
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontFamily: 'Poppins-Reguler',
-                            fontSize: 12,
-                            fontWeight: '600',
-                          }}>
-                          {i.user_level_nama}
-                        </Text>
-                      </View>
-                    );
-                  })}
-                </View>
-              </View>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('notification');
-                }}>
-                <View style={styles.notifit}>
-                  <Text
-                    style={{fontSize: 10, color: '#fff', fontWeight: '700'}}>
-                    {notif}
-                  </Text>
-                </View>
-
-                <View style={{zIndex: -1}}>
-                  <Icon name="bell" size={24} color="#fff" solid />
-                </View>
-              </TouchableOpacity>
-            </View>
-          </ImageBackground>
-          <View style={[styles.card, styles.content]}>
+      ) : ( */}
+      <ScrollView>
+        <ImageBackground
+          source={require('../../assets/Images/bghomge.jpg')}
+          style={styles.background}>
+          <View style={styles.rowContent}>
             <View
               style={{
                 flexDirection: 'row',
+                flex: 1,
               }}>
-              <Dompet height={30} width={30} />
-              <View style={{flexDirection: 'column', marginLeft: 10}}>
-                <Text style={styles.textJersey}>Saldo Dompet</Text>
-                <Text style={[styles.textJersey, {color: '#000'}]}>
-                  {rupiah}
-                </Text>
+              <Image
+                source={require('../../assets/Images/home/profile.jpg')}
+                style={styles.img}
+              />
+              <View>
+                {profile.map((i, idx) => {
+                  return (
+                    <View key={idx} style={{marginLeft: 5}}>
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontFamily: 'Poppins-SemiBold',
+                          fontSize: 14,
+                          fontWeight: '600',
+                        }}>
+                        {i.user_fnama}
+                      </Text>
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontFamily: 'Poppins-Reguler',
+                          fontSize: 12,
+                          fontWeight: '600',
+                        }}>
+                        {i.user_level_nama}
+                      </Text>
+                    </View>
+                  );
+                })}
               </View>
             </View>
-            <View style={styles.poin}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('notification');
+              }}>
+              <View style={styles.notifit}>
+                <Text style={{fontSize: 10, color: '#fff', fontWeight: '700'}}>
+                  {notif}
+                </Text>
+              </View>
+
+              <View style={{zIndex: -1}}>
+                <Icon name="bell" size={24} color="#fff" solid />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
+        <View style={[styles.card, styles.content]}>
+          <View
+            style={{
+              flexDirection: 'row',
+            }}>
+            <Dompet height={30} width={30} />
+            <View style={{flexDirection: 'column', marginLeft: 10}}>
+              <Text style={styles.textJersey}>Saldo Dompet</Text>
+              <Text style={[styles.textJersey, {color: '#000'}]}>{rupiah}</Text>
+            </View>
+          </View>
+          <View style={styles.poin}>
+            <View
+              style={{
+                borderRadius: 100,
+                width: 40,
+                height: 40,
+                borderWidth: 3,
+                borderColor: '#51C091',
+                padding: 3,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Bold',
+                  fontSize: 16,
+                  color: '#51C091',
+                }}>
+                JP
+              </Text>
+            </View>
+            <View style={{flexDirection: 'column', marginLeft: 10}}>
+              <Text style={styles.textJersey}>Jelanta Points</Text>
+              <Text style={[styles.textJersey, {color: '#000'}]}>
+                {point} Poin
+              </Text>
+            </View>
+          </View>
+        </View>
+        {mintra == 'Mitra RT' ||
+        mintra == 'Mitra Budaya' ||
+        mintra == 'Mitra RW' ||
+        mintra == 'Mitra Kelurahan' ||
+        mintra == 'Mitra Kecamatan' ||
+        mintra == 'MitraProvDKI' ||
+        mintra == 'MitraKotaJaksel' ||
+        mintra == 'Mitra Validator' ||
+        mintra == 'Mitra Transporter' ||
+        mintra == 'Mitra Gudang' ? (
+          <CardContent
+            onSetor={() => navigation.push('Setor')}
+            onJadwal={() => {
+              navigation.navigate('TerimaJadwal');
+            }}
+            cekJadwal={() => navigation.navigate('CekJadwal')}
+          />
+        ) : (
+          <Mitra_Personal_Usaha onSetor={() => navigation.push('Setor')} />
+        )}
+
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: 20,
+            marginTop: 10,
+          }}>
+          <Text
+            style={[
+              styles.fontContent,
+              {color: '#000', fontFamily: 'Poppins-Bold'},
+            ]}>
+            Info Terkini
+          </Text>
+          <TouchableOpacity
+            style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{color: '#51C091B2'}}>Info Lainnya</Text>
+            <Icon
+              name="chevron-right"
+              color="#51C091B2"
+              style={{marginLeft: 5}}
+            />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            marginTop: 20,
+            height: 150,
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: windowWidth * 1,
+          }}>
+          <Swiper autoplay={true} showsButtons={false} showsPagination={false}>
+            {/* <ScrollView horizontal={true}> */}
+            {infoTerkini.map((i, idx) => {
+              return (
+                <View>
+                  <Image
+                    style={styles.tinyLogo}
+                    resizeMode="contain"
+                    source={{
+                      uri: IMAGE_URL + i.banner_url,
+                    }}
+                  />
+                  {/* <Text>{i.banner_url}</Text> */}
+                </View>
+              );
+            })}
+            {/* </ScrollView> */}
+          </Swiper>
+        </View>
+        <View style={{marginHorizontal: 20}}>
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 10,
+            }}>
+            <Text
+              style={[
+                styles.fontContent,
+                {color: '#000', fontFamily: 'Poppins-Bold'},
+              ]}>
+              Statistik Setoran
+            </Text>
+            <TouchableOpacity
+              style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={{color: '#51C091B2'}}>Detail</Text>
+              <Icon
+                name="chevron-right"
+                color="#51C091B2"
+                style={{marginLeft: 5}}
+              />
+            </TouchableOpacity>
+          </View>
+          {datasers.length > 0 ? (
+            <LineChart
+              data={{
+                labels: statisti.labels,
+                datasets: datasers,
+              }}
+              width={windowWidth * 0.9} // from react-native
+              height={windowHeight * 0.3}
+              yAxisInterval={1}
+              chartConfig={{
+                backgroundColor: '#51C091',
+                backgroundGradientFrom: '#51C091',
+                backgroundGradientTo: '#51C091',
+                decimalPlaces: 2, // optional, defaults to 2dp
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                style: {
+                  borderRadius: 16,
+                },
+                propsForDots: {
+                  r: '6',
+                  strokeWidth: '2',
+                  stroke: '#ffa726',
+                },
+              }}
+              bezier
+              style={{
+                marginVertical: 8,
+                borderRadius: 16,
+              }}
+            />
+          ) : null}
+        </View>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: 20,
+            marginTop: 10,
+          }}>
+          <Text
+            style={[
+              styles.fontContent,
+              {color: '#000', fontFamily: 'Poppins-Bold'},
+            ]}>
+            Aktivitas Terakhir
+          </Text>
+          <TouchableOpacity
+            style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{color: '#51C091B2'}}>Semua</Text>
+            <Icon
+              name="chevron-right"
+              color="#51C091B2"
+              style={{marginLeft: 5}}
+            />
+          </TouchableOpacity>
+        </View>
+        {/* ================Aktivitas Terakhir */}
+        {aktivitas.map((item, index) => {
+          return (
+            <View
+              style={{
+                padding: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-evenly',
+                width: '100%',
+              }}>
+              <View>
+                <View style={[styles.ball]}>
+                  <Image
+                    resizeMode="contain"
+                    source={{uri: IMAGE_URL + item.icon}}
+                    style={{width: 50, height: 50}}
+                  />
+                </View>
+              </View>
               <View
                 style={{
-                  borderRadius: 100,
-                  width: 40,
-                  height: 40,
-                  borderWidth: 3,
-                  borderColor: '#51C091',
-                  padding: 3,
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  flex: 1,
+                  flexDirection: 'column',
+                  marginLeft: 5,
                 }}>
                 <Text
                   style={{
-                    fontFamily: 'Poppins-Bold',
-                    fontSize: 16,
-                    color: '#51C091',
+                    fontFamily: 'Poppins-Regular',
+                    fontWeight: '600',
+                    fontSize: 12,
                   }}>
-                  JP
+                  {item.activity}
                 </Text>
-              </View>
-              <View style={{flexDirection: 'column', marginLeft: 10}}>
-                <Text style={styles.textJersey}>Jelanta Points</Text>
-                <Text style={[styles.textJersey, {color: '#000'}]}>
-                  {point} Poin
-                </Text>
-              </View>
-            </View>
-          </View>
-          {mintra == 'Mitra RT' ||
-          mintra == 'Mitra Budaya' ||
-          mintra == 'Mitra RW' ||
-          mintra == 'Mitra Kelurahan' ||
-          mintra == 'Mitra Kecamatan' ||
-          mintra == 'MitraProvDKI' ||
-          mintra == 'MitraKotaJaksel' ||
-          mintra == 'Mitra Validator' ||
-          mintra == 'Mitra Transporter' ||
-          mintra == 'Mitra Gudang' ? (
-            <CardContent
-              onSetor={() => navigation.push('Setor')}
-              onJadwal={() => {
-                navigation.navigate('TerimaJadwal');
-              }}
-              cekJadwal={() => navigation.navigate('CekJadwal')}
-            />
-          ) : (
-            <Mitra_Personal_Usaha onSetor={() => navigation.push('Setor')} />
-          )}
-
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginHorizontal: 20,
-              marginTop: 10,
-            }}>
-            <Text
-              style={[
-                styles.fontContent,
-                {color: '#000', fontFamily: 'Poppins-Bold'},
-              ]}>
-              Info Terkini
-            </Text>
-            <TouchableOpacity
-              style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text style={{color: '#51C091B2'}}>Info Lainnya</Text>
-              <Icon
-                name="chevron-right"
-                color="#51C091B2"
-                style={{marginLeft: 5}}
-              />
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              marginTop: 20,
-              height: 150,
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: windowWidth * 1,
-            }}>
-            <Swiper
-              autoplay={true}
-              showsButtons={false}
-              showsPagination={false}>
-              {/* <ScrollView horizontal={true}> */}
-              {infoTerkini.map((i, idx) => {
-                return (
-                  <View>
-                    <Image
-                      style={styles.tinyLogo}
-                      resizeMode="contain"
-                      source={{
-                        uri: IMAGE_URL + i.banner_url,
-                      }}
-                    />
-                    {/* <Text>{i.banner_url}</Text> */}
-                  </View>
-                );
-              })}
-              {/* </ScrollView> */}
-            </Swiper>
-          </View>
-          <View style={{marginHorizontal: 20}}>
-            <View
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginTop: 10,
-              }}>
-              <Text
-                style={[
-                  styles.fontContent,
-                  {color: '#000', fontFamily: 'Poppins-Bold'},
-                ]}>
-                Statistik Setoran
-              </Text>
-              <TouchableOpacity
-                style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={{color: '#51C091B2'}}>Detail</Text>
-                <Icon
-                  name="chevron-right"
-                  color="#51C091B2"
-                  style={{marginLeft: 5}}
-                />
-              </TouchableOpacity>
-            </View>
-            {datasers.length > 0 ? (
-              <LineChart
-                data={{
-                  labels: statisti.labels,
-                  datasets: datasers,
-                }}
-                width={windowWidth * 0.9} // from react-native
-                height={windowHeight * 0.3}
-                yAxisInterval={1}
-                chartConfig={{
-                  backgroundColor: '#51C091',
-                  backgroundGradientFrom: '#51C091',
-                  backgroundGradientTo: '#51C091',
-                  decimalPlaces: 2, // optional, defaults to 2dp
-                  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                  labelColor: (opacity = 1) =>
-                    `rgba(255, 255, 255, ${opacity})`,
-                  style: {
-                    borderRadius: 16,
-                  },
-                  propsForDots: {
-                    r: '6',
-                    strokeWidth: '2',
-                    stroke: '#ffa726',
-                  },
-                }}
-                bezier
-                style={{
-                  marginVertical: 8,
-                  borderRadius: 16,
-                }}
-              />
-            ) : null}
-          </View>
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginHorizontal: 20,
-              marginTop: 10,
-            }}>
-            <Text
-              style={[
-                styles.fontContent,
-                {color: '#000', fontFamily: 'Poppins-Bold'},
-              ]}>
-              Aktivitas Terakhir
-            </Text>
-            <TouchableOpacity
-              style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text style={{color: '#51C091B2'}}>Semua</Text>
-              <Icon
-                name="chevron-right"
-                color="#51C091B2"
-                style={{marginLeft: 5}}
-              />
-            </TouchableOpacity>
-          </View>
-          {/* ================Aktivitas Terakhir */}
-          {aktivitas.map((item, index) => {
-            return (
-              <View
-                style={{
-                  padding: 10,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-evenly',
-                  width: '100%',
-                }}>
-                <View>
-                  <View style={[styles.ball]}>
-                    <Image
-                      resizeMode="contain"
-                      source={{uri: IMAGE_URL + item.icon}}
-                      style={{width: 50, height: 50}}
-                    />
-                  </View>
-                </View>
-                <View
+                <Text
                   style={{
-                    flex: 1,
-                    flexDirection: 'column',
-                    marginLeft: 5,
+                    fontFamily: 'Poppins-Regular',
+                    fontWeight: '500',
+                    fontSize: 10,
                   }}>
-                  <Text style={styles.fontContent}>{item.activity}</Text>
-                  <Text>{moment(item.datetime).format('HH:mm')}</Text>
-                </View>
-                <View>
-                  <Text style={[styles.fontContent, {color: '#6FCF97'}]}>
-                    {item.nilai}
-                  </Text>
+                  {moment(item.datetime).format('HH:mm')}
+                </Text>
+              </View>
+              <View>
+                <Text style={[styles.fontContent, {color: '#6FCF97'}]}>
+                  {item.nilai}
+                </Text>
 
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Coin height={18} width={18} />
-                    <Text
-                      style={[
-                        styles.fontContent,
-                        {color: '#FFC727', marginLeft: 5},
-                      ]}>
-                      {item.poin} Poin
-                    </Text>
-                  </View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Coin height={18} width={18} />
+                  <Text
+                    style={[
+                      styles.fontContent,
+                      {color: '#FFC727', marginLeft: 5},
+                    ]}>
+                    {item.poin} Poin
+                  </Text>
                 </View>
               </View>
-            );
-          })}
+            </View>
+          );
+        })}
 
-          {/* end aktifitas */}
+        {/* end aktifitas */}
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: 20,
+            marginTop: 10,
+          }}>
+          <Text
+            style={[
+              styles.fontContent,
+              {color: '#000', fontFamily: 'Poppins-Bold'},
+            ]}>
+            Seputar Limbah
+          </Text>
+          <TouchableOpacity
+            style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{color: '#51C091B2'}}>Semua</Text>
+            <Icon
+              name="chevron-right"
+              color="#51C091B2"
+              style={{marginLeft: 5}}
+            />
+          </TouchableOpacity>
+          {/* Swipper */}
+        </View>
+
+        <ScrollView horizontal={true}>
           <View
             style={{
+              flexDirection: 'row',
               flex: 1,
               alignItems: 'center',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginHorizontal: 20,
-              marginTop: 10,
+              justifyContent: 'space-around',
             }}>
-            <Text
-              style={[
-                styles.fontContent,
-                {color: '#000', fontFamily: 'Poppins-Bold'},
-              ]}>
-              Seputar Limbah
-            </Text>
-            <TouchableOpacity
-              style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text style={{color: '#51C091B2'}}>Semua</Text>
-              <Icon
-                name="chevron-right"
-                color="#51C091B2"
-                style={{marginLeft: 5}}
-              />
-            </TouchableOpacity>
-            {/* Swipper */}
+            {seputarinfo.map((i, idx) => {
+              return (
+                <>
+                  <View style={{flexDirection: 'column', alignItems: 'center'}}>
+                    <TouchableOpacity style={{marginHorizontal: 15}} key={idx}>
+                      <Image
+                        resizeMode="contain"
+                        source={{uri: IMAGE_URL + i.thumbnail}}
+                        style={{width: 170, height: 100, borderRadius: 10}}
+                      />
+                    </TouchableOpacity>
+                    <Text style={styles.textLimbah}>{i.judul_seputar}</Text>
+                  </View>
+                </>
+              );
+            })}
           </View>
-
-          <ScrollView horizontal={true}>
-            <View
-              style={{
-                flexDirection: 'row',
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'space-around',
-              }}>
-              {seputarinfo.map((i, idx) => {
-                return (
-                  <>
-                    <View
-                      style={{flexDirection: 'column', alignItems: 'center'}}>
-                      <TouchableOpacity
-                        style={{marginHorizontal: 15}}
-                        key={idx}>
-                        <Image
-                          resizeMode="contain"
-                          source={{uri: IMAGE_URL + i.thumbnail}}
-                          style={{width: 170, height: 100, borderRadius: 10}}
-                        />
-                      </TouchableOpacity>
-                      <Text style={styles.textLimbah}>{i.judul_seputar}</Text>
-                    </View>
-                  </>
-                );
-              })}
-            </View>
-          </ScrollView>
         </ScrollView>
-      )}
+      </ScrollView>
+      {/* )} */}
     </>
   );
 };

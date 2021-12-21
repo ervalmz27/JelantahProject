@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, ImageBackground, Dimensions} from 'react-native';
+import {StyleSheet, ImageBackground, StatusBar, Dimensions} from 'react-native';
 import {SplashBackground} from '../../assets';
 import AuthNavigator from '../../routes/Auth';
 import HomeNavigator from '../../routes/Home';
@@ -19,9 +19,12 @@ const Splash = ({navigation}) => {
     }, 3000);
   }, [navigation]);
   return (
-    <ImageBackground
-      source={SplashBackground}
-      style={styles.background}></ImageBackground>
+    <>
+      <StatusBar animated={true} backgroundColor="#51C091" />
+      <ImageBackground
+        source={SplashBackground}
+        style={styles.background}></ImageBackground>
+    </>
   );
 };
 
