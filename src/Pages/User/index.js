@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -18,19 +18,21 @@ import Bantuan from '../../assets/Images/Icon/Bantuan.svg';
 import {useSelector} from 'react-redux';
 import Voucer from '../../assets/Images/Icon/Voucer.svg';
 import Rekening from '../../assets/Images/home/Rekening.svg';
+import {IMAGE_URL} from '../../config/env';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const User = ({navigation}) => {
   const Profil = useSelector(state => state.users.login);
   const dashboard = useSelector(state => state.users.dashboard);
-  console.log('data users', Profil, 'dashboard ------ >', dashboard);
+  console.log('data users', Profil);
   const Logout = () => {
     navigation.navigate('Auth');
     AsyncStorage.clear();
     AsyncStorage.removeItem('user_id');
     AsyncStorage.removeItem('user_password');
   };
+  useEffect(() => {}, []);
   // const numb = item.user_wallet;
   // const format = numb.toString().split('').reverse().join('');
   // const convert = format.match(/\d{1,3}/g);
@@ -43,19 +45,21 @@ const User = ({navigation}) => {
         <ImageBackground
           source={require('../../assets/Images/bghomge.jpg')}
           style={styles.background}>
-          <View style={styles.rowContent}>
-            <View
-              style={{
-                flexDirection: 'row',
-                flex: 1,
-              }}>
-              <Image
-                source={require('../../assets/Images/home/profile.jpg')}
-                style={styles.img}
-              />
-              <View>
-                {Profil.map((i, idx) => {
-                  return (
+          {Profil.map((i, idx) => {
+            return (
+              <View style={styles.rowContent}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    flex: 1,
+                  }}>
+                  <Image
+                    source={{
+                      uri: IMAGE_URL + i.user_urlpp,
+                    }}
+                    style={styles.img}
+                  />
+                  <View>
                     <View key={idx} style={{padding: 16}}>
                       <Text
                         style={{
@@ -76,11 +80,11 @@ const User = ({navigation}) => {
                         {i.user_level_nama}
                       </Text>
                     </View>
-                  );
-                })}
+                  </View>
+                </View>
               </View>
-            </View>
-          </View>
+            );
+          })}
         </ImageBackground>
 
         {Profil.map((item, idx) => {
@@ -207,7 +211,11 @@ const User = ({navigation}) => {
             <Icon name="chevron-right" />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.containerContent]}>
+        <TouchableOpacity
+          style={[styles.containerContent]}
+          onPress={() => {
+            navigation.navigate('dashboarRekening');
+          }}>
           <View style={{flexDirection: 'row'}}>
             {/* <Icon name="at" size={20} color="#C7C7C7" solid /> */}
             <Rekening height={20} width={20} />
@@ -217,7 +225,11 @@ const User = ({navigation}) => {
             <Icon name="chevron-right" />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.containerContent]}>
+        <TouchableOpacity
+          style={[styles.containerContent]}
+          onPress={() => {
+            navigation.navigate('DashboarEwalet');
+          }}>
           <View style={{flexDirection: 'row'}}>
             {/* <Icon name="at" size={20} color="#C7C7C7" solid /> */}
             <Dompet height={20} width={20} />
@@ -241,7 +253,11 @@ const User = ({navigation}) => {
             <Icon name="chevron-right" />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.containerContent]}>
+        <TouchableOpacity
+          style={[styles.containerContent]}
+          onPress={() => {
+            navigation.navigate('ChangePassword');
+          }}>
           <View style={{flexDirection: 'row'}}>
             <Lupas height={20} width={20} />
 

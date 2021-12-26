@@ -457,8 +457,8 @@ const SetorLimbah = ({navigation}) => {
             onChangeText={event => {
               setTimbangan(event);
 
-              setDisable(false);
               if (Number(event) >= 500) {
+                setDisable(false);
                 console.log(typeof event);
                 Perkiraan(String(event), level);
               }

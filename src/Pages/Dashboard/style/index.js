@@ -173,9 +173,10 @@ export const styles = StyleSheet.create({
 
   tinyLogo: {
     width: windowWidth * 0.9,
-    height: 100,
+    height: 150,
     // width: 100,
     marginHorizontal: 20,
+    borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

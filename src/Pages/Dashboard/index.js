@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,6 +11,7 @@ import {
   Animated,
   BackHandler,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import Dompet from '../../assets/Images/Icon/Dompet.svg';
@@ -33,8 +34,14 @@ import {
   getDataAktifitasTerakhir,
 } from '../../Apis/api/dashboard';
 import {API_URL, IMAGE_URL} from '../../config/env';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useFocusEffect} from '@react-navigation/core';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+
+const wait = timeout => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+};
 const Dashboar = ({navigation}) => {
   const login = useSelector(state => state.users.login);
 
@@ -49,20 +56,23 @@ const Dashboar = ({navigation}) => {
   const [infoTerkini, setInfoTerkini] = useState([]);
   const [seputarinfo, setSeputarinfo] = useState([]);
   const [aktivitas, setAktivitas] = useState([]);
+  const [imgUrl, setImgUrl] = useState('');
   const [statisti, setStatistik] = useState({
     labels: [],
   });
-  useEffect(() => {
-    setLoading(true);
-    dataStatis();
-    dataPost();
-    InfoTerkini();
-    SeputarLimbah();
-    aktifitas();
-  }, []);
 
-  const dataPost = async () => {
-    setLoading(true);
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      dataStatis();
+      dataPost();
+      InfoTerkini();
+      SeputarLimbah();
+      aktifitas();
+    }, []),
+  );
+
+  const dataPost = useCallback(async () => {
     try {
       const user = await AsyncStorage.getItem('user_id');
       const Password = await AsyncStorage.getItem('user_password');
@@ -74,14 +84,19 @@ const Dashboar = ({navigation}) => {
         fakePost(dataLogin);
       });
     } catch (error) {
-      setLoading(false);
       console.log(error);
     }
-  };
+  });
+  //   useCallback(() => {
+  //     // do something!
+  // });
 
   const fakePost = Login => {
     Login.forEach(async el => {
       let mitra = el.user_level_nama;
+      let img = el.user_urlpp;
+      setImgUrl(img);
+      console.log('Hallo', img);
       setMitra(mitra);
       setPoint(el.user_poin);
       Datainfo(el.id_token).then(res => {
@@ -150,6 +165,15 @@ const Dashboar = ({navigation}) => {
     const data = Response.data.aktifitas;
     setAktivitas(data);
   };
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    dataPost();
+    wait(2000).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
 
   return (
     <>
@@ -159,7 +183,12 @@ const Dashboar = ({navigation}) => {
         translucent
         backgroundColor="transparent"
       />
-      <ScrollView>
+
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        style={{backgroundColor: '#fff'}}>
         <ImageBackground
           source={require('../../assets/Images/bghomge.jpg')}
           style={styles.background}>
@@ -169,10 +198,7 @@ const Dashboar = ({navigation}) => {
                 flexDirection: 'row',
                 flex: 1,
               }}>
-              <Image
-                source={require('../../assets/Images/home/profile.jpg')}
-                style={styles.img}
-              />
+              <Image source={{uri: IMAGE_URL + imgUrl}} style={styles.img} />
               <View>
                 {login.map((i, idx) => {
                   return (
@@ -297,59 +323,6 @@ const Dashboar = ({navigation}) => {
           <Mitra_Personal_Usaha onSetor={() => navigation.push('Setor')} />
         )}
 
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: 20,
-            marginTop: 10,
-          }}>
-          <Text
-            style={[
-              styles.fontContent,
-              {color: '#000', fontFamily: 'Poppins-Bold'},
-            ]}>
-            Info Terkini
-          </Text>
-          <TouchableOpacity
-            style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={{color: '#51C091B2'}}>Info Lainnya</Text>
-            <Icon
-              name="chevron-right"
-              color="#51C091B2"
-              style={{marginLeft: 5}}
-            />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            marginTop: 20,
-            height: 150,
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: windowWidth * 1,
-          }}>
-          <Swiper autoplay={true} showsButtons={false} showsPagination={false}>
-            {/* <ScrollView horizontal={true}> */}
-            {infoTerkini.map((i, idx) => {
-              return (
-                <View>
-                  <Image
-                    style={styles.tinyLogo}
-                    resizeMode="contain"
-                    source={{
-                      uri: IMAGE_URL + i.banner_url,
-                    }}
-                  />
-                  {/* <Text>{i.banner_url}</Text> */}
-                </View>
-              );
-            })}
-            {/* </ScrollView> */}
-          </Swiper>
-        </View>
         <View style={{marginHorizontal: 20}}>
           <View
             style={{
@@ -408,6 +381,67 @@ const Dashboar = ({navigation}) => {
               }}
             />
           ) : null}
+        </View>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: 20,
+            marginTop: 10,
+          }}>
+          <Text
+            style={[
+              styles.fontContent,
+              {color: '#000', fontFamily: 'Poppins-Bold'},
+            ]}>
+            Info Terkini
+          </Text>
+          <TouchableOpacity
+            style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{color: '#51C091B2'}}>Info Lainnya</Text>
+            <Icon
+              name="chevron-right"
+              color="#51C091B2"
+              style={{marginLeft: 5}}
+            />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            marginTop: 20,
+            height: 150,
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: windowWidth * 1,
+          }}>
+          <Swiper autoplay={true} showsButtons={false} showsPagination={false}>
+            {/* <ScrollView horizontal={true}> */}
+            {infoTerkini.map((i, idx) => {
+              return (
+                <View
+                  style={{
+                    shadowColor: '#000',
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+
+                    elevation: 5,
+                  }}>
+                  <Image
+                    style={styles.tinyLogo}
+                    source={{
+                      uri: IMAGE_URL + i.banner_url,
+                    }}
+                  />
+                </View>
+              );
+            })}
+          </Swiper>
         </View>
         <View
           style={{

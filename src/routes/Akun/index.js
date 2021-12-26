@@ -1,6 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import InfoPribadi from '../../Pages/User/informasiPribadi';
+import ChangePassword from '../../Pages/User/ChangePassword';
 const AkunNavigator = () => {
   const Akun = createStackNavigator();
 

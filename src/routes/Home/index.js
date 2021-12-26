@@ -16,6 +16,9 @@ import Tugas from '../../Pages/Tugas';
 import Riwayat from '../../Pages/Riwayat';
 import AkunNavigator from '../Akun';
 import alamatMaps from '../../Pages/User/Alamat';
+import ChangeNavigator from '../Akun/ChangePassword';
+import EwaletNavigator from '../Akun/Ewalet';
+import RekeningNavigator from '../Akun/Rekening';
 
 const HomeNavigator = ({navigation}) => {
   const HomeStack = createStackNavigator();
@@ -208,13 +211,20 @@ const HomeNavigator = ({navigation}) => {
           </Tab.Navigator>
         )}
       </HomeStack.Screen>
+      {/* DashBoardd */}
       <Tab.Screen name={'Setor'} component={SetorLimbahNavigator} />
       <Tab.Screen name={'notification'} component={NotifikasiNavigator} />
       <Tab.Screen name={'codeQr'} component={ScannerNavigator} />
       <Tab.Screen name={'TerimaJadwal'} component={TerimaJadwalNavigator} />
       <Tab.Screen name={'CekJadwal'} component={JadwalSetorNavigator} />
+      {/*  */}
+      {/* Start NAvigatorrr Akun /Saya */}
       <Tab.Screen name={'Akun'} component={AkunNavigator} />
       <Tab.Screen name={'Alamatmaps'} component={alamatMaps} />
+      <Tab.Screen name={'ChangePassword'} component={ChangeNavigator} />
+      <Tab.Screen name={'DashboarEwalet'} component={EwaletNavigator} />
+      <Tab.Screen name={'dashboarRekening'} component={RekeningNavigator} />
+      {/* End NAvigatorrr Akun /Saya */}
     </HomeStack.Navigator>
   );
 };

@@ -42,3 +42,38 @@ export const OpenPesanDetail = async (id_token, id_pesan) => {
     console.log(error);
   }
 };
+//  get DAta Details
+export const getDataInfoTerkiniDetail = async id_info => {
+  try {
+    const data = {id_info: id_info};
+    const Response = await axios.post(
+      `${API_URL}getDataInfoTerkiniDetail.php`,
+      data,
+    );
+    return Response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const getDataTugasDetail = async id_token => {
+  try {
+    const data = {id_token: id_token};
+    const Response = await axios.post(`${API_URL}getDataTugasDetail.php`, data);
+    return Response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+// getDataSeputarDetail.php
+export const getDataSeputarDetail = async id_seputar => {
+  try {
+    const data = {id_seputar: id_seputar};
+    const Response = await axios.post(
+      `${API_URL}getDataSeputarDetail.php`,
+      data,
+    );
+    return Response;
+  } catch (error) {
+    console.log(error);
+  }
+};

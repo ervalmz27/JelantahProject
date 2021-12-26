@@ -23,7 +23,7 @@ const Login = ({navigation}) => {
   const jsonValue = AsyncStorage.getItem('token');
 
   const globalState = useSelector(state => state);
-  console.log('sssss', globalState);
+  // console.log('sssss', globalState);
   const dispatch = useDispatch();
   const [security, setSecurity] = useState(true);
   const [form, setForm] = useState({
