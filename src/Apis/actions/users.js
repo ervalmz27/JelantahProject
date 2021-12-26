@@ -3,6 +3,7 @@ export const Types = {
   GET_USERS_SUCCESS: 'GET_USERS_SUCCESS',
   LOGIN_SUCCESS: 'GET_TOKEN',
   DASHBOARD_SUCCESS: 'GET_MITRA',
+  QRCODE_SUCCESS: 'GET_QRCODE',
 };
 
 export const getUsersRequest = () => ({
@@ -19,5 +20,10 @@ export const getLoginUsers = items => ({
 });
 export const getDashboarUsers = items => ({
   type: Types.DASHBOARD_SUCCESS,
+  payload: items,
+});
+
+export const getQrCode = items => ({
+  type: Types.QRCODE_SUCCESS,
   payload: items,
 });

@@ -14,11 +14,13 @@ import Cupon from '../../../../assets/Images/cupon.svg';
 import axios from 'axios';
 import Mitra from '../../../../assets/Images/Icon/Mitra.svg';
 import {API_URL} from '../../../../config/env';
-
+import {Modal, ModalContent} from 'react-native-modals';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const RegisterMitraUsaha = ({navigation}) => {
   const [security, setSecurity] = useState(true);
+  const [contentModal, setContentModal] = useState('');
+  const [visible, setVisible] = useState(false);
   const [form, setForm] = useState({
     usaha_name: '',
     user_fullname: '',
@@ -52,30 +54,64 @@ const RegisterMitraUsaha = ({navigation}) => {
       const Response = await axios
         .post(`${API_URL}act_reguserAndroidUsaha.php`, data)
         .then(res => {
-          console.log('response : ', res.data);
-          if (
-            'Pendaftaran gagal, No HP 022123124 sudah terdaftar!' &&
-            code_ref != 'Pendaftaran gagal, Code Refferal tidak ditemukan !' &&
-            form.user_email != '' &&
-            form.user_fullname != '' &&
-            form.user_nohp != '' &&
-            form.user_password != '' &&
-            form.usaha_name != ''
-          ) {
-            navigation.navigate('Home');
-          }
-          setForm({
-            ...form,
-            usaha_name: '',
-            user_email: '',
-            user_fullname: '',
-            user_nohp: '',
-            user_password: '',
-            code_ref: '',
+          console.log('Response ,', res.data.data);
+          const condisi = res.data.data;
+          condisi.forEach(el => {
+            if (
+              form.usaha_name != '' &&
+              form.user_email != '' &&
+              form.user_fullname != '' &&
+              form.user_nohp != '' &&
+              form.user_password != '' &&
+              el.status != 'failed'
+            ) {
+              setContentModal(el.msg);
+              setVisible(true);
+              navigation.navigate('Loginscreen');
+            } else {
+              // alert(el.msg);
+              setContentModal(el.msg);
+              setVisible(true);
+            }
           });
+          // setForm({
+          //   ...form,
+          //   usaha_name: '',
+          //   user_email: '',
+          //   user_fullname: '',
+          //   user_nohp: '',
+          //   user_password: '',
+          //   code_ref: '',
+          // });
         });
+      return Response;
     } catch (error) {
       console.log('Message Error : ', error);
+    }
+  };
+  const validateEmail = text => {
+    console.log(text);
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    if (reg.test(text) === false) {
+      console.log('Email is Not Correct');
+      setForm({...form, user_email: text});
+      return false;
+    } else {
+      setForm({...form, user_email: text});
+      console.log('Email is Correct');
+    }
+  };
+  const regex = event => {
+    console.log('===========', event);
+    const nameRegex =
+      /^(\+62 ((\d{3}([ -]\d{3,})([- ]\d{4,})?)|(\d+)))|(\(\d+\) \d+)|\d{3}( \d+)+|(\d+[ -]\d+)|\d+/;
+
+    if (nameRegex.test(event)) {
+      setForm({...form, user_nohp: event});
+      return true;
+    } else {
+      setForm({...form, user_nohp: event});
+      return false;
     }
   };
   return (
@@ -132,7 +168,7 @@ const RegisterMitraUsaha = ({navigation}) => {
             style={styles.input}
             value={form.user_email}
             onChangeText={mail => {
-              setForm({...form, user_email: mail});
+              validateEmail(mail);
             }}
           />
         </View>
@@ -148,10 +184,10 @@ const RegisterMitraUsaha = ({navigation}) => {
           <TextInput
             placeholder="Nomor HP (Whatsapp)"
             style={styles.input}
-            keyboardType="numeric"
+            keyboardType="phone-pad"
             value={form.user_nohp}
             onChangeText={no => {
-              setForm({...form, user_nohp: no});
+              regex(no);
             }}
           />
         </View>
@@ -221,13 +257,23 @@ const RegisterMitraUsaha = ({navigation}) => {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            Register(
-              form.user_fullname,
-              form.user_email,
-              form.user_nohp,
-              form.user_password,
-              form.code_ref,
-            );
+            if (
+              form.user_fullname != '' &&
+              form.user_email != '' &&
+              form.user_nohp != '' &&
+              form.user_password != ''
+            ) {
+              Register(
+                form.usaha_name.toLowerCase(),
+                form.user_fullname.toLowerCase(),
+                form.user_email.toLowerCase(),
+                form.user_nohp,
+                form.user_password,
+                form.code_ref,
+              );
+            } else {
+              alert('periksa lagi format yang anda masukan!');
+            }
           }}>
           <Text style={[styles.fontReguler, {color: '#fff'}]}>Daftar</Text>
         </TouchableOpacity>
@@ -264,6 +310,17 @@ const RegisterMitraUsaha = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <Modal
+        visible={visible}
+        onTouchOutside={() => {
+          setVisible(false);
+        }}>
+        <ModalContent>
+          <View>
+            <Text>{contentModal}</Text>
+          </View>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
@@ -297,6 +354,7 @@ const styles = StyleSheet.create({
     color: '#010101',
     padding: 10,
     marginLeft: 5,
+    width: windowWidth * 0.7,
   },
   container: {
     marginHorizontal: 20,

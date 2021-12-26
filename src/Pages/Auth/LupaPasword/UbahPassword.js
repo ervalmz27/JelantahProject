@@ -7,28 +7,52 @@ import {
   TouchableOpacity,
   TextInput,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import {Modal, ModalContent} from 'react-native-modals';
+import {change_password} from '../../../Apis/api/Auth';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const UbahPassword = ({navigation}) => {
+const UbahPassword = ({navigation, route}) => {
+  const {token} = route.params;
+  console.log(token);
   const [form, setForm] = useState({
-    user_id: '',
     user_password: '',
+    konfir_password: '',
   });
   const [security, setSecurity] = useState(true);
+  const [secur, setSecur] = useState(true);
+  const [visible, setVisible] = useState(false);
+  const [content, setContent] = useState('');
+  const [loading, setLoading] = useState(false);
+  const ChngePassword = async (code, password) => {
+    setLoading(true);
+    const Response = await change_password(code, password);
+    console.log('Response -> ', Response.data.data);
+    const valid = Response.data.data;
+    valid.forEach(el => {
+      setContent(el.msg);
+      navigation.navigate('Loginscreen');
+      setVisible(true);
+      setLoading(false);
+    });
+  };
   return (
     <>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon
-            name="chevron-left"
-            size={15}
-            color="#fff"
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-        <Text style={styles.textHeader}>Buat Password</Text>
+        <View
+          style={{marginTop: 25, flexDirection: 'row', alignItems: 'center'}}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon
+              name="chevron-left"
+              size={15}
+              color="#fff"
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+          <Text style={styles.textHeader}>Buat Password</Text>
+        </View>
       </View>
       <ScrollView>
         <View style={styles.container}>
@@ -95,17 +119,17 @@ const UbahPassword = ({navigation}) => {
             <TextInput
               placeholder="Konfirmasi Password"
               style={styles.input}
-              value={form.user_password}
-              secureTextEntry={security}
-              onChangeText={p => {
-                setForm({...form, user_password: p});
+              value={form.konfir_password}
+              secureTextEntry={secur}
+              onChangeText={corn => {
+                setForm({...form, konfir_password: corn});
               }}
             />
           </View>
-          {security == true ? (
+          {secur == true ? (
             <TouchableOpacity
               onPress={() => {
-                setSecurity(!security);
+                setSecur(!secur);
               }}>
               <Icon
                 name="eye-slash"
@@ -117,7 +141,7 @@ const UbahPassword = ({navigation}) => {
           ) : (
             <TouchableOpacity
               onPress={() => {
-                setSecurity(!security);
+                setSecur(!secur);
               }}>
               <Icon
                 name="eye"
@@ -133,11 +157,30 @@ const UbahPassword = ({navigation}) => {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            navigation.navigate('ubahPassword');
+            if (form.user_password == form.konfir_password) {
+              ChngePassword(token, form.user_password);
+            } else {
+              alert('password anda tidak valid!! mohon Periksa kembali!');
+            }
           }}>
-          <Text style={styles.text}>Ubah Password</Text>
+          {loading == true ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.text}>Ubah Password</Text>
+          )}
         </TouchableOpacity>
       </View>
+      <Modal
+        visible={visible}
+        onTouchOutside={() => {
+          setVisible(false);
+        }}>
+        <ModalContent>
+          <View>
+            <Text>{content}</Text>
+          </View>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
@@ -150,6 +193,8 @@ const styles = StyleSheet.create({
     padding: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    height: windowHeight * 0.15,
+    justifyContent: 'flex-start',
   },
   icon: {
     marginRight: 15,

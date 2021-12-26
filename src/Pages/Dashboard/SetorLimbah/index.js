@@ -23,12 +23,18 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {getDataRTNearby} from '../../../Apis/api';
-import {useSelector} from 'react-redux';
-import {getLimbah} from '../../../Apis/api/SetorLimbah';
+import {useSelector, useDispatch} from 'react-redux';
+import {
+  getLimbah,
+  getPerkiraan,
+  JadwalSetoran,
+} from '../../../Apis/api/SetorLimbah';
+import {getQrCode} from '../../../Apis/actions/users';
 
 const SetorLimbah = ({navigation}) => {
   const token = useSelector(state => state.users.login);
-  // console.log(token);
+  console.log('Hallo', token);
+  const dispatch = useDispatch();
   const [dropdown, setDropdown] = useState(true);
   const [placeholder, setPlaceholder] = useState({
     Rukun: 'Pilih Mitra Terdekat',
@@ -60,6 +66,14 @@ const SetorLimbah = ({navigation}) => {
   const [alamat, setAlamat] = useState([]);
   const [limbah, setLimbah] = useState(true);
   const [dataLimbah, setDataLimbah] = useState([]);
+  const [level, setLevel] = useState('');
+  const [tokenMitra, setTokenMitra] = useState('');
+  const [idLimbah, setIDLimbah] = useState('');
+  const [sendTanggal, setSendTanggal] = useState('');
+  const [perkiraanPoin, setPerkiraanPoin] = useState({
+    harga: null,
+    poin: null,
+  });
   //  =========================== End State ==========================
 
   useEffect(() => {
@@ -77,6 +91,10 @@ const SetorLimbah = ({navigation}) => {
       fetchDataRTNearby();
     });
     Limbah();
+
+    token.forEach(al => {
+      setLevel(al.user_level);
+    });
   }, []);
 
   const fetchDataRTNearby = async (Token, latt, long) => {
@@ -84,6 +102,9 @@ const SetorLimbah = ({navigation}) => {
 
     const nestedRt = Response.data.nearby_rt;
     setAlamat(nestedRt);
+    nestedRt.forEach((it, idx) => {
+      console.log(it);
+    });
   };
 
   // on Chahnge Tanggal
@@ -105,6 +126,7 @@ const SetorLimbah = ({navigation}) => {
       ...placeholder,
       tanggal: tgl + '/' + bln + '/' + currentDate.getFullYear(),
     });
+    setSendTanggal(currentDate.getFullYear() + '/' + bln + '/' + tgl);
   };
   const onChangetime = (event, selectedDate) => {
     console.log('event', event);
@@ -132,6 +154,55 @@ const SetorLimbah = ({navigation}) => {
     setDataLimbah(Response.data.limbah);
   };
 
+  const Perkiraan = async (volume, lvl) => {
+    try {
+      const Response = await getPerkiraan(volume, lvl);
+
+      let coin = Response.data.data;
+      coin.forEach(all => {
+        console.log(all.harga, all.poin);
+        setPerkiraanPoin({
+          ...perkiraanPoin,
+          harga: all.harga,
+          poin: all.poin,
+        });
+      });
+    } catch (error) {
+      console.log('Message', error);
+    }
+  };
+  console.log(
+    '---',
+    dist,
+    tokenMitra,
+    idLimbah,
+    placeholder.jam,
+    sendTanggal,
+    timbangan,
+  );
+  const ajukanJadwal = async (
+    id_token_from,
+    id_token_to,
+    limbah_kat_id,
+    tanggal,
+    jam,
+    volume,
+  ) => {
+    try {
+      const Response = await JadwalSetoran(
+        id_token_from,
+        id_token_to,
+        limbah_kat_id,
+        tanggal,
+        jam,
+        volume,
+      );
+      console.log('Response', Response.data.data);
+      dispatch(getQrCode(Response.data.data));
+    } catch (error) {
+      console.log('Message', error);
+    }
+  };
   return (
     <>
       <Header
@@ -225,6 +296,7 @@ const SetorLimbah = ({navigation}) => {
                         '/' +
                         i.nama_prov,
                     });
+                    setTokenMitra(i.id_token_rt);
                     setDropdown(!dropdown);
                   }}
                   key={idx}
@@ -293,8 +365,9 @@ const SetorLimbah = ({navigation}) => {
                 <TouchableOpacity
                   key={idx}
                   onPress={() => {
-                    setPlaceholder({...placeholder, limbah: 'Minyak Jelantah'});
+                    setPlaceholder({...placeholder, limbah: i.limbah_nama});
                     setLimbah(!limbah);
+                    setIDLimbah(i.limbah_kategori_id);
                   }}
                   style={[styles.container, {padding: 10}]}>
                   <Text style={styles.textInput}>{i.limbah_nama}</Text>
@@ -312,7 +385,11 @@ const SetorLimbah = ({navigation}) => {
             alignItems: 'center',
           }}>
           {/* Tanggal */}
-          <View style={[styles.container, {width: 150, marginTop: 10}]}>
+          <TouchableOpacity
+            onPress={() => {
+              showDatepicker();
+            }}
+            style={[styles.container, {width: 150, marginTop: 10}]}>
             <View>
               <Tanggal height={20} width={20} />
             </View>
@@ -327,11 +404,7 @@ const SetorLimbah = ({navigation}) => {
                 },
               ]}>
               <Text style={styles.textInput}>{placeholder.tanggal}</Text>
-              <TouchableOpacity
-                style={{marginLeft: 15}}
-                onPress={() => {
-                  showDatepicker();
-                }}>
+              <TouchableOpacity style={{marginLeft: 15}}>
                 <Icon
                   name="play"
                   color="#51C09180"
@@ -339,9 +412,13 @@ const SetorLimbah = ({navigation}) => {
                 />
               </TouchableOpacity>
             </View>
-          </View>
+          </TouchableOpacity>
           {/* Jam berrrs */}
-          <View style={[styles.container, {width: 150, marginTop: 10}]}>
+          <TouchableOpacity
+            style={[styles.container, {width: 150, marginTop: 10}]}
+            onPress={() => {
+              setShowDate(true);
+            }}>
             <View>
               <Jam height={20} width={20} />
             </View>
@@ -356,11 +433,7 @@ const SetorLimbah = ({navigation}) => {
                 },
               ]}>
               <Text style={styles.textInput}>{placeholder.jam}</Text>
-              <TouchableOpacity
-                style={{position: 'absolute', right: 20}}
-                onPress={() => {
-                  setShowDate(true);
-                }}>
+              <TouchableOpacity style={{position: 'absolute', right: 20}}>
                 <Icon
                   name="play"
                   color="#51C09180"
@@ -368,7 +441,7 @@ const SetorLimbah = ({navigation}) => {
                 />
               </TouchableOpacity>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Timbangan */}
@@ -380,20 +453,26 @@ const SetorLimbah = ({navigation}) => {
             placeholder="Masukkan Berat Minyak"
             style={styles.input}
             value={timbangan}
+            keyboardType="number-pad"
             onChangeText={event => {
               setTimbangan(event);
+
               setDisable(false);
+              if (Number(event) >= 500) {
+                console.log(typeof event);
+                Perkiraan(String(event), level);
+              }
             }}
           />
-          <View style={{marginLeft: 50}}>
+          <View style={{marginLeft: windowWidth * 0.25}}>
             <Text
               style={{
                 fontSize: 14,
                 fontWeight: '500',
-                fontFamily: 'Poppins-Reguler',
+                fontFamily: 'Poppins-SemiBold',
                 color: 'rgba(81, 192, 145, 0.5)',
               }}>
-              Rp500/gram
+              gram
             </Text>
           </View>
         </View>
@@ -425,7 +504,7 @@ const SetorLimbah = ({navigation}) => {
               fontFamily: 'Poppins-Bold',
               color: '#51C091',
             }}>
-            + Rp50.000
+            {perkiraanPoin.harga}
           </Text>
         </View>
         <View
@@ -450,7 +529,7 @@ const SetorLimbah = ({navigation}) => {
               fontFamily: 'Poppins-Bold',
               color: '#FFDD67',
             }}>
-            50 POIN
+            {perkiraanPoin.poin}
           </Text>
         </View>
       </ScrollView>
@@ -459,6 +538,14 @@ const SetorLimbah = ({navigation}) => {
           style={disable ? styles.disable : styles.Button}
           disabled={disable}
           onPress={() => {
+            ajukanJadwal(
+              dist,
+              tokenMitra,
+              idLimbah,
+              placeholder.jam,
+              sendTanggal,
+              timbangan,
+            );
             navigation.navigate('berhasil');
           }}>
           <Text

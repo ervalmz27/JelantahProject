@@ -32,18 +32,30 @@ const Register = ({navigation}) => {
   };
   const regex = event => {
     console.log('===========', event);
-    const nameRegex = new RegExp(
-      /^(\()?(08)(\d{2,3})?\)?[ .-]?\d{2,4}[ .-]?\d{2,4}[ .-]?\d{2,4}/,
-    );
+    const nameRegex =
+      /^(\()?(08)(\d{2,3})?\)?[ .-]?\d{2,4}[ .-]?\d{2,4}[ .-]?\d{2,4}/;
+
     if (nameRegex.test(event)) {
-      setRegex(true);
+      setForm({...form, user_nohp: event});
+      console.log('----', event);
       return true;
     } else {
-      setRegex(false);
+      setForm({...form, user_nohp: event});
       return false;
     }
   };
-
+  const validateEmail = text => {
+    console.log(text);
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    if (reg.test(text) === false) {
+      console.log('Email is Not Correct');
+      setForm({...form, user_email: text});
+      return false;
+    } else {
+      setForm({...form, user_email: text});
+      console.log('Email is Correct');
+    }
+  };
   const Register = async (
     user_fullname,
     user_email,
@@ -62,18 +74,22 @@ const Register = ({navigation}) => {
       const Response = await axios
         .post(`${API_URL}act_reguserAndroidPersonal.php`, data)
         .then(res => {
-          console.log('Response ,', res.data);
-          if (
-            user_nohp !=
-              'Pendaftaran gagal, No HP 022123124 sudah terdaftar!' &&
-            code_ref != 'Pendaftaran gagal, Code Refferal tidak ditemukan !' &&
-            form.user_email != '' &&
-            form.user_fullname != '' &&
-            form.user_nohp != '' &&
-            form.user_password != ''
-          ) {
-            navigation.navigate('Home');
-          }
+          console.log('Response ,', res.data.data);
+          const condisi = res.data.data;
+          condisi.forEach(el => {
+            if (
+              form.user_email != '' &&
+              form.user_fullname != '' &&
+              form.user_nohp != '' &&
+              form.user_password != '' &&
+              el.status != 'failed'
+            ) {
+              // navigation.navigate('Loginscreen');
+            } else {
+              alert(el.msg);
+            }
+          });
+
           setForm({
             ...form,
             user_email: '',
@@ -82,6 +98,7 @@ const Register = ({navigation}) => {
             user_password: '',
             code_ref: '',
           });
+          return Response;
         })
         .catch(err => {
           console.log(err.response.data);
@@ -127,10 +144,11 @@ const Register = ({navigation}) => {
           <Icon name="at" size={15} color="#51C091" style={{marginLeft: 10}} />
           <TextInput
             placeholder="Email"
+            keyboardType="email-address"
             style={styles.input}
             value={form.user_email}
             onChangeText={mail => {
-              setForm({...form, user_email: mail});
+              validateEmail(mail);
             }}
           />
         </View>
@@ -149,7 +167,7 @@ const Register = ({navigation}) => {
             keyboardType="numeric"
             value={form.user_nohp}
             onChangeText={no => {
-              setForm({...form, user_nohp: no});
+              // setForm({...form, user_nohp: no});
               regex(no);
             }}
             maxLength={14}
@@ -222,18 +240,16 @@ const Register = ({navigation}) => {
           style={styles.button}
           onPress={() => {
             if (
-              rege == true &&
               form.user_fullname != '' &&
               form.user_email != '' &&
               form.user_nohp != '' &&
-              form.user_password != '' &&
-              form.code_ref != ''
+              form.user_password != ''
             ) {
               Register(
-                form.user_fullname,
-                form.user_email,
+                form.user_fullname.toLowerCase(),
+                form.user_email.toLowerCase(),
                 form.user_nohp,
-                form.user_password,
+                form.user_password.toLowerCase(),
                 form.code_ref,
               );
             } else {
@@ -308,6 +324,7 @@ const styles = StyleSheet.create({
     color: '#010101',
     padding: 10,
     marginLeft: 5,
+    width: windowWidth * 0.7,
   },
   container: {
     marginHorizontal: 20,

@@ -8,7 +8,7 @@ import {
   ImageBackground,
   Image,
   StatusBar,
-  ActivityIndicator,
+  Animated,
   BackHandler,
   Alert,
 } from 'react-native';
@@ -21,13 +21,12 @@ import Swiper from 'react-native-swiper';
 import {LineChart} from 'react-native-chart-kit';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {Datainfo, DataProfile, getStatistik} from '../../Apis/api';
-import Minyak from '../../assets/Images/home/Minyak.svg';
 import {styles} from './style';
 import Coin from '../../assets/Images/Icon/Coin.svg';
 import {getLoginUsers} from '../../Apis/actions/users';
-import moment from 'moment';
+
 import Mitra_Personal_Usaha from './componen/Mitra_Personal_Usaha';
-import {Modal} from 'react-native-paper';
+import Geolocation from '@react-native-community/geolocation';
 import {
   getInfoTerkini,
   getDataSeputar,
@@ -37,15 +36,14 @@ import {API_URL, IMAGE_URL} from '../../config/env';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const Dashboar = ({navigation}) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const login = useSelector(state => state.users.login);
 
-  // console.log('Reduxxx ', dataLogin);
   const dispatch = useDispatch();
   const [mintra, setMitra] = useState('');
   const [rupiah, setRupiah] = useState('');
   const [profile, setProfile] = useState([]);
   const [point, setPoint] = useState('');
-  const [notif, setNotif] = useState('');
+  const [notif, setNotif] = useState(0);
   const [loading, setLoading] = useState(false);
   const [datasers, setDataSers] = useState([]);
   const [infoTerkini, setInfoTerkini] = useState([]);
@@ -55,29 +53,12 @@ const Dashboar = ({navigation}) => {
     labels: [],
   });
   useEffect(() => {
-    const backAction = () => {
-      Alert.alert('Apakah Anda Ingin Keluar Dari Aplikasi?', [
-        {
-          text: 'Cancel',
-          onPress: () => null,
-          style: 'cancel',
-        },
-        {text: 'YES', onPress: () => BackHandler.exitApp()},
-      ]);
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
     setLoading(true);
     dataStatis();
     dataPost();
     InfoTerkini();
     SeputarLimbah();
     aktifitas();
-    return () => backHandler.remove();
   }, []);
 
   const dataPost = async () => {
@@ -87,35 +68,56 @@ const Dashboar = ({navigation}) => {
       const Password = await AsyncStorage.getItem('user_password');
       DataProfile(user, Password).then(res => {
         const dataLogin = res.data.data;
-        // console.log(dataLogin);
         setProfile(dataLogin);
         dispatch(getLoginUsers(dataLogin));
-        // console.log('dataLogin', dataLogin);
-        dataLogin.forEach(async el => {
-          // console.log('mitra', el.id_token);
 
-          let mitra = el.user_level_nama;
-          setMitra(mitra);
-          setPoint(el.user_poin);
-          Datainfo(el.id_token).then(res => {
-            let data = res.data.data;
-
-            data.forEach(item => {
-              setNotif(item.user_pesan);
-              const numb = item.user_wallet;
-              const format = numb.toString().split('').reverse().join('');
-              const convert = format.match(/\d{1,3}/g);
-              const rupiah =
-                'Rp ' + convert.join('.').split('').reverse().join('');
-              setRupiah(rupiah);
-              setLoading(false);
-            });
-          });
-        });
+        fakePost(dataLogin);
       });
     } catch (error) {
       setLoading(false);
       console.log(error);
+    }
+  };
+
+  const fakePost = Login => {
+    Login.forEach(async el => {
+      let mitra = el.user_level_nama;
+      setMitra(mitra);
+      setPoint(el.user_poin);
+      Datainfo(el.id_token).then(res => {
+        let data = res.data.data;
+
+        data.forEach(item => {
+          setNotif(item.user_pesan);
+          const numb = item.user_wallet;
+          const format = numb.toString().split('').reverse().join('');
+          const convert = format.match(/\d{1,3}/g);
+          const rupiah = 'Rp ' + convert.join('.').split('').reverse().join('');
+          setRupiah(rupiah);
+          setLoading(false);
+        });
+      });
+    });
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', backAction);
+  }, []);
+
+  const backAction = () => {
+    if (navigation.isFocused()) {
+      Alert.alert('Hold on!', 'Are you sure you want to exit app?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {text: 'YES', onPress: () => BackHandler.exitApp()},
+      ]);
+      return true;
     }
   };
 
@@ -145,16 +147,8 @@ const Dashboar = ({navigation}) => {
     const Token = await AsyncStorage.getItem('token');
     console.log(Token);
     const Response = await getDataAktifitasTerakhir(Token);
-    console.log('Response', Response.data.aktifitas);
     const data = Response.data.aktifitas;
     setAktivitas(data);
-    data.forEach(al => {
-      const numb = al.nilai;
-      const format = numb.toString().split('').reverse().join('');
-      const convert = format.match(/\d{1,3}/g);
-      const rupiah = 'Rp ' + convert.join('.').split('').reverse().join('');
-      console.log(rupiah);
-    });
   };
 
   return (
@@ -165,18 +159,6 @@ const Dashboar = ({navigation}) => {
         translucent
         backgroundColor="transparent"
       />
-      {/* {loading == true ? (
-        <Modal
-          visible={loading}
-          contentContainerStyle={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#51C091',
-          }}>
-          <ActivityIndicator size="large" color="#00ff00" />
-        </Modal>
-      ) : ( */}
       <ScrollView>
         <ImageBackground
           source={require('../../assets/Images/bghomge.jpg')}
@@ -192,7 +174,7 @@ const Dashboar = ({navigation}) => {
                 style={styles.img}
               />
               <View>
-                {profile.map((i, idx) => {
+                {login.map((i, idx) => {
                   return (
                     <View key={idx} style={{marginLeft: 5}}>
                       <Text
@@ -221,12 +203,25 @@ const Dashboar = ({navigation}) => {
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('notification');
+                setNotif(notif.replace(/[0-9]/g, ''));
               }}>
-              <View style={styles.notifit}>
-                <Text style={{fontSize: 10, color: '#fff', fontWeight: '700'}}>
-                  {notif}
-                </Text>
-              </View>
+              {notif != 0 ? (
+                <View style={styles.notifit}>
+                  {login.map((item, idx) => {
+                    return (
+                      <Text
+                        key={idx}
+                        style={{
+                          fontSize: 10,
+                          color: '#fff',
+                          fontWeight: '700',
+                        }}>
+                        {item.user_pesan}
+                      </Text>
+                    );
+                  })}
+                </View>
+              ) : null}
 
               <View style={{zIndex: -1}}>
                 <Icon name="bell" size={24} color="#fff" solid />
@@ -234,46 +229,53 @@ const Dashboar = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </ImageBackground>
-        <View style={[styles.card, styles.content]}>
-          <View
-            style={{
-              flexDirection: 'row',
-            }}>
-            <Dompet height={30} width={30} />
-            <View style={{flexDirection: 'column', marginLeft: 10}}>
-              <Text style={styles.textJersey}>Saldo Dompet</Text>
-              <Text style={[styles.textJersey, {color: '#000'}]}>{rupiah}</Text>
-            </View>
-          </View>
-          <View style={styles.poin}>
-            <View
-              style={{
-                borderRadius: 100,
-                width: 40,
-                height: 40,
-                borderWidth: 3,
-                borderColor: '#51C091',
-                padding: 3,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text
+        {login.map((item, idx) => {
+          return (
+            <View style={[styles.card, styles.content]}>
+              <View
                 style={{
-                  fontFamily: 'Poppins-Bold',
-                  fontSize: 16,
-                  color: '#51C091',
+                  flexDirection: 'row',
                 }}>
-                JP
-              </Text>
+                <Dompet height={30} width={30} />
+                <View style={{flexDirection: 'column', marginLeft: 10}}>
+                  <Text style={styles.textJersey}>Saldo Dompet</Text>
+                  <Text style={[styles.textJersey, {color: '#000'}]}>
+                    {item.user_dgm}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.poin}>
+                <View
+                  style={{
+                    borderRadius: 100,
+                    width: 40,
+                    height: 40,
+                    borderWidth: 3,
+                    borderColor: '#51C091',
+                    padding: 3,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: 'Poppins-Bold',
+                      fontSize: 16,
+                      color: '#51C091',
+                    }}>
+                    JP
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'column', marginLeft: 10}}>
+                  <Text style={styles.textJersey}>Jelanta Points</Text>
+                  <Text style={[styles.textJersey, {color: '#000'}]}>
+                    {item.user_poin} Poin
+                  </Text>
+                </View>
+              </View>
             </View>
-            <View style={{flexDirection: 'column', marginLeft: 10}}>
-              <Text style={styles.textJersey}>Jelanta Points</Text>
-              <Text style={[styles.textJersey, {color: '#000'}]}>
-                {point} Poin
-              </Text>
-            </View>
-          </View>
-        </View>
+          );
+        })}
+
         {mintra == 'Mitra RT' ||
         mintra == 'Mitra Budaya' ||
         mintra == 'Mitra RW' ||
@@ -473,7 +475,7 @@ const Dashboar = ({navigation}) => {
                     fontWeight: '500',
                     fontSize: 10,
                   }}>
-                  {moment(item.datetime).format('HH:mm')}
+                  {item.datetime}
                 </Text>
               </View>
               <View>

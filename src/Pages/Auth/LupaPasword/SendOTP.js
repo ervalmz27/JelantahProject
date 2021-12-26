@@ -10,22 +10,44 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import CountDown from 'react-native-countdown-component';
+import {getOTPEmail} from '../../../Apis/api/Auth';
+import {Modal, ModalContent} from 'react-native-modals';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const SendOTP = ({navigation}) => {
+const SendOTP = ({navigation, route}) => {
+  const {gmail} = route.params;
+  console.log(gmail);
   const [code, setCode] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [content, setContent] = useState('');
+  const checkOtpEmail = async (email, otp) => {
+    const Response = await getOTPEmail(email, otp);
+    console.log('Response -> ', Response.data.data);
+    const alert = Response.data.data;
+    alert.forEach(it => {
+      if (it.status != 'failed') {
+        navigation.push('ubahPassword', {token: it.id_token});
+      } else {
+        setVisible(true);
+        setContent(it.msg);
+      }
+    });
+  };
   return (
     <>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon
-            name="chevron-left"
-            size={15}
-            color="#fff"
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-        <Text style={styles.textHeader}>Kode Verifikasi</Text>
+        <View
+          style={{marginTop: 25, flexDirection: 'row', alignItems: 'center'}}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon
+              name="chevron-left"
+              size={15}
+              color="#fff"
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+          <Text style={styles.textHeader}>Kode Verifikasi</Text>
+        </View>
       </View>
       <ScrollView>
         <View style={styles.container}>
@@ -51,6 +73,7 @@ const SendOTP = ({navigation}) => {
             codeInputHighlightStyle={styles.underlineStyleHighLighted}
             onCodeFilled={code => {
               console.log(`Code is ${code}, you are good to go!`);
+              checkOtpEmail(gmail, code);
             }}
           />
         </View>
@@ -74,7 +97,7 @@ const SendOTP = ({navigation}) => {
           <CountDown
             until={240}
             size={30}
-            onFinish={() => alert('Finished')}
+            onFinish={() => {}}
             digitStyle={{backgroundColor: '#FFF', height: 20, width: 20}}
             digitTxtStyle={{color: '#51C091', fontSize: 12}}
             timeToShow={['S']}
@@ -83,14 +106,21 @@ const SendOTP = ({navigation}) => {
         </TouchableOpacity>
       </ScrollView>
       <View>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            navigation.navigate('ubahPassword');
-          }}>
+        <TouchableOpacity style={styles.button} onPress={() => {}}>
           <Text style={styles.text}>Verifikasi</Text>
         </TouchableOpacity>
       </View>
+      <Modal
+        visible={visible}
+        onTouchOutside={() => {
+          setVisible(false);
+        }}>
+        <ModalContent>
+          <View>
+            <Text>{content}</Text>
+          </View>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
@@ -103,6 +133,8 @@ const styles = StyleSheet.create({
     padding: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    height: windowHeight * 0.15,
+    justifyContent: 'flex-start',
   },
   icon: {
     marginRight: 15,

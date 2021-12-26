@@ -4,6 +4,7 @@ const initialState = {
   login: [],
   items: '',
   dashboard: [],
+  qrcodeJadwal: [],
 };
 
 export const usersReducer = (state = initialState, action) => {
@@ -22,6 +23,11 @@ export const usersReducer = (state = initialState, action) => {
       return {
         ...state,
         dashboard: action.payload,
+      };
+    case Types.QRCODE_SUCCESS:
+      return {
+        ...state,
+        qrcodeJadwal: action.payload,
       };
     default:
       return state;

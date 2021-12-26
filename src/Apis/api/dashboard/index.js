@@ -29,3 +29,16 @@ export const getDataAktifitasTerakhir = async id_token => {
     console.log(error);
   }
 };
+
+export const OpenPesanDetail = async (id_token, id_pesan) => {
+  try {
+    const data = {id_token: id_token, id_pesan: id_pesan};
+    const Response = await axios.post(
+      `${API_URL}act_OpenPesanDetail.php`,
+      data,
+    );
+    return Response;
+  } catch (error) {
+    console.log(error);
+  }
+};

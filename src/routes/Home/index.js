@@ -12,6 +12,10 @@ import QrCode from '../../Pages/QRCode';
 import ScannerNavigator from '../ScannerQr';
 import TerimaJadwalNavigator from './TerimaJadwal';
 import JadwalSetorNavigator from './JadwalSetor';
+import Tugas from '../../Pages/Tugas';
+import Riwayat from '../../Pages/Riwayat';
+import AkunNavigator from '../Akun';
+import alamatMaps from '../../Pages/User/Alamat';
 
 const HomeNavigator = ({navigation}) => {
   const HomeStack = createStackNavigator();
@@ -104,7 +108,7 @@ const HomeNavigator = ({navigation}) => {
                 ),
               }}
               name={'tugas'}
-              component={User}
+              component={Tugas}
             />
             <Tab.Screen
               options={{
@@ -167,7 +171,7 @@ const HomeNavigator = ({navigation}) => {
                 ),
               }}
               name={'riwayat'}
-              component={User}
+              component={Riwayat}
             />
             <Tab.Screen
               options={{
@@ -209,6 +213,8 @@ const HomeNavigator = ({navigation}) => {
       <Tab.Screen name={'codeQr'} component={ScannerNavigator} />
       <Tab.Screen name={'TerimaJadwal'} component={TerimaJadwalNavigator} />
       <Tab.Screen name={'CekJadwal'} component={JadwalSetorNavigator} />
+      <Tab.Screen name={'Akun'} component={AkunNavigator} />
+      <Tab.Screen name={'Alamatmaps'} component={alamatMaps} />
     </HomeStack.Navigator>
   );
 };

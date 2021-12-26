@@ -35,11 +35,13 @@ const Auth = ({navigation, props, users}) => {
 
   return (
     <>
+      <StatusBar translucent backgroundColor="transparent" />
       <SafeAreaView>
         <ScrollView>
           <View style={{height: windowHeight * 0.4}}>
             <Swiper
               autoplay={true}
+              autoplayTimeout={2.5}
               showsButtons={false}
               showsPagination={false}>
               <View
@@ -81,6 +83,7 @@ const Auth = ({navigation, props, users}) => {
           <View style={styles.card}>
             <Swiper
               autoplay={true}
+              autoplayTimeout={2.5}
               style={{
                 height: windowHeight * 0.4,
                 margin: 20,

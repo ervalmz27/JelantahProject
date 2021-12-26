@@ -4,15 +4,16 @@ import AppNavContainer from './src/routes';
 import {createStore, applyMiddleware} from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import axios from 'axios';
+import {ModalPortal} from 'react-native-modals';
 import reducers from './src/Apis/reducers';
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(reducers, applyMiddleware(sagaMiddleware));
-axios.defaults.baseURL = 'https://reqres.in/api';
 
 const App = () => {
   return (
     <Provider store={store}>
       <AppNavContainer />
+      <ModalPortal />
     </Provider>
   );
 };

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Alert,
+  StatusBar,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -78,6 +79,7 @@ const Login = ({navigation}) => {
   };
   return (
     <>
+      <StatusBar translucent backgroundColor="transparent" />
       <Header
         icon={'chevron-left'}
         name={'Masuk'}
@@ -101,8 +103,9 @@ const Login = ({navigation}) => {
             style={styles.input}
             value={form.user_id}
             autoCapitalize="none"
+            keyboardType="email-address"
             onChangeText={e => {
-              setForm({...form, user_id: e});
+              setForm({...form, user_id: e.toLowerCase()});
             }}
           />
         </View>

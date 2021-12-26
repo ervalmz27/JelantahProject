@@ -6,33 +6,60 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  Alert,
+  ActivityIndicator,
+  Dimensions,
 } from 'react-native';
+import {Modal, ModalContent} from 'react-native-modals';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {forgotPaswword} from '../../../Apis/api/Auth';
-
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 const LupaPassword = ({navigation}) => {
   const [email, setEmail] = useState('');
-
-  const Forgot = async email => {
+  const [visible, setVisible] = useState(false);
+  const [content, setContent] = useState('');
+  const [loading, setLoading] = useState(false);
+  const Forgot = async em => {
+    setLoading(true);
     try {
-      const forgot = await forgotPaswword(email);
-      console.log(forgot);
+      const forgot = await forgotPaswword(em);
+      console.log('--->', forgot.data);
+      const Lupas = forgot.data.data;
+      Lupas.forEach(el => {
+        if (el.status != 'failed') {
+          setVisible(true);
+
+          setContent(el.msg);
+          navigation.push('sendotp', {gmail: email});
+          setLoading(false);
+        } else {
+          setLoading(false);
+          setVisible(true);
+
+          setContent(el.msg);
+        }
+      });
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   };
   return (
     <>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon
-            name="chevron-left"
-            size={15}
-            color="#fff"
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-        <Text style={styles.textHeader}>Ubah Password</Text>
+        <View
+          style={{marginTop: 25, flexDirection: 'row', alignItems: 'center'}}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon
+              name="chevron-left"
+              size={15}
+              color="#fff"
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+          <Text style={styles.textHeader}>Ubah Password</Text>
+        </View>
       </View>
       <ScrollView>
         <View style={styles.container}>
@@ -54,14 +81,31 @@ const LupaPassword = ({navigation}) => {
       </ScrollView>
       <View>
         <TouchableOpacity
+          disabled={loading}
           style={styles.button}
           onPress={() => {
-            Forgot(email);
-            navigation.navigate('sendotp');
+            Forgot(email.toLowerCase());
+            // navigation.push('sendotp', {gmail: email});
+            console.log('email', email.toLowerCase());
           }}>
-          <Text style={styles.text}>Selanjutnya</Text>
+          {loading == true ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.text}>Selanjutnya</Text>
+          )}
         </TouchableOpacity>
       </View>
+      <Modal
+        visible={visible}
+        onTouchOutside={() => {
+          setVisible(false);
+        }}>
+        <ModalContent>
+          <View>
+            <Text>{content}</Text>
+          </View>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
@@ -74,6 +118,8 @@ const styles = StyleSheet.create({
     padding: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    height: windowHeight * 0.15,
+    justifyContent: 'flex-start',
   },
   icon: {
     marginRight: 15,
