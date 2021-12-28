@@ -181,7 +181,7 @@ const TambahEwalet = ({navigation}) => {
           <TouchableOpacity
             style={styles.Button}
             onPress={() => {
-              navigation.navigate('E-walet');
+              navigation.navigate('User');
               setBack(false);
             }}>
             <Text style={styles.textButton}>Kembali</Text>
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 12,
     marginHorizontal: 20,
-    marginTop: windowHeight * 0.28,
+    marginTop: windowHeight * 0.35,
     height: 50,
   },
   textButton: {

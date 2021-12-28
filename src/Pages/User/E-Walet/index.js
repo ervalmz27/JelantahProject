@@ -22,6 +22,7 @@ const Ewalet = ({navigation}) => {
   const [dataWallet, setDataWallet] = useState([]);
   const [visible, setVisible] = useState(false);
   const [utama, setUtama] = useState('');
+  const [deleteData, setDeleteData] = useState('');
   useEffect(() => {
     if (refreshInterval && refreshInterval > 0) {
       const interval = setInterval(Walet, refreshInterval);
@@ -31,13 +32,21 @@ const Ewalet = ({navigation}) => {
   useEffect(() => {
     login.forEach(el => {
       Walet(el.id_token);
+      const willFocusSubscription = navigation.addListener('focus', () => {
+        Walet(el.id_token);
+      });
+
+      return willFocusSubscription;
     });
   }, []);
-  const Walet = useCallback(async id_token => {
-    const Response = await getDataEWallet(id_token);
-    console.log('Response ---> ', Response.data.ewallet);
-    setDataWallet(Response.data.ewallet);
-  }, []);
+  const Walet = useCallback(
+    async id_token => {
+      const Response = await getDataEWallet(id_token);
+      console.log('Response ---> ', Response.data.ewallet);
+      setDataWallet(Response.data.ewallet);
+    },
+    [dataWallet],
+  );
 
   const Delete = async (id_token, id_user_dgm) => {
     const Response = await DeleteEwalet(id_token, id_user_dgm);
@@ -79,7 +88,8 @@ const Ewalet = ({navigation}) => {
             <TouchableOpacity
               onPress={() => {
                 setVisible(true);
-                setUtama(item.id_user_dgm);
+                setUtama(item.id_dgm);
+                setDeleteData(item.id_user_dgm);
               }}
               style={
                 item.akun_utama == 'Yes'
@@ -110,6 +120,8 @@ const Ewalet = ({navigation}) => {
                 style={{marginRight: 10}}
                 onPress={() => {
                   setVisible(true);
+                  setUtama(item.id_dgm);
+                  setDeleteData(item.id_user_dgm);
                 }}>
                 <Icon name="ellipsis-v" color="#C4C4C4" size={15} />
               </TouchableOpacity>
@@ -135,7 +147,7 @@ const Ewalet = ({navigation}) => {
             <Text style={styles.title}>Menu Lainnya</Text>
             <TouchableOpacity
               style={styles.content}
-              onPress={() => ChangeUtama(login[0].id_token, 1)}>
+              onPress={() => ChangeUtama(login[0].id_token, utama)}>
               <Text style={[styles.title, {fontSize: 14, fontWeight: '500'}]}>
                 Ubah Rekening Utama
               </Text>
@@ -143,7 +155,7 @@ const Ewalet = ({navigation}) => {
             <TouchableOpacity
               style={[styles.content, {borderBottomWidth: 0}]}
               onPress={() => {
-                Delete(login[0].id_token, utama);
+                Delete(login[0].id_token, deleteData);
               }}>
               <Text style={[styles.title, {fontSize: 14, fontWeight: '500'}]}>
                 Hapus Rekening

@@ -77,3 +77,18 @@ export const getStatistik = async id_token => {
     throw error;
   }
 };
+
+// getDataProfile.php
+
+const DataProfil = async () => {
+  try {
+    const Token = {
+      id_token: id_token,
+    };
+    const Response = await axios.post(`${API_URL}getDataProfile.php`, Token);
+    return Response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

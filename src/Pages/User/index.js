@@ -32,7 +32,13 @@ const User = ({navigation}) => {
     AsyncStorage.removeItem('user_id');
     AsyncStorage.removeItem('user_password');
   };
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const willFocusSubscription = navigation.addListener('focus', () => {
+      Profil;
+    });
+
+    return willFocusSubscription;
+  }, []);
   // const numb = item.user_wallet;
   // const format = numb.toString().split('').reverse().join('');
   // const convert = format.match(/\d{1,3}/g);

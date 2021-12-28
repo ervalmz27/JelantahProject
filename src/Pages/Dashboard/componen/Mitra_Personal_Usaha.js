@@ -16,7 +16,7 @@ import Coin from '../../../assets/Images/Icon/Coin.svg';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const Mitra_Personal_Usaha = ({onSetor}) => {
+const Mitra_Personal_Usaha = ({onSetor, cekJadwal}) => {
   return (
     <>
       <View style={styles.card}>
@@ -50,7 +50,9 @@ const Mitra_Personal_Usaha = ({onSetor}) => {
             width: windowWidth * 0.5,
             // marginRight: windowWidth * 0.8,
           }}>
-          <TouchableOpacity style={[styles.eco, {marginRight: -10}]}>
+          <TouchableOpacity
+            style={[styles.eco, {marginRight: -10}]}
+            onPress={cekJadwal}>
             <JadwalSetor height={24} width={24} />
             <Text style={styles.font}>Cek Jadwal</Text>
           </TouchableOpacity>

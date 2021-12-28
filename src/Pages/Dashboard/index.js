@@ -69,6 +69,7 @@ const Dashboar = ({navigation}) => {
       InfoTerkini();
       SeputarLimbah();
       aktifitas();
+      dataProfile();
     }, []),
   );
 
@@ -90,13 +91,19 @@ const Dashboar = ({navigation}) => {
   //   useCallback(() => {
   //     // do something!
   // });
+  const dataProfile = async () => {
+    const jsonToken = await AsyncStorage('token');
+    console.log(jsonToken);
+    const Response = await getDataProfil(jsonToken);
+    console.log('Response---->', Response, data);
+  };
 
   const fakePost = Login => {
     Login.forEach(async el => {
       let mitra = el.user_level_nama;
       let img = el.user_urlpp;
       setImgUrl(img);
-      console.log('Hallo', img);
+      // console.log('Hallo', img);
       setMitra(mitra);
       setPoint(el.user_poin);
       Datainfo(el.id_token).then(res => {
@@ -320,7 +327,10 @@ const Dashboar = ({navigation}) => {
             cekJadwal={() => navigation.navigate('CekJadwal')}
           />
         ) : (
-          <Mitra_Personal_Usaha onSetor={() => navigation.push('Setor')} />
+          <Mitra_Personal_Usaha
+            onSetor={() => navigation.push('Setor')}
+            cekJadwal={() => navigation.navigate('CekJadwal')}
+          />
         )}
 
         <View style={{marginHorizontal: 20}}>

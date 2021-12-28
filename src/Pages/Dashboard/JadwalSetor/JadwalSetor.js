@@ -18,7 +18,7 @@ const JadwalSetor = ({navigation}) => {
   return (
     <>
       <Header
-        name="Terima Jadwal"
+        name="Check Jadwal"
         icon="chevron-left"
         onClick={() => navigation.goBack()}
       />

@@ -53,7 +53,7 @@ const Notificat = ({navigation}) => {
               }}>
               <Text style={styles.title}>{items.judul}</Text>
               <Text numberOfLines={1}>{items.pesan}</Text>
-              <Text style={styles.texttime}>{}</Text>
+              <Text style={styles.texttime}>{items.created_date}</Text>
               <View
                 style={{
                   borderBottomColor: '#E5E5E5',
