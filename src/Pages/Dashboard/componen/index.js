@@ -16,7 +16,7 @@ import Coin from '../../../assets/Images/Icon/Coin.svg';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const CardContent = ({onSetor, onJadwal, cekJadwal}) => {
+const CardContent = ({onSetor, onJadwal, cekJadwal, pressTarik}) => {
   return (
     <>
       <View style={[styles.card, styles.content]}>
@@ -24,7 +24,7 @@ const CardContent = ({onSetor, onJadwal, cekJadwal}) => {
           <SetorLimbah height={24} width={24} />
           <Text style={styles.font}>Setor Limbah</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.eco}>
+        <TouchableOpacity style={styles.eco} onPress={pressTarik}>
           <TarikSaldo height={24} width={24} />
           <Text style={styles.font}>Tarik Saldo</Text>
         </TouchableOpacity>

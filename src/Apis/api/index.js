@@ -50,15 +50,11 @@ export const getDataRTNearby = async (id_token, lat, long) => {
 export const getDataInfoPesanDetail = async id_token => {
   try {
     const data = {id_token: id_token};
-    const Response = await axios.post(
-      `${API_URL}getDataInfoPesanDetail.php`,
-      data,
-      {
-        header: {
-          'Content-Type': 'application/json',
-        },
+    const Response = await axios.post(`${API_URL}getDataPesan.php`, data, {
+      header: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
     return Response;
   } catch (error) {
     console.log('Message Error', error);

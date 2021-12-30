@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -7,17 +7,31 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import {getDataPesanDetail} from '../../../Apis/api/dashboard';
 import Coin from '../../../assets/Images/Icon/Coin.svg';
+import {useFocusEffect} from '@react-navigation/native';
 import Header from '../../component/Header';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const Cheklist = ({navigation, route}) => {
+const Cheklist = ({navigation, route, userId}) => {
   const {detailNotif} = route.params;
   console.log('detailNotif', detailNotif);
   // const [message, setMessage] = useState('');
   // useEffect(() => {
   //   setMessage(detailNotif.pesan);
   // }, []);
+  const [user, setUser] = useState(null);
+  useFocusEffect(
+    useCallback(() => {
+      // return () => ();
+      fetchDetail(detailNotif.id_pesan);
+    }, []),
+  );
+
+  const fetchDetail = async id_pesan => {
+    const Response = await getDataPesanDetail(id_pesan);
+    console.log('Response ----> ', Response.data);
+  };
   return (
     <>
       <Header

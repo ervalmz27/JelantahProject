@@ -58,6 +58,8 @@ const Notificat = ({navigation}) => {
                   navigation.push('detailNotif', {detailNotif: items});
                 } else if (items.kategori_notif == 'SaldoPoin') {
                   navigation.push('detailNotif', {detailNotif: items});
+                } else if (items.kategori_notif == 'JadwalSetoranDibuat') {
+                  navigation.push('detailNotif', {detailNotif: items});
                 }
               }}>
               <Text style={styles.title}>{items.judul}</Text>

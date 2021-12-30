@@ -20,6 +20,7 @@ import ChangeNavigator from '../Akun/ChangePassword';
 import EwaletNavigator from '../Akun/Ewalet';
 import RekeningNavigator from '../Akun/Rekening';
 import Dompet from '../../Pages/Dashboard/Dompet';
+import TarikSaldo from '../../Pages/Dashboard/TarikSaldo';
 
 const HomeNavigator = ({navigation}) => {
   const HomeStack = createStackNavigator();
@@ -220,6 +221,7 @@ const HomeNavigator = ({navigation}) => {
       <Tab.Screen name={'CekJadwal'} component={JadwalSetorNavigator} />
       {/* Dompat */}
       <Tab.Screen name={'Dompet'} component={Dompet} />
+      <Tab.Screen name={'Tarik'} component={TarikSaldo} />
       {/*  */}
       {/* Start NAvigatorrr Akun /Saya */}
       <Tab.Screen name={'Akun'} component={AkunNavigator} />

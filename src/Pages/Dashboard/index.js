@@ -356,12 +356,14 @@ const Dashboar = ({navigation}) => {
             onJadwal={() => {
               navigation.navigate('TerimaJadwal');
             }}
+            pressTarik={() => navigation.navigate('Tarik')}
             cekJadwal={() => navigation.navigate('CekJadwal')}
           />
         ) : (
           <Mitra_Personal_Usaha
             onSetor={() => navigation.push('Setor')}
             cekJadwal={() => navigation.navigate('CekJadwal')}
+            pressTarik={() => navigation.navigate('Tarik')}
           />
         )}
 

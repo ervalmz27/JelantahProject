@@ -77,3 +77,15 @@ export const getDataSeputarDetail = async id_seputar => {
     console.log(error);
   }
 };
+
+// notification
+// getDataPesanDetail.php
+export const getDataPesanDetail = async id_pesan => {
+  try {
+    const data = {id_pesan: id_pesan};
+    const Response = await axios.post(`${API_URL}getDataPesanDetail.php`, data);
+    return Response;
+  } catch (error) {
+    console.log(error);
+  }
+};
