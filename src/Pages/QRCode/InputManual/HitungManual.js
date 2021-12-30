@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -16,28 +16,59 @@ import Recovery from '../../../assets/Images/Icon/Recovery.svg';
 import Tanggal from '../../../assets/Images/Icon/Tanggal.svg';
 import Jam from '../../../assets/Images/Icon/Jam.svg';
 import Timbangan from '../../../assets/Images/Icon/Timbangan.svg';
+import {useSelector} from 'react-redux';
+import {act_setoran} from '../../../Apis/api/qrcode';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const HitungManual = ({navigation}) => {
+const HitungManual = ({navigation, route}) => {
+  const token = useSelector(state => state.users.login);
+  const {dataQr, code_setoran} = route.params;
+  console.log('--------------', dataQr, code_setoran);
+  const [editBerat, setEditBerat] = useState('');
+  useEffect(() => {
+    setEditBerat(dataQr[0].qty);
+  }, []);
+  const postTerimaSetoran = async (
+    code_setoran,
+    id_token_from,
+    id_token_to,
+    limbah_kat_id,
+    tanggal,
+    jam,
+    volume,
+  ) => {
+    const Response = await act_setoran(
+      code_setoran,
+      id_token_from,
+      id_token_to,
+      limbah_kat_id,
+      tanggal,
+      jam,
+      volume,
+    );
+    console.log('Response', Response.data);
+    if (Response.data.informasi[0].status == 'success') {
+      navigation.navigate('terimajadwal');
+    }
+  };
   return (
     <>
       <Header
-        name="Hitung Manual"
+        name="Terima Setoran"
         icon="chevron-left"
         onClick={() => navigation.goBack()}
       />
       {/* style={{height: windowHeight * 1}} */}
-      <ScrollView>
+      <ScrollView style={{backgroundColor: '#fff'}}>
         <View style={styles.container}>
-          <Text style={styles.header}>Hitung manual limbahnya</Text>
+          <Text style={styles.header}>Cek kelengkapan setoran</Text>
           <Text
             style={[
               styles.header,
               {fontSize: 12, fontFamily: 'Poppins-Reguler', color: '#26323880'},
             ]}>
-            Harap menghitung jumlah limbah dengan benar dan menggunakan
-            timbangan yang sudah disarankan. Data yang dapat diubah hanya berat
-            limbah saja
+            Harap periksa dengan teliti isi setoran ini. Jika jumlah tidak
+            sesuai, silakan hitung manual
           </Text>
           {/* User Name */}
           <View style={{marginTop: 15}}>
@@ -61,7 +92,8 @@ const HitungManual = ({navigation}) => {
               placeholder=" Nama Penyetor"
               style={styles.input}
               multiline={true}
-              // value={}
+              editable={false}
+              value={dataQr[0].nama_penyetor}
               // onChangeText={event => {}}
             />
           </View>
@@ -88,7 +120,8 @@ const HitungManual = ({navigation}) => {
               placeholder="Alamat Penyetor"
               style={styles.input}
               multiline={true}
-              // value={}
+              editable={false}
+              value={dataQr[0].alamat_penyetor}
               // onChangeText={event => {}}
             />
           </View>
@@ -112,10 +145,11 @@ const HitungManual = ({navigation}) => {
               <House height={20} width={20} />
             </View>
             <TextInput
+              editable={false}
               placeholder="Setor ke Mitra"
               style={styles.input}
               multiline={true}
-              // value={}
+              value={dataQr[0].alamat_penerima}
               // onChangeText={event => {}}
             />
           </View>
@@ -139,10 +173,11 @@ const HitungManual = ({navigation}) => {
               <Recovery height={20} width={20} />
             </View>
             <TextInput
+              editable={false}
               placeholder="Jenis Limbah"
               style={styles.input}
               multiline={true}
-              // value={}
+              value={dataQr[0].jenis_limbah}
               // onChangeText={event => {}}
             />
           </View>
@@ -165,10 +200,11 @@ const HitungManual = ({navigation}) => {
               <Tanggal height={20} width={20} />
             </View>
             <TextInput
+              editable={false}
               placeholder="Tanggal Jadwal Setor"
               style={styles.input}
               multiline={true}
-              // value={}
+              value={dataQr[0].tanggal}
               // onChangeText={event => {}}
             />
           </View>
@@ -192,10 +228,11 @@ const HitungManual = ({navigation}) => {
               <Jam height={20} width={20} />
             </View>
             <TextInput
+              editable={false}
               placeholder=" Waktu Jadwal Setor"
               style={styles.input}
               multiline={true}
-              // value={}
+              value={dataQr[0].jam}
               // onChangeText={event => {}}
             />
           </View>
@@ -214,29 +251,67 @@ const HitungManual = ({navigation}) => {
               Berat Limbah
             </Text>
           </View>
-          <View style={[styles.containerInput, {flexDirection: 'row'}]}>
-            <View style={{marginTop: 15}}>
+          <View
+            style={[
+              styles.containerInput,
+              {flexDirection: 'row', alignItems: 'center'},
+            ]}>
+            <View>
               <Timbangan height={20} width={20} />
             </View>
             <TextInput
               placeholder="Berat Limbah"
               style={styles.input}
+              editable={false}
+              focusable={true}
+              autoFocus={true}
               multiline={true}
-              // value={}
-              // onChangeText={event => {}}
+              value={editBerat}
+              onChangeText={event => {
+                setEditBerat(event);
+              }}
             />
+            <Text
+              style={{
+                color: '#51C091',
+                marginLeft: -25,
+                fontFamily: 'Poppins-Regular',
+                fontSize: 14,
+                letterSpacing: 0.5,
+              }}>
+              gram
+            </Text>
           </View>
         </View>
       </ScrollView>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          navigation.navigate('terimajadwal');
-        }}>
-        <Text style={[styles.fontReguler, {color: '#fff'}]}>
-          Terima Setoran
-        </Text>
-      </TouchableOpacity>
+      <View style={{backgroundColor: '#fff'}}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            console.log(
+              '++++',
+              code_setoran,
+              dataQr[0].id_token_from,
+              token[0].id_token,
+              dataQr[0].tanggal,
+              dataQr[0].jam,
+              editBerat,
+            );
+            postTerimaSetoran(
+              code_setoran,
+              dataQr[0].id_token_from,
+              token[0].id_token,
+              1,
+              dataQr[0].tanggal,
+              dataQr[0].jam,
+              editBerat,
+            );
+          }}>
+          <Text style={[styles.fontReguler, {color: '#fff'}]}>
+            Terima Setoran
+          </Text>
+        </TouchableOpacity>
+      </View>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -11,7 +11,13 @@ import Coin from '../../../assets/Images/Icon/Coin.svg';
 import Header from '../../component/Header';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const Cheklist = ({navigation}) => {
+const Cheklist = ({navigation, route}) => {
+  const {detailNotif} = route.params;
+  console.log('detailNotif', detailNotif);
+  // const [message, setMessage] = useState('');
+  // useEffect(() => {
+  //   setMessage(detailNotif.pesan);
+  // }, []);
   return (
     <>
       <Header
@@ -22,36 +28,6 @@ const Cheklist = ({navigation}) => {
         }}
       />
 
-      <View
-        style={[
-          {flex: 1, alignItems: 'center', justifyContent: 'center'},
-          {marginTop: -100},
-        ]}>
-        <Text
-          style={{
-            color: '#6FCF97',
-            fontFamily: 'Poppins-Reguler',
-            fontSize: 32,
-            lineHeight: 48,
-            backgroundColor: '#51C0911A',
-            width: '100%',
-            textAlign: 'center',
-          }}>
-          + Rp50.000
-        </Text>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Coin height={20} width={20} />
-          <Text
-            style={{
-              color: '#FFC727',
-              fontFamily: 'Poppins-Reguler',
-              fontSize: 24,
-              lineHeight: 36,
-            }}>
-            50 Poin
-          </Text>
-        </View>
-      </View>
       <View style={[styles.container, {marginTop: -280, marginBottom: 20}]}>
         <View
           style={{
@@ -65,17 +41,16 @@ const Cheklist = ({navigation}) => {
                 styles.header,
                 {marginBottom: 16, fontFamily: 'Poppins-SemiBold'},
               ]}>
-              Wow, Saldo Kamu Bertambah
+              {detailNotif.judul}
             </Text>
             <Text style={[styles.text, {marginHorizontal: 20}]}>
-              Kamu baru saja mendapatkan saldo dan poin tambahan karena telah
-              berhasil menyetor limbah hari ini
+              {detailNotif.pesan}
             </Text>
           </View>
         </View>
       </View>
       {/* </ScrollView> */}
-      <View style={{margin: 10}}>
+      {/* <View style={{margin: 10}}>
         <TouchableOpacity
           style={styles.Button}
           onPress={() => {
@@ -86,7 +61,7 @@ const Cheklist = ({navigation}) => {
             Cek Saldo
           </Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </>
   );
 };

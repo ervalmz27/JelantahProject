@@ -34,12 +34,12 @@ const QrCode = ({navigation}) => {
     // Linking.openURL(e.data).catch(err =>
     //   console.error('An error occured', err),
     // );
-    const Response = await getDataTerimaSetoran('JelantaoD4KnJB0rL');
+    const Response = await getDataTerimaSetoran(e.data);
     console.log('Response---->', Response.data);
     if (Response.data.informasi[0].status != 'failed') {
       navigation.push('terimaSetoran', {
         dataSetoran: Response.data.setoran,
-        code_setoran: 'JelantaoD4KnJB0rL',
+        code_setoran: e.data,
       });
     }
   };

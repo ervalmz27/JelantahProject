@@ -288,7 +288,10 @@ const Dashboar = ({navigation}) => {
                 onPress={() => {
                   navigation.navigate('Dompet');
                 }}>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('Dompet');
+                  }}>
                   <Dompet height={30} width={30} />
                 </TouchableOpacity>
                 <View style={{flexDirection: 'column', marginLeft: 10}}>

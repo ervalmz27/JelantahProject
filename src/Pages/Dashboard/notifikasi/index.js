@@ -32,6 +32,7 @@ const Notificat = ({navigation}) => {
     const Response = await OpenPesanDetail(token, idPesan);
     // console.log('Response -> ', JSON.stringify(Response.data.data));
     setKategori(Response.data.data);
+    const notif = Response.data.data;
   };
 
   return (
@@ -51,9 +52,13 @@ const Notificat = ({navigation}) => {
               key={idx}
               onPress={() => {
                 fetchOpenPesanDetail(token, items.id_pesan);
-                if (item.kategor == '') {
+                if (items.kategori_notif == 'TerimaSetoran') {
+                  navigation.push('detailNotif', {detailNotif: items});
+                } else if (items.kategori_notif == 'Info') {
+                  navigation.push('detailNotif', {detailNotif: items});
+                } else if (items.kategori_notif == 'SaldoPoin') {
+                  navigation.push('detailNotif', {detailNotif: items});
                 }
-                navigation.navigate('detailNotif');
               }}>
               <Text style={styles.title}>{items.judul}</Text>
               <Text numberOfLines={1}>{items.pesan}</Text>

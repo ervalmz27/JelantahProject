@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,7 +8,19 @@ import {
 } from 'react-native';
 import Header from '../../component/Header';
 import Prime from '../../../assets/Images/Icon/prime_qrcode.svg';
+import {getDataTerimaSetoran} from '../../../Apis/api/qrcode';
 const InpurManual = ({navigation}) => {
+  const [input, setInput] = useState('');
+  const InputQrcode = async code => {
+    const Response = await getDataTerimaSetoran(code);
+    console.log('Response---->', Response.data);
+    if (Response.data.informasi[0].status != 'failed') {
+      navigation.push('hitungmanual', {
+        dataQr: Response.data.setoran,
+        code_setoran: code,
+      });
+    }
+  };
   return (
     <>
       <Header
@@ -37,8 +49,10 @@ const InpurManual = ({navigation}) => {
           <TextInput
             placeholder="ID Code (JLNBUDI270820211200)"
             style={styles.input}
-            // value={}
-            // onChangeText={event => {}}
+            value={input}
+            onChangeText={event => {
+              setInput(event);
+            }}
           />
         </View>
       </View>
@@ -48,7 +62,7 @@ const InpurManual = ({navigation}) => {
           {position: 'absolute', bottom: 10, width: '89%'},
         ]}
         onPress={() => {
-          navigation.navigate('hitungmanual');
+          InputQrcode(input);
         }}>
         <Text style={[styles.fontReguler, {color: '#fff'}]}>Lanjutkan</Text>
       </TouchableOpacity>
