@@ -31,6 +31,7 @@ const User = ({navigation}) => {
     AsyncStorage.clear();
     AsyncStorage.removeItem('user_id');
     AsyncStorage.removeItem('user_password');
+    AsyncStorage.removeItem('token');
   };
   useEffect(() => {
     const willFocusSubscription = navigation.addListener('focus', () => {
@@ -104,7 +105,7 @@ const User = ({navigation}) => {
                 <View style={{flexDirection: 'column', marginLeft: 10}}>
                   <Text style={styles.textJersey}>Saldo Dompet</Text>
                   <Text style={[styles.textJersey, {color: '#000'}]}>
-                    {item.user_dgm}
+                    {item.user_wallet}
                   </Text>
                 </View>
               </View>
@@ -140,7 +141,16 @@ const User = ({navigation}) => {
           );
         })}
         {/* ==================== Start  Content Header ======================= */}
-
+        <View style={{paddingHorizontal: 20, paddingTop: 15}}>
+          <Text
+            style={{
+              fontFamily: 'Poppins-SemiBold',
+              color: '#263238',
+              fontSize: 16,
+            }}>
+            Akun
+          </Text>
+        </View>
         <TouchableOpacity style={styles.containerContent}>
           <View style={{flexDirection: 'row'}}>
             <Voucer width={24} height={24} />
@@ -150,7 +160,11 @@ const User = ({navigation}) => {
             <Icon name="chevron-right" />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.containerContent}>
+        <TouchableOpacity
+          style={styles.containerContent}
+          onPress={() => {
+            navigation.navigate('tugas');
+          }}>
           <View style={{flexDirection: 'row'}}>
             <Image
               resizeMode="contain"
@@ -159,7 +173,15 @@ const User = ({navigation}) => {
             />
             <Text style={styles.textContent}>Tugas Saya</Text>
           </View>
-          <View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text
+              style={{
+                fontFamily: 'Poppins-Regular',
+                fontSize: 12,
+                marginRight: 10,
+              }}>
+              {Profil[0].user_tugas + ' Tugas'}
+            </Text>
             <Icon name="chevron-right" />
           </View>
         </TouchableOpacity>
@@ -185,24 +207,6 @@ const User = ({navigation}) => {
           <View style={{flexDirection: 'row'}}>
             <Icon name="user" size={20} color="#C7C7C7" solid />
             <Text style={styles.textContent}> Informasi Pribadi</Text>
-          </View>
-          <View>
-            <Icon name="chevron-right" />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.containerContent]}>
-          <View style={{flexDirection: 'row'}}>
-            <Icon name="envelope" size={20} color="#C7C7C7" solid />
-            <Text style={styles.textContent}> Kelola Email</Text>
-          </View>
-          <View>
-            <Icon name="chevron-right" />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.containerContent]}>
-          <View style={{flexDirection: 'row'}}>
-            <Icon name="phone" size={20} color="#C7C7C7" solid />
-            <Text style={styles.textContent}> Kelola Nomor HP</Text>
           </View>
           <View>
             <Icon name="chevron-right" />
@@ -253,7 +257,7 @@ const User = ({navigation}) => {
           <View style={{flexDirection: 'row'}}>
             <Icon name="map-marker-alt" size={20} color="#C7C7C7" solid />
 
-            <Text style={styles.textContent}>Alamat</Text>
+            <Text style={styles.textContent}>Geolokasi</Text>
           </View>
           <View>
             <Icon name="chevron-right" />

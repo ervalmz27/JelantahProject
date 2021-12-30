@@ -34,7 +34,7 @@ const TambahRekening = ({navigation}) => {
     setIsEnabled(previousState => !previousState);
     setAkunUtama(1);
   };
-  const [nameWalet, setNameWalet] = useState('Nama E-Wallet');
+  const [nameWalet, setNameWalet] = useState('Nama Bank');
   const [dataDgm, setDgm] = useState([]);
   const [namePemilik, setNamePemilik] = useState('');
   const [nomorPonsel, setNomorPonsel] = useState('');

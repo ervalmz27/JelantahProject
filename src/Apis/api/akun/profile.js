@@ -89,6 +89,7 @@ export const check_OTPHP = async (id_token, kode_otp) => {
     const data = {id_token: id_token, kode_otp: kode_otp};
     const info = await axios.post(`${API_URL}act_check_OTPHP.php`, data, {
       header: {
+        Authorization: 'Bearer 9J9NSaKq9eK7UqGWxT07042027072118',
         'Content-Type': 'application/json',
       },
     });
@@ -106,6 +107,7 @@ export const OtpEmail = async user_email => {
     const data = {user_email: user_email};
     const info = await axios.post(`${API_URL}act_change_hp.php`, data, {
       header: {
+        Authorization: 'Bearer 9J9NSaKq9eK7UqGWxT07042027072118',
         'Content-Type': 'application/json',
       },
     });

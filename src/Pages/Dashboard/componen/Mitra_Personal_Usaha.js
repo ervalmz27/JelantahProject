@@ -8,8 +8,6 @@ import {
 } from 'react-native';
 import SetorLimbah from '../../../assets/Images/Icon/Trash.svg';
 import TarikSaldo from '../../../assets/Images/Icon/TarikSaldo.svg';
-import TerimaJadwal from '../../../assets/Images/Icon/TerimaJadwal.svg';
-import TerimaSetoran from '../../../assets/Images/Icon/TerimaSetoran.svg';
 import Laporan from '../../../assets/Images/Icon/Laporan.svg';
 import JadwalSetor from '../../../assets/Images/Icon/JadwalSetor.svg';
 import Coin from '../../../assets/Images/Icon/Coin.svg';

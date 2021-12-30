@@ -34,7 +34,7 @@ const InfoPribadi = ({navigation}) => {
   const [show, setShow] = useState(false);
   const [gender, setGender] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [uploadPath, setuploadPath] = useState('');
+  const [verifEmail, setVerifEmail] = useState(false);
   const [img, setImage] = useState({
     filePath: null,
     fileData: null,
@@ -66,7 +66,11 @@ const InfoPribadi = ({navigation}) => {
       console.log('Rttttt -- >', el);
       setDataUsers(el);
       setImage({...img, pathDefault: `${IMAGE_URL}${dataUsers.user_urlpp}`});
-      setDataProfile({...dataProfile, user_nama: el.user_fnama});
+      setDataProfile({
+        ...dataProfile,
+        user_nama: el.user_fnama,
+        tgl_lahir: el.tgl_lahir,
+      });
     });
     const willFocusSubscription = navigation.addListener('focus', () => {
       users;
@@ -276,7 +280,7 @@ const InfoPribadi = ({navigation}) => {
         <View style={styles.container}>
           <View>
             <Text style={styles.Title}>Tanggal Lahir</Text>
-            <Text style={styles.Textcontent}>{dataUsers.tgl_lahir}</Text>
+            <Text style={styles.Textcontent}>{dataProfile.tgl_lahir}</Text>
           </View>
           <TouchableOpacity
             onPress={() => {
@@ -292,9 +296,11 @@ const InfoPribadi = ({navigation}) => {
             <Text style={styles.Title}>Email</Text>
             <Text style={styles.Textcontent}>{dataUsers.user_email}</Text>
           </View>
-          {/* <TouchableOpacity>
-            <Text style={styles.Title}>Atur</Text>
-          </TouchableOpacity> */}
+          {users[0].isActivatedByEmail == 'Belum Diverifikasi' ? (
+            <TouchableOpacity disabled={true}>
+              <Text style={styles.Title}>{users[0].isActivatedByEmail}</Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
         {/*  ============= end Email ======== */}
         {/* ============ No Hp =============== */}

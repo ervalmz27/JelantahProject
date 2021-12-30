@@ -35,7 +35,7 @@ const Auth = ({navigation, props, users}) => {
 
   return (
     <>
-      <StatusBar translucent backgroundColor="transparent" />
+      <StatusBar translucent backgroundColor="#51C091" />
       <SafeAreaView>
         <ScrollView>
           <View style={{height: windowHeight * 0.4}}>

@@ -126,7 +126,7 @@ const SetorLimbah = ({navigation}) => {
       ...placeholder,
       tanggal: tgl + '/' + bln + '/' + currentDate.getFullYear(),
     });
-    setSendTanggal(currentDate.getFullYear() + '/' + bln + '/' + tgl);
+    setSendTanggal(currentDate.getFullYear() + '-' + bln + '-' + tgl);
   };
   const onChangetime = (event, selectedDate) => {
     console.log('event', event);
@@ -134,10 +134,21 @@ const SetorLimbah = ({navigation}) => {
     const currentDate = selectedDate || date;
     setShowDate(Platform.OS === 'ios');
     setTime(currentDate);
-
+    const setAll =
+      currentDate.getHours() +
+      ':' +
+      currentDate.getMinutes() +
+      ':' +
+      currentDate.getSeconds();
+    console.log(setAll, '----');
     setPlaceholder({
       ...placeholder,
-      jam: currentDate.getHours() + ':' + currentDate.getMinutes(),
+      jam:
+        currentDate.getHours() +
+        ':' +
+        currentDate.getMinutes() +
+        ':' +
+        currentDate.getSeconds(),
     });
   };
   const showMode = currentMode => {
@@ -171,15 +182,7 @@ const SetorLimbah = ({navigation}) => {
       console.log('Message', error);
     }
   };
-  console.log(
-    '---',
-    dist,
-    tokenMitra,
-    idLimbah,
-    placeholder.jam,
-    sendTanggal,
-    timbangan,
-  );
+  console.log('placeholder', placeholder.jam);
   const ajukanJadwal = async (
     id_token_from,
     id_token_to,
@@ -312,7 +315,11 @@ const SetorLimbah = ({navigation}) => {
         ) : null}
 
         {/* Jenis Limbah */}
-        <View style={[styles.container, {marginTop: 10}]}>
+        <TouchableOpacity
+          style={[styles.container, {marginTop: 10}]}
+          onPress={() => {
+            setLimbah(!limbah);
+          }}>
           <View>
             <Recovery height={20} width={20} />
           </View>
@@ -352,7 +359,7 @@ const SetorLimbah = ({navigation}) => {
               </TouchableOpacity>
             )}
           </View>
-        </View>
+        </TouchableOpacity>
         {limbah == false ? (
           <View
             style={{
@@ -538,6 +545,14 @@ const SetorLimbah = ({navigation}) => {
           style={disable ? styles.disable : styles.Button}
           disabled={disable}
           onPress={() => {
+            console.log(
+              dist,
+              tokenMitra,
+              idLimbah,
+              placeholder.jam,
+              sendTanggal,
+              timbangan,
+            );
             ajukanJadwal(
               dist,
               tokenMitra,

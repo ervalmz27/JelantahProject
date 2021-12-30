@@ -14,6 +14,7 @@ const Notificat = ({navigation}) => {
   const dataLogin = useSelector(state => state.users.login);
   const [token, setToken] = useState('');
   const [notification, setNotification] = useState([]);
+  const [kategori, setKategori] = useState([]);
   useEffect(() => {
     dataLogin.forEach(el => {
       fetchMessage(el.id_token);
@@ -29,7 +30,8 @@ const Notificat = ({navigation}) => {
 
   const fetchOpenPesanDetail = async (token, idPesan) => {
     const Response = await OpenPesanDetail(token, idPesan);
-    console.log('Response -> ', JSON.stringify(Response.data.data));
+    // console.log('Response -> ', JSON.stringify(Response.data.data));
+    setKategori(Response.data.data);
   };
 
   return (
@@ -49,6 +51,8 @@ const Notificat = ({navigation}) => {
               key={idx}
               onPress={() => {
                 fetchOpenPesanDetail(token, items.id_pesan);
+                if (item.kategor == '') {
+                }
                 navigation.navigate('detailNotif');
               }}>
               <Text style={styles.title}>{items.judul}</Text>

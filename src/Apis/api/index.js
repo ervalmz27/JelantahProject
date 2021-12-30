@@ -80,7 +80,7 @@ export const getStatistik = async id_token => {
 
 // getDataProfile.php
 
-const DataProfil = async () => {
+export const getDataProfil = async id_token => {
   try {
     const Token = {
       id_token: id_token,

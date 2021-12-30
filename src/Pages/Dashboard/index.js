@@ -21,7 +21,12 @@ import CardContent from './componen';
 import Swiper from 'react-native-swiper';
 import {LineChart} from 'react-native-chart-kit';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {Datainfo, DataProfile, getStatistik} from '../../Apis/api';
+import {
+  Datainfo,
+  DataProfile,
+  getDataProfil,
+  getStatistik,
+} from '../../Apis/api';
 import {styles} from './style';
 import Coin from '../../assets/Images/Icon/Coin.svg';
 import {getLoginUsers} from '../../Apis/actions/users';
@@ -44,7 +49,7 @@ const wait = timeout => {
 };
 const Dashboar = ({navigation}) => {
   const login = useSelector(state => state.users.login);
-
+  console.log('login', login);
   const dispatch = useDispatch();
   const [mintra, setMitra] = useState('');
   const [rupiah, setRupiah] = useState('');
@@ -70,6 +75,17 @@ const Dashboar = ({navigation}) => {
       SeputarLimbah();
       aktifitas();
       dataProfile();
+      const willFocusSubscription = navigation.addListener('focus', () => {
+        setLoading(true);
+        dataStatis();
+        dataPost();
+        InfoTerkini();
+        SeputarLimbah();
+        aktifitas();
+        dataProfile();
+      });
+
+      return willFocusSubscription;
     }, []),
   );
 
@@ -80,8 +96,7 @@ const Dashboar = ({navigation}) => {
       DataProfile(user, Password).then(res => {
         const dataLogin = res.data.data;
         setProfile(dataLogin);
-        dispatch(getLoginUsers(dataLogin));
-
+        console.log('dataLogin', dataLogin);
         fakePost(dataLogin);
       });
     } catch (error) {
@@ -92,10 +107,11 @@ const Dashboar = ({navigation}) => {
   //     // do something!
   // });
   const dataProfile = async () => {
-    const jsonToken = await AsyncStorage('token');
-    console.log(jsonToken);
+    const jsonToken = await AsyncStorage.getItem('token');
+
     const Response = await getDataProfil(jsonToken);
-    console.log('Response---->', Response, data);
+    console.log('Response---->', Response.data);
+    dispatch(getLoginUsers(Response.data.profile));
   };
 
   const fakePost = Login => {
@@ -265,19 +281,28 @@ const Dashboar = ({navigation}) => {
         {login.map((item, idx) => {
           return (
             <View style={[styles.card, styles.content]}>
-              <View
+              <TouchableOpacity
                 style={{
                   flexDirection: 'row',
+                }}
+                onPress={() => {
+                  navigation.navigate('Dompet');
                 }}>
-                <Dompet height={30} width={30} />
+                <TouchableOpacity>
+                  <Dompet height={30} width={30} />
+                </TouchableOpacity>
                 <View style={{flexDirection: 'column', marginLeft: 10}}>
                   <Text style={styles.textJersey}>Saldo Dompet</Text>
-                  <Text style={[styles.textJersey, {color: '#000'}]}>
-                    {item.user_dgm}
+                  <Text
+                    style={[
+                      styles.textJersey,
+                      {color: '#263238', fontSize: 16},
+                    ]}>
+                    {item.user_wallet}
                   </Text>
                 </View>
-              </View>
-              <View style={styles.poin}>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.poin}>
                 <View
                   style={{
                     borderRadius: 100,
@@ -300,11 +325,15 @@ const Dashboar = ({navigation}) => {
                 </View>
                 <View style={{flexDirection: 'column', marginLeft: 10}}>
                   <Text style={styles.textJersey}>Jelanta Points</Text>
-                  <Text style={[styles.textJersey, {color: '#000'}]}>
+                  <Text
+                    style={[
+                      styles.textJersey,
+                      {color: '#263238', fontSize: 16},
+                    ]}>
                     {item.user_poin} Poin
                   </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             </View>
           );
         })}

@@ -19,6 +19,7 @@ import alamatMaps from '../../Pages/User/Alamat';
 import ChangeNavigator from '../Akun/ChangePassword';
 import EwaletNavigator from '../Akun/Ewalet';
 import RekeningNavigator from '../Akun/Rekening';
+import Dompet from '../../Pages/Dashboard/Dompet';
 
 const HomeNavigator = ({navigation}) => {
   const HomeStack = createStackNavigator();
@@ -217,6 +218,8 @@ const HomeNavigator = ({navigation}) => {
       <Tab.Screen name={'codeQr'} component={ScannerNavigator} />
       <Tab.Screen name={'TerimaJadwal'} component={TerimaJadwalNavigator} />
       <Tab.Screen name={'CekJadwal'} component={JadwalSetorNavigator} />
+      {/* Dompat */}
+      <Tab.Screen name={'Dompet'} component={Dompet} />
       {/*  */}
       {/* Start NAvigatorrr Akun /Saya */}
       <Tab.Screen name={'Akun'} component={AkunNavigator} />

@@ -5,6 +5,7 @@ import QrCode from '../../Pages/QRCode';
 import InpurManual from '../../Pages/QRCode/InputManual';
 import HitungManual from '../../Pages/QRCode/InputManual/HitungManual';
 import TerimaJadwal from '../../Pages/QRCode/InputManual/TerimaJadwal';
+import TerimaSetoran from '../../Pages/QRCode/TerimaSetoran';
 const ScannerNavigator = () => {
   const Scaner = createStackNavigator();
 
@@ -14,6 +15,7 @@ const ScannerNavigator = () => {
       <Scaner.Screen name={'inputmanual'} component={InpurManual} />
       <Scaner.Screen name={'hitungmanual'} component={HitungManual} />
       <Scaner.Screen name={'terimajadwal'} component={TerimaJadwal} />
+      <Scaner.Screen name={'terimaSetoran'} component={TerimaSetoran} />
       {/* InpurManual */}
     </Scaner.Navigator>
   );

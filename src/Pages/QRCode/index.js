@@ -9,6 +9,7 @@ import {
   Dimensions,
   View,
   AnimationEffect,
+  ToastAndroid,
 } from 'react-native';
 import Marker from '../../assets/Images/home/marker.svg';
 import QRCodeScanner from 'react-native-qrcode-scanner';
@@ -16,15 +17,31 @@ import {RNCamera} from 'react-native-camera';
 import Close from '../../assets/Images/camera/close.svg';
 import Flash from '../../assets/Images/camera/flash.svg';
 import IMG from '../../assets/Images/camera/document.svg';
+import {getDataTerimaSetoran} from '../../Apis/api/qrcode';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const QrCode = ({navigation}) => {
   const [touch, setTouch] = useState(RNCamera.Constants.FlashMode.off);
-  const onSuccess = e => {
-    console.log('response', JSON.stringify(e));
-    Linking.openURL(e.data).catch(err =>
-      console.error('An error occured', err),
+  const onSuccess = async e => {
+    ToastAndroid.showWithGravityAndOffset(
+      'A wild toast appeared!',
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
     );
+    console.log('response', JSON.stringify(e.data));
+    // Linking.openURL(e.data).catch(err =>
+    //   console.error('An error occured', err),
+    // );
+    const Response = await getDataTerimaSetoran('JelantaoD4KnJB0rL');
+    console.log('Response---->', Response.data);
+    if (Response.data.informasi[0].status != 'failed') {
+      navigation.push('terimaSetoran', {
+        dataSetoran: Response.data.setoran,
+        code_setoran: 'JelantaoD4KnJB0rL',
+      });
+    }
   };
   const toggleTorch = () => {
     let tstate = touch;
@@ -101,6 +118,7 @@ const QrCode = ({navigation}) => {
       <QRCodeScanner
         onRead={e => onSuccess(e)}
         flashMode={touch}
+        fadeIn={true}
         containerStyle={{
           flex: 1,
           alignContent: 'center',
