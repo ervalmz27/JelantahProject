@@ -1,8 +1,12 @@
+import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, Dimensions, Image} from 'react-native';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
-import {getDataCekJadwal} from '../../../Apis/api/cekjadwal';
+import {
+  getDataCekJadwal,
+  getDataTerimaJadwal,
+} from '../../../Apis/api/cekjadwal';
 import Header from '../../component/Header';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -12,13 +16,19 @@ const TerimaJadwal = ({navigation}) => {
   const [tolak, setTolak] = useState(false);
   const [terima, setTerima] = useState(false);
   const [content, setContent] = useState('');
+  const [terbaru, setTerbaru] = useState([]);
 
   useEffect(() => {
     setNavbar(true);
     setContent('Terbaru');
-    GetCekJadwal(token[0].id_token);
+    fetchTerimaJadwal(token[0].id_token);
   }, []);
 
+  const fetchTerimaJadwal = async id_token => {
+    const Response = await getDataTerimaJadwal(id_token);
+    console.log('Response', Response.data.setoran[0].terbaru);
+    setTerbaru(Response.data.setoran[0].terbaru);
+  };
   return (
     <>
       <Header
@@ -74,46 +84,26 @@ const TerimaJadwal = ({navigation}) => {
       <ScrollView>
         {content == 'Terbaru' ? (
           <>
-            <TouchableOpacity
-              style={styles.profile}
-              onPress={() => {
-                navigation.navigate('detailJadwal');
-              }}>
-              <Image
-                source={require('../../../assets/Images/home/profile.jpg')}
-                style={styles.img}
-              />
-              <View style={{marginLeft: 10}}>
-                <Text style={styles.nameProfile}>Imam Cahyo</Text>
-                <Text style={styles.message}>
-                  Setor 10 KG Limbah Minyak Jelantah
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.profile}>
-              <Image
-                source={require('../../../assets/Images/home/profil1.png')}
-                style={styles.img}
-              />
-              <View style={{marginLeft: 10}}>
-                <Text style={styles.nameProfile}>Handoko</Text>
-                <Text style={styles.message}>
-                  Setor 2 KG Limbah Minyak Jelantah
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.profile}>
-              <Image
-                source={require('../../../assets/Images/home/profile.jpg')}
-                style={styles.img}
-              />
-              <View style={{marginLeft: 10}}>
-                <Text style={styles.nameProfile}>Putri Berlina</Text>
-                <Text style={styles.message}>
-                  Setor 50 KG Limbah Minyak Jelantah
-                </Text>
-              </View>
-            </TouchableOpacity>
+            {terbaru.map((item, idx) => {
+              return (
+                <TouchableOpacity
+                  key={idx}
+                  style={styles.profile}
+                  onPress={() => {
+                    navigation.push('detailJadwal', {detail: item});
+                  }}>
+                  <View style={{marginLeft: 10}}>
+                    <Text style={styles.nameProfile}>{item.judul}</Text>
+                    <Text style={styles.message} numberOfLines={1}>
+                      {item.qty} {item.jenis_limbah} {item.tanggal}
+                    </Text>
+                    <Text style={styles.message} numberOfLines={1}>
+                      {moment(item.created_date).format('DD-MM-YYYY HH:mm:ss')}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </>
         ) : null}
 

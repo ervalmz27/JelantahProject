@@ -7,6 +7,7 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -89,6 +90,8 @@ const MitraLembaga = ({navigation}) => {
   const handleBack = () => {
     navigation.goBack();
   };
+  const [contentModal, setContentModal] = useState('');
+  const [content, setContent] = useState(false);
   const regex = event => {
     console.log('===========', event);
     const nameRegex =
@@ -118,6 +121,7 @@ const MitraLembaga = ({navigation}) => {
 
   useEffect(() => {
     getLembaga();
+
     GetProvinsi();
   }, []);
   const getLembaga = async () => {
@@ -186,8 +190,17 @@ const MitraLembaga = ({navigation}) => {
       lat,
       long,
     );
-    console.log('Response', Response);
-    navigation.navigate('Loginscreen');
+    if (Response.data.data[0].status == 'success') {
+      setContentModal(Response.data.data[0].msg);
+      setContent(true);
+      setTimeout(() => {
+        navigation.navigate('Loginscreen');
+      }, 2000);
+    } else {
+      setContentModal(Response.data.data[0].msg);
+      setContent(true);
+    }
+    console.log('Response', Response.data);
   };
   return (
     <>
@@ -196,6 +209,7 @@ const MitraLembaga = ({navigation}) => {
         name="Daftar Mitra Lembaga"
         onClick={() => handleBack()}
       />
+
       <ScrollView>
         <View style={styles.header}>
           <Text style={styles.textHeader}>
@@ -610,6 +624,37 @@ const MitraLembaga = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <Modal visible={content} onDismiss={() => setContentModal(false)}>
+        <View
+          style={{
+            backgroundColor: '#fff',
+            padding: 20,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginHorizontal: 20,
+            borderRadius: 10,
+          }}>
+          <Text
+            style={{fontFamily: 'Poppins-SemiBold', fontSize: 16, margin: 5}}>
+            {contentModal}
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              setContent(false);
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Poppins-SemiBold',
+                fontSize: 16,
+                margin: 5,
+                color: '#51C091',
+                marginBottom: -5,
+              }}>
+              Ok
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
       <Modal
         visible={visible}
         onDismiss={() => {

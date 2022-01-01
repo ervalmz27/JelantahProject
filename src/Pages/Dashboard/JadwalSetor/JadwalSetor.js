@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, Dimensions, Image} from 'react-native';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
@@ -12,7 +13,7 @@ const JadwalSetor = ({navigation}) => {
   const [tolak, setTolak] = useState(false);
   const [terima, setTerima] = useState(false);
   const [content, setContent] = useState('');
-
+  const [jadwal, setJadwal] = useState([]);
   useEffect(() => {
     setNavbar(true);
     setContent('Terbaru');
@@ -22,6 +23,7 @@ const JadwalSetor = ({navigation}) => {
   const GetCekJadwal = async id_token => {
     const cekJadwal = await getDataCekJadwal(id_token);
     console.log('cekJadwal', cekJadwal.data.setoran[0].terbaru);
+    setJadwal(cekJadwal.data.setoran[0].terbaru);
   };
 
   return (
@@ -79,46 +81,30 @@ const JadwalSetor = ({navigation}) => {
       <ScrollView>
         {content == 'Terbaru' ? (
           <>
-            <TouchableOpacity
-              style={styles.profile}
-              onPress={() => {
-                navigation.navigate('detailsetor');
-              }}>
-              <Image
-                source={require('../../../assets/Images/home/profile.jpg')}
-                style={styles.img}
-              />
-              <View style={{marginLeft: 10}}>
-                <Text style={styles.nameProfile}>Imam Cahyo</Text>
-                <Text style={styles.message}>
-                  Setor 10 KG Limbah Minyak Jelantah
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.profile}>
-              <Image
-                source={require('../../../assets/Images/home/profil1.png')}
-                style={styles.img}
-              />
-              <View style={{marginLeft: 10}}>
-                <Text style={styles.nameProfile}>Handoko</Text>
-                <Text style={styles.message}>
-                  Setor 2 KG Limbah Minyak Jelantah
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.profile}>
-              <Image
-                source={require('../../../assets/Images/home/profile.jpg')}
-                style={styles.img}
-              />
-              <View style={{marginLeft: 10}}>
-                <Text style={styles.nameProfile}>Putri Berlina</Text>
-                <Text style={styles.message}>
-                  Setor 50 KG Limbah Minyak Jelantah
-                </Text>
-              </View>
-            </TouchableOpacity>
+            {jadwal.map((item, indx) => {
+              return (
+                <TouchableOpacity
+                  key={indx}
+                  style={styles.profile}
+                  onPress={() => {
+                    navigation.push('kodesetor', {detail: item});
+                  }}>
+                  <Image
+                    source={require('../../../assets/Images/home/profile.jpg')}
+                    style={styles.img}
+                  />
+                  <View style={{marginLeft: 10}}>
+                    <Text style={styles.nameProfile}>{item.judul}</Text>
+                    <Text style={styles.message}>
+                      {item.qty} {item.code_setoran} {item.tanggal} {item.jam}
+                    </Text>
+                    <Text style={styles.message}>
+                      {moment(item.created_date).format('DD-MM-YYYY HH:mm:ss')}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </>
         ) : null}
 

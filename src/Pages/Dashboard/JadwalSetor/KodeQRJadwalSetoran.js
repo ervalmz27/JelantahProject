@@ -13,9 +13,15 @@ import QRCode from 'react-native-qrcode-svg';
 import {Card, Avatar} from 'react-native-paper';
 import CameraRoll from '@react-native-community/cameraroll';
 import RNFS from 'react-native-fs';
+import moment from 'moment';
+import {IMAGE_URL} from '../../../config/env';
+import Waiting from '../../../assets/Images/Icon/Waiting.svg';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const KodeQRJadwalSetoran = ({navigation}) => {
+
+const KodeQRJadwalSetoran = ({navigation, route}) => {
+  const {detail} = route.params;
+  console.log('detail----------->', detail);
   const handleSave = () => {
     RNFS.writeFile(RNFS.CachesDirectoryPath + '/some-name.png', 'base64')
       .then(success => {
@@ -38,13 +44,19 @@ const KodeQRJadwalSetoran = ({navigation}) => {
           navigation.goBack();
         }}
       />
+      <View style={styles.notif}>
+        {/* <Waiting height={20} width={20} /> */}
+        <Text style={[styles.text, {color: '#26323880'}]}>
+          Menunggu DIsetujui
+        </Text>
+      </View>
       <ScrollView>
         <Card
           style={{
             padding: 15,
             marginHorizontal: 20,
             height: windowHeight * 0.45,
-            marginTop: windowHeight * 0.2,
+            marginTop: windowHeight * 0.1,
           }}>
           <View
             style={{
@@ -52,7 +64,7 @@ const KodeQRJadwalSetoran = ({navigation}) => {
               justifyContent: 'center',
               marginTop: 15,
             }}>
-            <QRCode value="http://awesome.link.qr" size={100} />
+            <QRCode value={IMAGE_URL + detail.url_qr_code} size={100} />
           </View>
           <View
             style={{
@@ -61,8 +73,8 @@ const KodeQRJadwalSetoran = ({navigation}) => {
               flexDirection: 'row',
               padding: 10,
             }}>
-            <Text style={styles.firs}>ID Code</Text>
-            <Text style={styles.qr}>JLNBUDI270820211200</Text>
+            <Text style={styles.firs}>Code Setoran</Text>
+            <Text style={styles.qr}>{detail.code_setoran}</Text>
           </View>
           <View
             style={{
@@ -73,7 +85,7 @@ const KodeQRJadwalSetoran = ({navigation}) => {
             }}>
             <Text style={styles.firs}>Tanggal Pengajuan</Text>
             <Text style={[styles.firs, {fontWeight: '400'}]}>
-              12 November 2021 12:00
+              {moment(detail.tanggal).format('DD-MM-YYYY')} {detail.jam}
             </Text>
           </View>
           <View
@@ -85,7 +97,7 @@ const KodeQRJadwalSetoran = ({navigation}) => {
             }}>
             <Text style={styles.firs}>Tanggal Disetujui</Text>
             <Text style={[styles.firs, {fontWeight: '400'}]}>
-              27 November 2021 12:00
+              {/* 27 November 2021 12:00 */}
             </Text>
           </View>
           <Text style={styles.content}>
@@ -94,9 +106,9 @@ const KodeQRJadwalSetoran = ({navigation}) => {
           </Text>
         </Card>
       </ScrollView>
-      <TouchableOpacity style={styles.button} onPress={() => handleSave()}>
+      {/* <TouchableOpacity style={styles.button} onPress={() => handleSave()}>
         <Text style={styles.text}>Simpan Kode QR</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </>
   );
 };
@@ -117,6 +129,24 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 18,
     color: '#51C091',
+  },
+  notif: {
+    paddingHorizontal: 10,
+    margin: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
   },
   text: {
     fontFamily: 'Poppins-Regular',

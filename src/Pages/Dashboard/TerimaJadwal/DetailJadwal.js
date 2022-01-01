@@ -17,19 +17,60 @@ import Tanggal from '../../../assets/Images/Icon/Tanggal.svg';
 import Jam from '../../../assets/Images/Icon/Jam.svg';
 import Timbangan from '../../../assets/Images/Icon/Timbangan.svg';
 import {useSelector} from 'react-redux';
+import moment from 'moment';
+import {ResultJadwalTerima} from '../../../Apis/api/cekjadwal';
+import {Modal} from 'react-native-paper';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const DetailJadwal = ({navigation}) => {
+const DetailJadwal = ({navigation, route}) => {
+  const {detail} = route.params;
+  console.log('detail------>', detail);
   const [mitra, setMitra] = useState({});
+  const [visible, setVisible] = useState(false);
   const datamitra = useSelector(state => state.users.login);
-  // console.log(datamitra);
-  useEffect(() => {
-    datamitra.forEach(item => {
-      console.log(item);
-      setMitra(item);
-    });
-  }, []);
+  const [contentModal, setContentModal] = useState('');
+
+  const Schedule = async (
+    code_setoran,
+    id_token_from,
+    id_token_to,
+    limbah_kat_id,
+    tanggal,
+    jam,
+    volume,
+    aksi,
+  ) => {
+    try {
+      const Response = await ResultJadwalTerima(
+        code_setoran,
+        id_token_from,
+        id_token_to,
+        limbah_kat_id,
+        tanggal,
+        jam,
+        volume,
+        aksi,
+      );
+      if (aksi == 'terima') {
+        setVisible(true);
+        setContentModal(Response.data.informasi[0].msg);
+        setTimeout(() => {
+          // navigation.navigate('jadwalterima');
+          navigation.goBack();
+        }, 2000);
+      } else {
+        setVisible(true);
+        setContentModal(Response.data.informasi[0].msg);
+        setTimeout(() => {
+          // navigation.navigate('tolakjadwal');
+          navigation.goBack();
+        }, 2000);
+      }
+    } catch (error) {
+      console.log('Message Error : ', error);
+    }
+  };
   return (
     <>
       <Header
@@ -41,11 +82,11 @@ const DetailJadwal = ({navigation}) => {
         <View style={styles.content}>
           <View style={styles.notif}>
             <Tanda height={20} width={20} />
-            <Text style={styles.text}>Imam Cahyo mengajukan jadwal setor</Text>
+            <Text style={styles.text}>{detail.status}</Text>
           </View>
         </View>
 
-        <View
+        {/* <View
           style={{
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -75,7 +116,7 @@ const DetailJadwal = ({navigation}) => {
               size={15}
             />
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         <View style={{marginHorizontal: 20}}>
           {/* Jenis Limbah */}
@@ -100,7 +141,8 @@ const DetailJadwal = ({navigation}) => {
               placeholder="Limbah Minyak Jelantah"
               style={styles.input}
               multiline={true}
-              // value={}
+              editable={false}
+              value={detail.jenis_limbah}
               // onChangeText={event => {}}
             />
           </View>
@@ -126,7 +168,8 @@ const DetailJadwal = ({navigation}) => {
               placeholder="Senin, 02 November 2021"
               style={styles.input}
               multiline={true}
-              // value={}
+              editable={false}
+              value={moment(detail.created_date).format('DD/MM/YYYY')}
               // onChangeText={event => {}}
             />
           </View>
@@ -153,7 +196,7 @@ const DetailJadwal = ({navigation}) => {
               placeholder=" 13:00"
               style={styles.input}
               multiline={true}
-              // value={}
+              value={moment(detail.created_date).format('HH:mm:ss')}
               // onChangeText={event => {}}
             />
           </View>
@@ -180,19 +223,19 @@ const DetailJadwal = ({navigation}) => {
               placeholder="Berat Limbah"
               style={styles.input}
               multiline={true}
-              // value={}
+              value={detail.qty}
               // onChangeText={event => {}}
             />
             <Text style={styles.gram}>gram</Text>
           </View>
-          <View style={styles.catatan}>
+          {/* <View style={styles.catatan}>
             <Text>Catatan</Text>
             <TextInput
               style={styles.catatanInput}
               placeholder="Tulis pesannmu disini..."
               multiline={true}
             />
-          </View>
+          </View> */}
         </View>
       </ScrollView>
       <View
@@ -205,18 +248,73 @@ const DetailJadwal = ({navigation}) => {
         <TouchableOpacity
           style={styles.outlineButton}
           onPress={() => {
-            navigation.navigate('tolakjadwal');
+            Schedule(
+              detail.code_setoran,
+              detail.id_token_from,
+              datamitra[0].id_token,
+              detail.limbah_kat_id,
+              detail.tanggal,
+              detail.jam,
+              detail.qty,
+              'tolak',
+            );
           }}>
           <Text style={styles.TextOUline}>Tolak Jadwal</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            navigation.navigate('jadwalterima');
+            const tanggal = moment(detail.created_date).format('YYYY-MM-DD');
+            const jam = moment(detail.created_date).format('HH:mm:ss');
+            Schedule(
+              detail.code_setoran,
+              detail.id_token_from,
+              datamitra[0].id_token,
+              detail.limbah_kat_id,
+              tanggal,
+              jam,
+              detail.qty,
+              'terima',
+            );
           }}>
           <Text style={styles.textButton}>Terima Jadwal</Text>
         </TouchableOpacity>
       </View>
+      <Modal
+        visible={visible}
+        onDismiss={() => {
+          setVisible(false);
+        }}>
+        <View
+          style={{
+            backgroundColor: '#fff',
+            padding: 20,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginHorizontal: 20,
+            borderRadius: 10,
+          }}>
+          <Text
+            style={{fontFamily: 'Poppins-SemiBold', fontSize: 16, margin: 5}}>
+            {contentModal}
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              setVisible(false);
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Poppins-SemiBold',
+                fontSize: 16,
+                margin: 5,
+                color: '#51C091',
+                marginBottom: -5,
+              }}>
+              Ok
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </>
   );
 };
