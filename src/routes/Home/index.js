@@ -21,6 +21,7 @@ import EwaletNavigator from '../Akun/Ewalet';
 import RekeningNavigator from '../Akun/Rekening';
 import Dompet from '../../Pages/Dashboard/Dompet';
 import TarikSaldo from '../../Pages/Dashboard/TarikSaldo';
+import TarikSaldoNavigator from './TarikSaldo';
 
 const HomeNavigator = ({navigation}) => {
   const HomeStack = createStackNavigator();
@@ -42,7 +43,7 @@ const HomeNavigator = ({navigation}) => {
 
   return (
     <HomeStack.Navigator
-      initialRouteName={'HomeDasboar'}
+      initialRouteName={'Dashboard'}
       screenOptions={{headerShown: false}}>
       <HomeStack.Screen name={'HomeScreen'}>
         {() => (
@@ -221,7 +222,7 @@ const HomeNavigator = ({navigation}) => {
       <Tab.Screen name={'CekJadwal'} component={JadwalSetorNavigator} />
       {/* Dompat */}
       <Tab.Screen name={'Dompet'} component={Dompet} />
-      <Tab.Screen name={'Tarik'} component={TarikSaldo} />
+      <Tab.Screen name={'Tarik'} component={TarikSaldoNavigator} />
       {/*  */}
       {/* Start NAvigatorrr Akun /Saya */}
       <Tab.Screen name={'Akun'} component={AkunNavigator} />

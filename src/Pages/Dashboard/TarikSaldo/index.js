@@ -5,16 +5,18 @@ import {
   View,
   ScrollView,
   Dimensions,
+  TouchableOpacity,
   Image,
 } from 'react-native';
 import Header from '../../component/Header';
 import LinearGradient from 'react-native-linear-gradient';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+// import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import SwipeUpDownModal from 'react-native-swipe-modal-up-down';
 import {getDataRekeningBank} from '../../../Apis/api/akun/bank';
 import {useSelector} from 'react-redux';
 import {IMAGE_URL} from '../../../config/env';
+import {getDataEWallet} from '../../../Apis/api/akun/Ewalet';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -22,19 +24,34 @@ const TarikSaldo = ({navigation}) => {
   const state = useSelector(state => state.users.login);
   console.log('state', state);
   const [ShowComment, setShowModelComment] = useState(false);
+  const [ShowCommentWaleet, setShowModelCommentWallet] = useState(false);
   const [animateModal, setanimateModal] = useState(false);
   const [select, setSelect] = useState(false);
   const [dataRekening, setDataRekening] = useState([]);
+  const [pilihRekening, setRekening] = useState(null);
+  const [dataWallet, setDataWallet] = useState([]);
+  const [pilihWallet, setPilihWalet] = useState(null);
+  const [visible, setVisible] = useState(false);
   useEffect(() => {
     fetchRekening(state[0].id_token);
+    fetchEwalet(state[0].id_token);
   }, []);
 
   const fetchRekening = async id_token => {
     const Response = await getDataRekeningBank(id_token);
-    console.log('Response ---> ', Response.data.rekening);
+    // console.log('Response ---> ', Response.data.rekening);
 
     setDataRekening(Response.data.rekening);
   };
+
+  const fetchEwalet = async id_token => {
+    const Response = await getDataEWallet(id_token);
+
+    console.log('Response ---> ', Response.data.ewallet);
+    setDataWallet(Response.data.ewallet);
+  };
+
+  console.log('pilihRekening ---> ', dataWallet);
   return (
     <>
       <Header
@@ -42,7 +59,14 @@ const TarikSaldo = ({navigation}) => {
         icon="chevron-left"
         onClick={() => navigation.goBack()}
       />
-      <TouchableOpacity style={{padding: 20, borderRadius: 50}}>
+      <TouchableOpacity
+        style={{padding: 20, borderRadius: 50}}
+        onPress={() =>
+          navigation.push('transfer', {
+            rekening: pilihRekening,
+            wallet: pilihWallet,
+          })
+        }>
         <LinearGradient
           colors={['#51C091', '#52b788', '#40916c']}
           style={styles.linearGradient}>
@@ -66,7 +90,99 @@ const TarikSaldo = ({navigation}) => {
           <Icon name="chevron-up" />
         )}
       </TouchableOpacity>
+      {pilihRekening != null ? (
+        <View
+          style={{
+            padding: 20,
+            borderBottomColor: '#EBEBEB',
+            borderBottomWidth: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <Image
+            style={{height: 50, width: 50}}
+            source={{
+              uri: IMAGE_URL + pilihRekening.logo_bank,
+            }}
+          />
+          <View>
+            <Text
+              style={[
+                styles.title,
+                {fontSize: 14, fontWeight: '500', marginLeft: 10},
+              ]}>
+              {pilihRekening.nama_di_rek}
+            </Text>
+            <Text
+              style={[
+                styles.title,
+                {
+                  fontSize: 10,
+                  fontWeight: '500',
+                  marginLeft: 10,
+                  letterSpacing: 0.5,
+                },
+              ]}>
+              {pilihRekening.nama_bank}.{pilihRekening.nomor_rek}
+            </Text>
+          </View>
+        </View>
+      ) : null}
 
+      <TouchableOpacity
+        style={[styles.rekening, {marginTop: 10}]}
+        onPress={() => {
+          setVisible(!select);
+          setShowModelCommentWallet(!ShowCommentWaleet);
+        }}>
+        <Text>Transfer ke E-Wallet</Text>
+        {visible == false ? (
+          <Icon name="chevron-down" />
+        ) : (
+          <Icon name="chevron-up" />
+        )}
+      </TouchableOpacity>
+
+      {pilihWallet != null ? (
+        <View
+          style={{
+            padding: 20,
+            borderBottomColor: '#EBEBEB',
+            borderBottomWidth: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <Image
+            style={{height: 50, width: 50}}
+            source={{
+              uri: IMAGE_URL + pilihWallet.logo_ewallet,
+            }}
+          />
+          <View>
+            <Text
+              style={[
+                styles.title,
+                {fontSize: 14, fontWeight: '500', marginLeft: 10},
+              ]}>
+              {pilihWallet.nama_di_dgm}
+            </Text>
+            <Text
+              style={[
+                styles.title,
+                {
+                  fontSize: 10,
+                  fontWeight: '500',
+                  marginLeft: 10,
+                  letterSpacing: 0.5,
+                },
+              ]}>
+              {pilihWallet.nama_ewallet}.{pilihWallet.nomor_dgm}
+            </Text>
+          </View>
+        </View>
+      ) : null}
+
+      {/* MOdal Rekening */}
       <SwipeUpDownModal
         modalVisible={ShowComment}
         PressToanimate={animateModal}
@@ -95,11 +211,9 @@ const TarikSaldo = ({navigation}) => {
                       key={idx}
                       style={styles.content}
                       onPress={() => {
-                        // setNameWalet(item.dgm_nama);
-                        // setShowModelComment(false);
-                        // setanimateModal(false);
-                        // setImg(item.dgm_logo);
-                        // setIdDgm(item.dgm_id);
+                        setRekening(item);
+                        setSelect(!select);
+                        setShowModelComment(!ShowComment);
                       }}>
                       <Image
                         style={{height: 50, width: 50}}
@@ -139,6 +253,83 @@ const TarikSaldo = ({navigation}) => {
         onClose={() => {
           setShowModelComment(false);
           setanimateModal(false);
+          setSelect(false);
+        }}
+      />
+      {/* ===========Modal end Rekening ============== */}
+
+      {/* =============Modal EWallet ================== */}
+      <SwipeUpDownModal
+        modalVisible={ShowCommentWaleet}
+        PressToanimate={animateModal}
+        //if you don't pass HeaderContent you should pass marginTop in view of ContentModel to Make modal swipeable
+        ContentModal={
+          <>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <View
+                style={{
+                  borderBottomColor: '#51C091',
+                  borderBottomWidth: 4,
+                  marginTop: 10,
+                  width: 40,
+                }}
+              />
+            </View>
+            <ScrollView>
+              {dataWallet.map((item, idx) => {
+                return (
+                  <>
+                    <TouchableOpacity
+                      key={idx}
+                      style={styles.content}
+                      onPress={() => {
+                        setPilihWalet(item);
+                        setVisible(!visible);
+                        setShowModelCommentWallet(!ShowCommentWaleet);
+                      }}>
+                      <Image
+                        style={{height: 50, width: 50}}
+                        source={{
+                          uri: IMAGE_URL + item.logo_ewallet,
+                        }}
+                      />
+                      <View>
+                        <Text
+                          style={[
+                            styles.title,
+                            {fontSize: 14, fontWeight: '500', marginLeft: 10},
+                          ]}>
+                          {item.nama_di_dgm}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.title,
+                            {
+                              fontSize: 10,
+                              fontWeight: '500',
+                              marginLeft: 10,
+                              letterSpacing: 0.5,
+                            },
+                          ]}>
+                          {item.nama_ewallet}.{item.nomor_dgm}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </>
+                );
+              })}
+            </ScrollView>
+          </>
+        }
+        ContentModalStyle={styles.Modal}
+        onClose={() => {
+          setShowModelCommentWallet(false);
+          setanimateModal(false);
+          setVisible(false);
         }}
       />
     </>

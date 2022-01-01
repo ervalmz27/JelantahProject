@@ -5,11 +5,13 @@ import {
   View,
   ImageBackground,
   Dimensions,
+  Image,
 } from 'react-native';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Coin from '../../../assets/Images/Icon/Coin.svg';
 import BankCard from '../../../assets/Images/Icon/bank-cards.svg';
+import TarikSaldo from '../../../assets/Images/Icon/TarikSaldo.svg';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const Dompet = ({navigation}) => {
@@ -75,20 +77,33 @@ const Dompet = ({navigation}) => {
       <View style={styles.containerConten}>
         <View style={styles.cardContent}>
           <TouchableOpacity style={{alignItems: 'center', width: 68}}>
-            <BankCard height={32} width={32} />
-            <Text style={{textAlign: 'center'}}>Tambah Rekening</Text>
+            <TarikSaldo height={32} width={32} />
+            <Text
+              style={{
+                textAlign: 'center',
+                fontFamily: 'Poppins-Regular',
+                fontSize: 12,
+                marginTop: 5,
+              }}>
+              Tarik Saldo
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity style={{alignItems: 'center', width: 68}}>
-            <BankCard height={32} width={32} />
-            <Text style={{textAlign: 'center'}}>Tambah Rekening</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{alignItems: 'center', width: 68}}>
-            <BankCard height={32} width={32} />
-            <Text style={{textAlign: 'center'}}>Tambah Rekening</Text>
+            <Image
+              // source={require('../../assets/Images/home/riwayat.png')}
+              source={require('../../../assets/Images/home/riwayat.png')}
+              resizeMode="contain"
+              style={{
+                tintColor: '#51C091',
+                width: 30,
+                height: 50,
+              }}
+            />
+            <Text style={{textAlign: 'center'}}>Riwayat</Text>
           </TouchableOpacity>
         </View>
         <View style={{padding: 20}}>
-          <Text>Aktifitas Terakhir</Text>
+          <Text style={styles.title}>Aktifitas Terakhir</Text>
         </View>
       </View>
     </>
@@ -149,5 +164,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     letterSpacing: 0.5,
+  },
+  title: {
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 16,
+    letterSpacing: 0.5,
+    color: '#263238',
   },
 });

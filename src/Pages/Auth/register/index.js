@@ -84,7 +84,7 @@ const Register = ({navigation}) => {
               form.user_password != '' &&
               el.status != 'failed'
             ) {
-              // navigation.navigate('Loginscreen');
+              navigation.navigate('Loginscreen');
             } else {
               alert(el.msg);
             }
@@ -273,6 +273,19 @@ const Register = ({navigation}) => {
               {color: '#51C091', marginLeft: 5, fontWeight: '600'},
             ]}>
             Mitra Usaha
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonOutlin}
+          onPress={() => {
+            navigation.navigate('MitraLembaga');
+          }}>
+          <Text
+            style={[
+              styles.fontReguler,
+              {color: '#51C091', marginLeft: 5, fontWeight: '600'},
+            ]}>
+            Mitra Lembaga
           </Text>
         </TouchableOpacity>
         <View

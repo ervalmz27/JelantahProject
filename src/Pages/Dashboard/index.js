@@ -461,7 +461,6 @@ const Dashboar = ({navigation}) => {
             width: windowWidth * 1,
           }}>
           <Swiper autoplay={true} showsButtons={false} showsPagination={false}>
-            {/* <ScrollView horizontal={true}> */}
             {infoTerkini.map((i, idx) => {
               return (
                 <View

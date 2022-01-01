@@ -1,10 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, Dimensions, Image} from 'react-native';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import {useSelector} from 'react-redux';
+import {getDataCekJadwal} from '../../../Apis/api/cekjadwal';
 import Header from '../../component/Header';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const TerimaJadwal = ({navigation}) => {
+  const token = useSelector(state => state.users.login);
   const [navbar, setNavbar] = useState(false);
   const [tolak, setTolak] = useState(false);
   const [terima, setTerima] = useState(false);
@@ -13,6 +16,7 @@ const TerimaJadwal = ({navigation}) => {
   useEffect(() => {
     setNavbar(true);
     setContent('Terbaru');
+    GetCekJadwal(token[0].id_token);
   }, []);
 
   return (
