@@ -4,6 +4,7 @@ import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 // import {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Header from '../../component/Header';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const alamatMaps = ({navigation}) => {
@@ -17,7 +18,7 @@ const alamatMaps = ({navigation}) => {
     latitude: 51.5079145,
     longitude: -0.0899163,
     latitudeDelta: 0.009,
-    longitudeDelta: 0.001,
+    longitudeDelta: 0.009,
   });
   useEffect(() => {
     MYlocation();
@@ -30,6 +31,8 @@ const alamatMaps = ({navigation}) => {
         ...getlocation,
         latitude: info.coords.latitude,
         longitude: info.coords.longitude,
+        latitudeDelta: 0.009,
+        longitudeDelta: 0.009,
       });
     });
   };
@@ -61,9 +64,20 @@ const alamatMaps = ({navigation}) => {
           onRegionChangeComplete={region => setRegion(region)}>
           <Marker coordinate={getlocation} />
         </MapView>
+        <View style={{position: 'absolute', bottom: windowHeight * 0.1}}>
+          <View>
+            <Text style={[styles.text, {color: '#263238'}]}>
+              Current latitude: {region.latitude}
+            </Text>
+            <Text style={[styles.text, {color: '#263238'}]}>
+              Current longitude: {region.longitude}
+            </Text>
+          </View>
 
-        <Text style={styles.text}>Current latitude: {region.latitude}</Text>
-        <Text style={styles.text}>Current longitude: {region.longitude}</Text>
+          <TouchableOpacity style={styles.button} onPress={() => gotLocation()}>
+            <Text style={styles.text}>Lokasi Saya</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </>
   );
@@ -80,5 +94,17 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  button: {
+    height: 48,
+    backgroundColor: '#51C091',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  text: {
+    fontFamily: 'Poppins-SemiBold',
+    color: '#fff',
+    fontSize: 16,
   },
 });

@@ -89,3 +89,14 @@ export const getDataPesanDetail = async id_pesan => {
     console.log(error);
   }
 };
+
+// getDataRiwayat.php
+export const getDataRiwayat = async id_token => {
+  try {
+    const data = {id_token: id_token};
+    const Response = await axios.post(`${API_URL}getDataRiwayat.php`, data);
+    return Response;
+  } catch (error) {
+    console.log(error);
+  }
+};

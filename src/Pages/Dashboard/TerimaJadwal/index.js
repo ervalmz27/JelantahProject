@@ -82,7 +82,7 @@ const TerimaJadwal = ({navigation}) => {
         </TouchableOpacity>
       </View>
       <ScrollView>
-        {content == 'Terbaru' ? (
+        {content == 'Terbaru' && terbaru.length > 0 ? (
           <>
             {terbaru.map((item, idx) => {
               return (
@@ -105,16 +105,20 @@ const TerimaJadwal = ({navigation}) => {
               );
             })}
           </>
-        ) : null}
+        ) : (
+          <View style={styles.dummy}>
+            <Text style={styles.textDummy}>Jadwal masih kosong!</Text>
+          </View>
+        )}
 
         {content == 'Diterima' ? (
-          <View style={{alignItems: 'center', justifyContent: 'center'}}>
-            <Text>Halaman Not Found!</Text>
+          <View style={styles.dummy}>
+            <Text style={styles.textDummy}>Jadwal masih kosong!</Text>
           </View>
         ) : null}
         {content == 'Ditolak' ? (
-          <View style={{alignItems: 'center', justifyContent: 'center'}}>
-            <Text>Halaman Not Found!</Text>
+          <View style={styles.dummy}>
+            <Text style={styles.textDummy}>Jadwal masih kosong!</Text>
           </View>
         ) : null}
       </ScrollView>
@@ -173,6 +177,17 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
     fontWeight: '400',
     fontSize: 12,
+    letterSpacing: 0.5,
+  },
+  dummy: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    marginTop: windowHeight * 0.33,
+  },
+  textDummy: {
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 16,
     letterSpacing: 0.5,
   },
 });

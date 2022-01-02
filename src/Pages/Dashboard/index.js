@@ -147,13 +147,13 @@ const Dashboar = ({navigation}) => {
 
   const backAction = () => {
     if (navigation.isFocused()) {
-      Alert.alert('Hold on!', 'Are you sure you want to exit app?', [
+      Alert.alert('Perhatian!', 'Apakah anda akan keluar aplikasi?', [
         {
-          text: 'Cancel',
+          text: 'Tidak',
           onPress: () => null,
-          style: 'cancel',
+          style: 'tidak',
         },
-        {text: 'YES', onPress: () => BackHandler.exitApp()},
+        {text: 'Ya', onPress: () => BackHandler.exitApp()},
       ]);
       return true;
     }
@@ -359,7 +359,7 @@ const Dashboar = ({navigation}) => {
             pressTarik={() => navigation.navigate('Tarik')}
             cekJadwal={() => navigation.navigate('CekJadwal')}
             onTerima={() => {
-              navigation.navigate('qrscan');
+              navigation.navigate('codeQr');
             }}
           />
         ) : (
