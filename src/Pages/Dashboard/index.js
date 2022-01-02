@@ -358,6 +358,9 @@ const Dashboar = ({navigation}) => {
             }}
             pressTarik={() => navigation.navigate('Tarik')}
             cekJadwal={() => navigation.navigate('CekJadwal')}
+            onTerima={() => {
+              navigation.navigate('qrscan');
+            }}
           />
         ) : (
           <Mitra_Personal_Usaha
