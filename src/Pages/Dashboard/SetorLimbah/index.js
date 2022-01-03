@@ -127,6 +127,7 @@ const SetorLimbah = ({navigation}) => {
       tanggal: tgl + '/' + bln + '/' + currentDate.getFullYear(),
     });
     setSendTanggal(currentDate.getFullYear() + '-' + bln + '-' + tgl);
+    console.log("Hallloooo tanggal ----->",currentDate.getFullYear() + '-' + bln + '-' + tgl);
   };
   const onChangetime = (event, selectedDate) => {
     console.log('event', event);
