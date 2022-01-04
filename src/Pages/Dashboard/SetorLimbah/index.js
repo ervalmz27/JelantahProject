@@ -30,6 +30,8 @@ import {
   JadwalSetoran,
 } from '../../../Apis/api/SetorLimbah';
 import {getQrCode} from '../../../Apis/actions/users';
+import moment from 'moment';
+import AppLoader from '../../component/AppLoader';
 
 const SetorLimbah = ({navigation}) => {
   const token = useSelector(state => state.users.login);
@@ -70,6 +72,7 @@ const SetorLimbah = ({navigation}) => {
   const [tokenMitra, setTokenMitra] = useState('');
   const [idLimbah, setIDLimbah] = useState('');
   const [sendTanggal, setSendTanggal] = useState('');
+  const [loading, setLoading] = useState(false);
   const [perkiraanPoin, setPerkiraanPoin] = useState({
     harga: null,
     poin: null,
@@ -126,8 +129,12 @@ const SetorLimbah = ({navigation}) => {
       ...placeholder,
       tanggal: tgl + '/' + bln + '/' + currentDate.getFullYear(),
     });
-    setSendTanggal(currentDate.getFullYear() + '-' + bln + '-' + tgl);
-    console.log("Hallloooo tanggal ----->",currentDate.getFullYear() + '-' + bln + '-' + tgl);
+    const dataTanggal = moment(currentDate.getFullYear() + bln + tgl).format(
+      'YYYY-MM-DD',
+    );
+
+    setSendTanggal(dataTanggal);
+    console.log('Hallloooo tanggal ----->', dataTanggal);
   };
   const onChangetime = (event, selectedDate) => {
     console.log('event', event);
@@ -151,6 +158,14 @@ const SetorLimbah = ({navigation}) => {
         ':' +
         currentDate.getSeconds(),
     });
+    console.log(
+      'hhhhh---->',
+      currentDate.getHours() +
+        ':' +
+        currentDate.getMinutes() +
+        ':' +
+        currentDate.getSeconds(),
+    );
   };
   const showMode = currentMode => {
     setShow(true);
@@ -169,7 +184,6 @@ const SetorLimbah = ({navigation}) => {
   const Perkiraan = async (volume, lvl) => {
     try {
       const Response = await getPerkiraan(volume, lvl);
-
       let coin = Response.data.data;
       coin.forEach(all => {
         console.log(all.harga, all.poin);
@@ -183,7 +197,7 @@ const SetorLimbah = ({navigation}) => {
       console.log('Message', error);
     }
   };
-  console.log('placeholder', placeholder.jam);
+
   const ajukanJadwal = async (
     id_token_from,
     id_token_to,
@@ -192,6 +206,7 @@ const SetorLimbah = ({navigation}) => {
     jam,
     volume,
   ) => {
+    setLoading(true);
     try {
       const Response = await JadwalSetoran(
         id_token_from,
@@ -202,6 +217,7 @@ const SetorLimbah = ({navigation}) => {
         volume,
       );
       console.log('Response', Response.data.data);
+      setLoading(false);
       dispatch(getQrCode(Response.data.data));
     } catch (error) {
       console.log('Message', error);
@@ -550,16 +566,18 @@ const SetorLimbah = ({navigation}) => {
               dist,
               tokenMitra,
               idLimbah,
-              placeholder.jam,
+
               sendTanggal,
+              placeholder.jam,
               timbangan,
             );
             ajukanJadwal(
               dist,
               tokenMitra,
               idLimbah,
-              placeholder.jam,
+
               sendTanggal,
+              placeholder.jam,
               timbangan,
             );
             navigation.navigate('berhasil');
@@ -591,6 +609,7 @@ const SetorLimbah = ({navigation}) => {
           onChange={onChangetime}
         />
       )}
+      {loading == true ? <AppLoader /> : null}
     </>
   );
 };

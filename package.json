@@ -25,6 +25,8 @@
     "@types/react-native-snap-carousel": "^3.8.5",
     "axios": "^0.24.0",
     "fbjs": "^3.0.2",
+    "lottie-ios": "^3.2.3",
+    "lottie-react-native": "^5.0.1",
     "moment": "^2.29.1",
     "react": "17.0.2",
     "react-content-loader": "^6.1.0",

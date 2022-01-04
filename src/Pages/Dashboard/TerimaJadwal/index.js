@@ -17,7 +17,7 @@ const TerimaJadwal = ({navigation}) => {
   const [terima, setTerima] = useState(false);
   const [content, setContent] = useState('');
   const [terbaru, setTerbaru] = useState([]);
-
+  const [contentJadwal, setContentJadwal] = useState([]);
   useEffect(() => {
     setNavbar(true);
     setContent('Terbaru');
@@ -26,7 +26,8 @@ const TerimaJadwal = ({navigation}) => {
 
   const fetchTerimaJadwal = async id_token => {
     const Response = await getDataTerimaJadwal(id_token);
-    console.log('Response', Response.data.setoran[0].terbaru);
+    console.log('Response', JSON.stringify(Response.data.setoran));
+    setContentJadwal(Response.data.setoran);
     setTerbaru(Response.data.setoran[0].terbaru);
   };
   return (
@@ -105,18 +106,60 @@ const TerimaJadwal = ({navigation}) => {
               );
             })}
           </>
-        ) : (
-          <View style={styles.dummy}>
-            <Text style={styles.textDummy}>Jadwal masih kosong!</Text>
-          </View>
-        )}
-
-        {content == 'Diterima' ? (
+        ) : content == 'Terbaru' ? (
           <View style={styles.dummy}>
             <Text style={styles.textDummy}>Jadwal masih kosong!</Text>
           </View>
         ) : null}
-        {content == 'Ditolak' ? (
+
+        {content == 'Diterima' && contentJadwal[0].diterima.length > 0 ? (
+          contentJadwal[0].diterima.map((item, idx) => {
+            return (
+              <TouchableOpacity
+                key={idx}
+                style={styles.profile}
+                onPress={() => {
+                  navigation.push('detailJadwal', {detail: item});
+                }}>
+                <View style={{marginLeft: 10}}>
+                  <Text style={styles.nameProfile}>{item.judul}</Text>
+                  <Text style={styles.message} numberOfLines={1}>
+                    {item.qty} {item.jenis_limbah} {item.tanggal}
+                  </Text>
+                  <Text style={styles.message} numberOfLines={1}>
+                    {moment(item.created_date).format('DD-MM-YYYY HH:mm:ss')}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })
+        ) : content == 'Diterima' ? (
+          <View style={styles.dummy}>
+            <Text style={styles.textDummy}>Jadwal masih kosong!</Text>
+          </View>
+        ) : null}
+        {content == 'Ditolak' && contentJadwal[0].ditolak.length > 0 ? (
+          contentJadwal[0].diterima.map((item, idx) => {
+            return (
+              <TouchableOpacity
+                key={idx}
+                style={styles.profile}
+                onPress={() => {
+                  navigation.push('detailJadwal', {detail: item});
+                }}>
+                <View style={{marginLeft: 10}}>
+                  <Text style={styles.nameProfile}>{item.judul}</Text>
+                  <Text style={styles.message} numberOfLines={1}>
+                    {item.qty} {item.jenis_limbah} {item.tanggal}
+                  </Text>
+                  <Text style={styles.message} numberOfLines={1}>
+                    {moment(item.created_date).format('DD-MM-YYYY HH:mm:ss')}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })
+        ) : content == 'Ditolak' ? (
           <View style={styles.dummy}>
             <Text style={styles.textDummy}>Jadwal masih kosong!</Text>
           </View>

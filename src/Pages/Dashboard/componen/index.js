@@ -19,7 +19,7 @@ const windowHeight = Dimensions.get('window').height;
 const CardContent = ({onSetor, onJadwal, cekJadwal, pressTarik, onTerima}) => {
   return (
     <>
-      <View style={[styles.card, styles.content]}>
+      <View style={styles.card}>
         <TouchableOpacity style={styles.eco} onPress={onSetor}>
           <SetorLimbah height={24} width={24} />
           <Text style={styles.font}>Setor Limbah</Text>
@@ -44,7 +44,8 @@ const CardContent = ({onSetor, onJadwal, cekJadwal, pressTarik, onTerima}) => {
           <JadwalSetor height={24} width={24} />
           <Text style={styles.font}>Cek Jadwal</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.eco]}>
+        <TouchableOpacity
+          style={[styles.eco, {marginRight: windowWidth * 0.6}]}>
           <Laporan height={24} width={24} />
           <Text style={styles.font}>Cek Laporan</Text>
         </TouchableOpacity>
@@ -72,12 +73,14 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
 
-    width: 80,
     marginHorizontal: 3,
     borderRadius: 5,
     marginTop: 24,
+    flexDirection: 'row',
+    marginHorizontal: 20,
     alignItems: 'center',
-
+    justifyContent: 'space-around',
+    flexWrap: 'wrap',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

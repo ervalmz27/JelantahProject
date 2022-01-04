@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "349770745552-m001qlo9iica53oko6mg067q2859mna7.apps.googleusercontent.com",
+          "client_id": "349770745552-hn2jgdqft6i6aqk0jp3265ppcvui90cc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.jelantah",
-            "certificate_hash": "a1c51b787e8210624abd98220a096f45cfdc8ea8"
+            "certificate_hash": "e829577913b3585776d3ea7385079d117b639824"
           }
         },
         {

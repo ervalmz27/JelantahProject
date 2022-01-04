@@ -26,6 +26,7 @@ import {
 import {Modal} from 'react-native-paper';
 import Geolocation from '@react-native-community/geolocation';
 import {FlatList} from 'react-native-gesture-handler';
+import AppLoader from '../../../component/AppLoader';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const MitraLembaga = ({navigation}) => {
@@ -37,6 +38,7 @@ const MitraLembaga = ({navigation}) => {
     });
   }, []);
   const flatListRef = useRef(null);
+  const [loading, setLoading] = useState(false);
   const [security, setSecurity] = useState(true);
   const [rege, setRegex] = useState(false);
   const [lat, setLat] = useState('');
@@ -174,6 +176,7 @@ const MitraLembaga = ({navigation}) => {
     lat,
     long,
   ) => {
+    setLoading(true);
     const Response = await RegisterLembaga(
       user_fullname,
       user_email,
@@ -192,7 +195,7 @@ const MitraLembaga = ({navigation}) => {
     );
     if (Response.data.data[0].status == 'success') {
       setContentModal(Response.data.data[0].msg);
-      setContent(true);
+      setLoading(false);
       setTimeout(() => {
         navigation.navigate('Loginscreen');
       }, 2000);
@@ -495,7 +498,8 @@ const MitraLembaga = ({navigation}) => {
         nameLembaga.name != 'Mitra Kementerian' &&
         nameLembaga.name != 'Mitra Kabupaten/Kota' &&
         nameLembaga.name != 'Mitra Kecamatan' &&
-        nameLembaga.name != 'Mitra Kelurahan/Desa' ? (
+        nameLembaga.name != 'Mitra Kelurahan/Desa' &&
+        nameLembaga.name != 'Mitra Agen CP' ? (
           <TouchableOpacity
             style={[styles.container, {paddingVertical: 3}]}
             onPress={() => {
@@ -531,7 +535,8 @@ const MitraLembaga = ({navigation}) => {
         nameLembaga.name != 'Mitra Kabupaten/Kota' &&
         nameLembaga.name != 'Mitra Kecamatan' &&
         nameLembaga.name != 'Mitra Kelurahan/Desa' &&
-        nameLembaga.name != 'Mitra RW' ? (
+        nameLembaga.name != 'Mitra RW' &&
+        nameLembaga.name != 'Mitra Agen CP' ? (
           <TouchableOpacity
             style={[styles.container, {paddingVertical: 3}]}
             onPress={() => {
@@ -858,6 +863,7 @@ const MitraLembaga = ({navigation}) => {
         />
       </Modal>
       {/* --------------------------------------end rt -------------------------------- */}
+      {loading == true ? <AppLoader /> : null}
     </>
   );
 };

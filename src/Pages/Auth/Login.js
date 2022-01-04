@@ -17,11 +17,12 @@ import Header from '../component/Header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSelector, useDispatch} from 'react-redux';
 import {getLoginUsers, getUsersSuccess} from '../../Apis/actions/users';
+import AppLoader from '../component/AppLoader';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const Login = ({navigation}) => {
   const jsonValue = AsyncStorage.getItem('token');
-
+  const [loadingPending, setLoadingPending] = useState(false);
   const globalState = useSelector(state => state);
   // console.log('sssss', globalState);
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ const Login = ({navigation}) => {
     navigation.goBack();
   };
   const postLogin = async (user_id, user_password) => {
+    setLoadingPending(true);
     try {
       AsyncStorage.setItem('user_id', user_id);
       AsyncStorage.setItem('user_password', user_password);
@@ -47,7 +49,6 @@ const Login = ({navigation}) => {
         .then(res => {
           dispatch(getLoginUsers(res.data.data));
           res.data.data.forEach(res => {
-            console.log('rrrrrrrrrrrrrr', res);
             const mitra = res.user_level_nama;
             dispatch(getUsersSuccess(mitra));
             if (
@@ -56,18 +57,18 @@ const Login = ({navigation}) => {
             ) {
               AsyncStorage.setItem('token', res.id_token);
               navigation.navigate('Home');
-              console.log('home');
+              setLoadingPending(false);
             } else {
               alert('Username/Password Tidak Ditemukan');
             }
           });
-
-          setForm({...form, user_id: '', user_password: ''});
         })
         .catch(err => {
+          setLoadingPending(false);
           console.log('error', err);
         });
     } catch (error) {
+      setLoadingPending(false);
       console.log('Message Error : ', error);
       alert(
         'Username atau Password Yang Anda Masukan Tidak Terdapat Mohon Dicheck Kembali',
@@ -188,6 +189,7 @@ const Login = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      {loadingPending == true ? <AppLoader /> : null}
     </>
   );
 };
