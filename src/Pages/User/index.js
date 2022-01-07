@@ -26,6 +26,7 @@ const User = ({navigation}) => {
   const Profil = useSelector(state => state.users.login);
   const dashboard = useSelector(state => state.users.dashboard);
   console.log('data users', Profil);
+  const [rupiah, setRupiah] = useState('');
   const Logout = () => {
     navigation.navigate('Auth');
     AsyncStorage.clear();
@@ -34,18 +35,21 @@ const User = ({navigation}) => {
     AsyncStorage.removeItem('token');
   };
   useEffect(() => {
+    convert();
     const willFocusSubscription = navigation.addListener('focus', () => {
       Profil;
     });
 
     return willFocusSubscription;
   }, []);
-  // const numb = item.user_wallet;
-  // const format = numb.toString().split('').reverse().join('');
-  // const convert = format.match(/\d{1,3}/g);
-  // const rupiah =
-  //   'Rp ' + convert.join('.').split('').reverse().join('');
-  // setRupiah(rupiah);
+  const convert = () => {
+    const numb = Profil[0].user_wallet;
+    const format = numb.toString().split('').reverse().join('');
+    const convert = format.match(/\d{1,3}/g);
+    const rupiah = 'Rp ' + convert.join('.').split('').reverse().join('');
+    setRupiah(rupiah);
+  };
+
   return (
     <>
       <ScrollView style={{backgroundColor: '#fff'}}>
@@ -105,7 +109,7 @@ const User = ({navigation}) => {
                 <View style={{flexDirection: 'column', marginLeft: 10}}>
                   <Text style={styles.textJersey}>Saldo Dompet</Text>
                   <Text style={[styles.textJersey, {color: '#000'}]}>
-                    {item.user_wallet}
+                    {rupiah}
                   </Text>
                 </View>
               </View>

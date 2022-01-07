@@ -22,6 +22,9 @@ import RekeningNavigator from '../Akun/Rekening';
 import Dompet from '../../Pages/Dashboard/Dompet';
 import TarikSaldo from '../../Pages/Dashboard/TarikSaldo';
 import TarikSaldoNavigator from './TarikSaldo';
+import StatistikNavigator from './statistik';
+import RiwayatDompet from '../../Pages/Dashboard/Dompet/RiwayatDompet';
+import Poin from '../../Pages/Dashboard/Poin';
 
 const HomeNavigator = ({navigation}) => {
   const HomeStack = createStackNavigator();
@@ -220,8 +223,13 @@ const HomeNavigator = ({navigation}) => {
       <Tab.Screen name={'codeQr'} component={ScannerNavigator} />
       <Tab.Screen name={'TerimaJadwal'} component={TerimaJadwalNavigator} />
       <Tab.Screen name={'CekJadwal'} component={JadwalSetorNavigator} />
+      <Tab.Screen name={'DetailStatistik'} component={StatistikNavigator} />
+      {/* Poinn */}
+      <Tab.Screen name={'poin'} component={Poin} />
+      {/* endpoin  */}
       {/* Dompat */}
       <Tab.Screen name={'Dompet'} component={Dompet} />
+      <Tab.Screen name={'RiwayatDompet'} component={RiwayatDompet} />
       <Tab.Screen name={'Tarik'} component={TarikSaldoNavigator} />
       {/*  */}
       {/* Start NAvigatorrr Akun /Saya */}

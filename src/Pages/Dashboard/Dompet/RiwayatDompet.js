@@ -1,56 +1,56 @@
-import React, {useState, useEffect} from 'react';
+import {useFocusEffect} from '@react-navigation/core';
+import React, {useState, useEffect, useCallback} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useSelector} from 'react-redux';
-import {getDataRiwayat} from '../../Apis/api/dashboard';
-import {IMAGE_URL} from '../../config/env';
-import Header from '../component/Header';
-import Coin from '../../assets/Images/Icon/Coin.svg';
+import {getDataRiwayatDompet} from '../../../Apis/api/dashboard';
+import {IMAGE_URL} from '../../../config/env';
+import Header from '../../component/Header';
+import Coin from '../../../assets/Images/Icon/Coin.svg';
 import moment from 'moment';
-const Riwayat = ({navigation}) => {
-  const token = useSelector(state => state.users.login);
-  const [aktivitas, setAktivitas] = useState([]);
+import {ScrollView} from 'react-native-gesture-handler';
+const RiwayatDompet = ({navigation}) => {
+  const state = useSelector(state => state.users.login);
   const [converAktifitas, setConvertAktifitas] = useState([]);
-  useEffect(() => {
-    fetchRiwayat(token[0].id_token);
-  }, []);
-  const fetchRiwayat = async id_token => {
-    const Response = await getDataRiwayat(id_token);
+  const [aktivitas, setAktivitas] = useState([]);
+  useFocusEffect(
+    useCallback(() => {
+      RiwayatDompet();
+    }, [state]),
+  );
+  const RiwayatDompet = async () => {
+    const data = state[0].id_token;
+    const Response = await getDataRiwayatDompet(data);
     console.log('Response----------->', Response.data.riwayat);
-    setAktivitas(Response.data.riwayat);
-    const data = Response.data.riwayat;
+    const riwayat = Response.data.riwayat;
+    setAktivitas(riwayat);
     let arr = [];
+    for (let i = 0; i < riwayat.length; i++) {
+      const element = riwayat[i].nilai;
+      const format = element.toString().split('').reverse().join('');
+      const convert = format.match(/\d{1,3}/g);
+      const rupiah = 'Rp ' + convert.join('.').split('').reverse().join('');
 
-    for (let i = 0; i < data.length; i++) {
-      const element = data[i].nilai;
-      if (element != null) {
-        const format = element.toString().split('').reverse().join('');
-        const convert = format.match(/\d{1,3}/g);
-        const rupiah = 'Rp ' + convert.join('.').split('').reverse().join('');
-        // console.log('===========>', rupiah);
-        arr.push(rupiah);
-      }
+      arr.push(rupiah);
     }
-    // console.log('Rupiah', arr);
     setConvertAktifitas(arr);
   };
   return (
     <>
-      <Header name="Riwayat" />
+      <Header
+        name="Riwayat Dompet"
+        icon="chevron-left"
+        onClick={() => navigation.goBack()}
+      />
+      <View style={{padding: 20}}>
+        <Text style={styles.title}>Aktifitas Terakhir</Text>
+      </View>
       <ScrollView>
-        <View style={styles.contenHeader}>
-          <Text
-            style={[
-              styles.fontContent,
-              {color: '#000', fontFamily: 'Poppins-Bold'},
-            ]}>
-            Semua Aktivitas
-          </Text>
-        </View>
         {aktivitas.map((item, index) => {
           return (
-            <View
+            <TouchableOpacity
+              onPress={() => {
+                alert('Masih dalam pengembangan');
+              }}
               style={{
                 padding: 10,
                 flexDirection: 'row',
@@ -106,7 +106,7 @@ const Riwayat = ({navigation}) => {
                   </Text>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           );
         })}
       </ScrollView>
@@ -114,7 +114,7 @@ const Riwayat = ({navigation}) => {
   );
 };
 
-export default Riwayat;
+export default RiwayatDompet;
 
 const styles = StyleSheet.create({
   fontContent: {
@@ -138,5 +138,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  title: {
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 16,
+    letterSpacing: 0.5,
+    color: '#263238',
   },
 });

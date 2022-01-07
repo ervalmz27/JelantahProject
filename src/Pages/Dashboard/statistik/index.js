@@ -1,43 +1,43 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import {useSelector} from 'react-redux';
-import {getDataRiwayat} from '../../Apis/api/dashboard';
-import {IMAGE_URL} from '../../config/env';
-import Header from '../component/Header';
-import Coin from '../../assets/Images/Icon/Coin.svg';
 import moment from 'moment';
-const Riwayat = ({navigation}) => {
-  const token = useSelector(state => state.users.login);
-  const [aktivitas, setAktivitas] = useState([]);
-  const [converAktifitas, setConvertAktifitas] = useState([]);
-  useEffect(() => {
-    fetchRiwayat(token[0].id_token);
-  }, []);
-  const fetchRiwayat = async id_token => {
-    const Response = await getDataRiwayat(id_token);
-    console.log('Response----------->', Response.data.riwayat);
-    setAktivitas(Response.data.riwayat);
-    const data = Response.data.riwayat;
-    let arr = [];
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, View, ScrollView, Image} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useSelector} from 'react-redux';
+import {getDataStatistikSetoranDetail} from '../../../Apis/api/dashboard';
+import {IMAGE_URL} from '../../../config/env';
 
+import Header from '../../component/Header';
+
+const Statistik = ({navigation}) => {
+  const [aktivitas, setAktivitas] = useState([]);
+  const state = useSelector(state => state.users.login);
+  useEffect(() => {
+    getStatistik(state[0].id_token);
+  }, []);
+  const [converAktifitas, setConvertAktifitas] = useState([]);
+  const getStatistik = async item => {
+    const Response = await getDataStatistikSetoranDetail(item);
+    console.log('Response', Response.data.setoran);
+    setAktivitas(Response.data.setoran);
+    const data = Response.data.setoran;
+    let arr = [];
     for (let i = 0; i < data.length; i++) {
       const element = data[i].nilai;
-      if (element != null) {
-        const format = element.toString().split('').reverse().join('');
-        const convert = format.match(/\d{1,3}/g);
-        const rupiah = 'Rp ' + convert.join('.').split('').reverse().join('');
-        // console.log('===========>', rupiah);
-        arr.push(rupiah);
-      }
+      const format = element.toString().split('').reverse().join('');
+      const convert = format.match(/\d{1,3}/g);
+      const rupiah = 'Rp ' + convert.join('.').split('').reverse().join('');
+
+      arr.push(rupiah);
     }
-    // console.log('Rupiah', arr);
     setConvertAktifitas(arr);
   };
   return (
     <>
-      <Header name="Riwayat" />
+      <Header
+        name="Statistik"
+        icon="chevron-left"
+        onClick={() => navigation.goBack()}
+      />
       <ScrollView>
         <View style={styles.contenHeader}>
           <Text
@@ -50,7 +50,10 @@ const Riwayat = ({navigation}) => {
         </View>
         {aktivitas.map((item, index) => {
           return (
-            <View
+            <TouchableOpacity
+              onPress={() => {
+                alert('Masih dalam pengembangan');
+              }}
               style={{
                 padding: 10,
                 flexDirection: 'row',
@@ -87,7 +90,7 @@ const Riwayat = ({navigation}) => {
                     fontWeight: '500',
                     fontSize: 10,
                   }}>
-                  {moment(item.datetime).format('DD-MM-YYYY HH:MM:ss')}
+                  {moment(item.datetime).format('MM-DD-YYYY HH:MM:ss')}
                 </Text>
               </View>
               <View>
@@ -96,7 +99,7 @@ const Riwayat = ({navigation}) => {
                 </Text>
 
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Coin height={18} width={18} />
+                  {/* <Coin height={18} width={18} /> */}
                   <Text
                     style={[
                       styles.fontContent,
@@ -106,7 +109,7 @@ const Riwayat = ({navigation}) => {
                   </Text>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           );
         })}
       </ScrollView>
@@ -114,7 +117,7 @@ const Riwayat = ({navigation}) => {
   );
 };
 
-export default Riwayat;
+export default Statistik;
 
 const styles = StyleSheet.create({
   fontContent: {

@@ -6,7 +6,9 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  BackHandler,
   StatusBar,
+  Alert,
 } from 'react-native';
 import axios from 'axios';
 import {useDispatch, useSelector} from 'react-redux';
@@ -32,6 +34,26 @@ const Auth = ({navigation, props, users}) => {
   useEffect(() => {
     setLogin({...Login, username: '', password: ''});
   }, []);
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', backAction);
+  }, []);
+
+  const backAction = () => {
+    if (navigation.isFocused()) {
+      Alert.alert('Perhatian!', 'Apakah anda akan keluar aplikasi?', [
+        {
+          text: 'Tidak',
+          onPress: () => null,
+          style: 'tidak',
+        },
+        {text: 'Ya', onPress: () => BackHandler.exitApp()},
+      ]);
+      return true;
+    }
+  };
 
   return (
     <>

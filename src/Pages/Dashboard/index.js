@@ -41,6 +41,8 @@ import {
 import {API_URL, IMAGE_URL} from '../../config/env';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useFocusEffect} from '@react-navigation/core';
+import AppLoader from '../component/AppLoader';
+import moment from 'moment';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -49,7 +51,7 @@ const wait = timeout => {
 };
 const Dashboar = ({navigation}) => {
   const login = useSelector(state => state.users.login);
-  console.log('login', login);
+
   const dispatch = useDispatch();
   const [mintra, setMitra] = useState('');
   const [rupiah, setRupiah] = useState('');
@@ -62,21 +64,21 @@ const Dashboar = ({navigation}) => {
   const [seputarinfo, setSeputarinfo] = useState([]);
   const [aktivitas, setAktivitas] = useState([]);
   const [imgUrl, setImgUrl] = useState('');
+  const [converAktifitas, setConvertAktifitas] = useState([]);
+
   const [statisti, setStatistik] = useState({
     labels: [],
   });
 
   useFocusEffect(
     useCallback(() => {
-      setLoading(true);
+      dataProfile();
       dataStatis();
       dataPost();
       InfoTerkini();
-      SeputarLimbah();
       aktifitas();
-      dataProfile();
+      SeputarLimbah();
       const willFocusSubscription = navigation.addListener('focus', () => {
-        setLoading(true);
         dataStatis();
         dataPost();
         InfoTerkini();
@@ -95,8 +97,8 @@ const Dashboar = ({navigation}) => {
       const Password = await AsyncStorage.getItem('user_password');
       DataProfile(user, Password).then(res => {
         const dataLogin = res.data.data;
-        setProfile(dataLogin);
-        console.log('dataLogin', dataLogin);
+
+        // console.log('dataLogin', dataLogin);
         fakePost(dataLogin);
       });
     } catch (error) {
@@ -110,7 +112,9 @@ const Dashboar = ({navigation}) => {
     const jsonToken = await AsyncStorage.getItem('token');
 
     const Response = await getDataProfil(jsonToken);
-    console.log('Response---->', Response.data);
+    console.log('Response---->', Response.data.profile);
+    setProfile(Response.data.profile);
+    convertSaldo(Response.data.profile);
     dispatch(getLoginUsers(Response.data.profile));
   };
 
@@ -127,12 +131,6 @@ const Dashboar = ({navigation}) => {
 
         data.forEach(item => {
           setNotif(item.user_pesan);
-          const numb = item.user_wallet;
-          const format = numb.toString().split('').reverse().join('');
-          const convert = format.match(/\d{1,3}/g);
-          const rupiah = 'Rp ' + convert.join('.').split('').reverse().join('');
-          setRupiah(rupiah);
-          setLoading(false);
         });
       });
     });
@@ -187,7 +185,20 @@ const Dashboar = ({navigation}) => {
     const Response = await getDataAktifitasTerakhir(Token);
     const data = Response.data.aktifitas;
     setAktivitas(data);
+    let arr = [];
+    for (let i = 0; i < data.length; i++) {
+      const element = data[i].nilai;
+
+      const format = element.toString().split('').reverse().join('');
+      const convert = format.match(/\d{1,3}/g);
+      const rupiah = 'Rp ' + convert.join('.').split('').reverse().join('');
+      // console.log('===========>', rupiah);
+      arr.push(rupiah);
+    }
+    // console.log('Rupiah', arr);
+    setConvertAktifitas(arr);
   };
+  // console.log('convertAktiv,', converAktifitas);
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(() => {
@@ -197,6 +208,14 @@ const Dashboar = ({navigation}) => {
       setRefreshing(false);
     });
   }, []);
+
+  const convertSaldo = item => {
+    const numb = item[0].user_wallet;
+    const format = numb.toString().split('').reverse().join('');
+    const convert = format.match(/\d{1,3}/g);
+    const rupiah = 'Rp ' + convert.join('.').split('').reverse().join('');
+    setRupiah(rupiah);
+  };
 
   return (
     <>
@@ -223,7 +242,7 @@ const Dashboar = ({navigation}) => {
               }}>
               <Image source={{uri: IMAGE_URL + imgUrl}} style={styles.img} />
               <View>
-                {login.map((i, idx) => {
+                {profile.map((i, idx) => {
                   return (
                     <View key={idx} style={{marginLeft: 5}}>
                       <Text
@@ -256,7 +275,7 @@ const Dashboar = ({navigation}) => {
               }}>
               {notif != 0 ? (
                 <View style={styles.notifit}>
-                  {login.map((item, idx) => {
+                  {profile.map((item, idx) => {
                     return (
                       <Text
                         key={idx}
@@ -278,7 +297,7 @@ const Dashboar = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </ImageBackground>
-        {login.map((item, idx) => {
+        {profile.map((item, idx) => {
           return (
             <View style={[styles.card, styles.content]}>
               <TouchableOpacity
@@ -301,11 +320,15 @@ const Dashboar = ({navigation}) => {
                       styles.textJersey,
                       {color: '#263238', fontSize: 16},
                     ]}>
-                    {item.user_wallet}
+                    {rupiah}
                   </Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.poin}>
+              <TouchableOpacity
+                style={styles.poin}
+                onPress={() => {
+                  navigation.navigate('poin');
+                }}>
                 <View
                   style={{
                     borderRadius: 100,
@@ -350,7 +373,8 @@ const Dashboar = ({navigation}) => {
         mintra == 'MitraKotaJaksel' ||
         mintra == 'Mitra Validator' ||
         mintra == 'Mitra Transporter' ||
-        mintra == 'Mitra Gudang' ? (
+        mintra == 'Mitra Gudang' ||
+        mintra == 'Mitra Agen CP' ? (
           <CardContent
             onSetor={() => navigation.push('Setor')}
             onJadwal={() => {
@@ -387,7 +411,8 @@ const Dashboar = ({navigation}) => {
               Statistik Setoran
             </Text>
             <TouchableOpacity
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{flexDirection: 'row', alignItems: 'center'}}
+              onPress={() => navigation.navigate('DetailStatistik')}>
               <Text style={{color: '#51C091B2'}}>Detail</Text>
               <Icon
                 name="chevron-right"
@@ -445,7 +470,7 @@ const Dashboar = ({navigation}) => {
             ]}>
             Info Terkini
           </Text>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={{color: '#51C091B2'}}>Info Lainnya</Text>
             <Icon
@@ -453,7 +478,7 @@ const Dashboar = ({navigation}) => {
               color="#51C091B2"
               style={{marginLeft: 5}}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View
           style={{
@@ -466,7 +491,7 @@ const Dashboar = ({navigation}) => {
           <Swiper autoplay={true} showsButtons={false} showsPagination={false}>
             {infoTerkini.map((i, idx) => {
               return (
-                <View
+                <TouchableOpacity
                   style={{
                     shadowColor: '#000',
                     shadowOffset: {
@@ -477,6 +502,9 @@ const Dashboar = ({navigation}) => {
                     shadowRadius: 3.84,
 
                     elevation: 5,
+                  }}
+                  onPress={() => {
+                    alert('Masih dalam tahap pengembangan');
                   }}>
                   <Image
                     style={styles.tinyLogo}
@@ -484,7 +512,7 @@ const Dashboar = ({navigation}) => {
                       uri: IMAGE_URL + i.banner_url,
                     }}
                   />
-                </View>
+                </TouchableOpacity>
               );
             })}
           </Swiper>
@@ -506,7 +534,10 @@ const Dashboar = ({navigation}) => {
             Aktivitas Terakhir
           </Text>
           <TouchableOpacity
-            style={{flexDirection: 'row', alignItems: 'center'}}>
+            style={{flexDirection: 'row', alignItems: 'center'}}
+            onPress={() => {
+              navigation.navigate('riwayat');
+            }}>
             <Text style={{color: '#51C091B2'}}>Semua</Text>
             <Icon
               name="chevron-right"
@@ -518,13 +549,16 @@ const Dashboar = ({navigation}) => {
         {/* ================Aktivitas Terakhir */}
         {aktivitas.map((item, index) => {
           return (
-            <View
+            <TouchableOpacity
               style={{
                 padding: 10,
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-evenly',
                 width: '100%',
+              }}
+              onPress={() => {
+                alert('Masih dalam tahap pengembangan');
               }}>
               <View>
                 <View style={[styles.ball]}>
@@ -555,12 +589,14 @@ const Dashboar = ({navigation}) => {
                     fontWeight: '500',
                     fontSize: 10,
                   }}>
-                  {item.datetime}
+                  {moment(item.datetime).format('DD-MM-YYYY HH:MM:ss')}
                 </Text>
               </View>
               <View>
-                <Text style={[styles.fontContent, {color: '#6FCF97'}]}>
-                  {item.nilai}
+                <Text
+                  key={index}
+                  style={[styles.fontContent, {color: '#6FCF97'}]}>
+                  {converAktifitas[index]}
                 </Text>
 
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -574,7 +610,7 @@ const Dashboar = ({navigation}) => {
                   </Text>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           );
         })}
 
@@ -595,7 +631,7 @@ const Dashboar = ({navigation}) => {
             ]}>
             Seputar Limbah
           </Text>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={{color: '#51C091B2'}}>Semua</Text>
             <Icon
@@ -603,7 +639,7 @@ const Dashboar = ({navigation}) => {
               color="#51C091B2"
               style={{marginLeft: 5}}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           {/* Swipper */}
         </View>
 
@@ -619,7 +655,12 @@ const Dashboar = ({navigation}) => {
               return (
                 <>
                   <View style={{flexDirection: 'column', alignItems: 'center'}}>
-                    <TouchableOpacity style={{marginHorizontal: 15}} key={idx}>
+                    <TouchableOpacity
+                      style={{marginHorizontal: 15}}
+                      key={idx}
+                      onPress={() => {
+                        alert('Masih dalam tahap pengembangan');
+                      }}>
                       <Image
                         resizeMode="contain"
                         source={{uri: IMAGE_URL + i.thumbnail}}
@@ -635,6 +676,7 @@ const Dashboar = ({navigation}) => {
         </ScrollView>
       </ScrollView>
       {/* )} */}
+      {loading == true ? <AppLoader /> : null}
     </>
   );
 };

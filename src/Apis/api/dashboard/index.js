@@ -100,3 +100,44 @@ export const getDataRiwayat = async id_token => {
     console.log(error);
   }
 };
+
+// getDataAktifitasTerakhirDompet.php
+export const getDataAktifitasTerakhirDompet = async id_token => {
+  try {
+    const data = {id_token: id_token};
+    const Response = await axios.post(
+      `${API_URL}getDataAktifitasTerakhirDompet.php`,
+      data,
+    );
+    return Response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+// getDataStatistikSetoranDetail.php
+
+export const getDataStatistikSetoranDetail = async id_token => {
+  try {
+    const data = {id_token: id_token};
+    const Response = await axios.post(
+      `${API_URL}getDataStatistikSetoranDetail.php`,
+      data,
+    );
+    return Response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+// getDataRiwayatDompet.php
+export const getDataRiwayatDompet = async id_token => {
+  try {
+    const data = {id_token: id_token};
+    const Response = await axios.post(
+      `${API_URL}getDataRiwayatDompet.php`,
+      data,
+    );
+    return Response;
+  } catch (error) {
+    console.log(error);
+  }
+};

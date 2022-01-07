@@ -62,6 +62,7 @@ const MitraLembaga = ({navigation}) => {
     id_rw: '',
     id_rt: '',
   });
+  console.log('formId --------------> ', formId);
   const [visible, setVisible] = useState(false);
   // provinsi
   const [nameProvinsi, setNameProvinsi] = useState([]);
@@ -200,6 +201,7 @@ const MitraLembaga = ({navigation}) => {
         navigation.navigate('Loginscreen');
       }, 2000);
     } else {
+      setLoading(false);
       setContentModal(Response.data.data[0].msg);
       setContent(true);
     }
@@ -584,9 +586,9 @@ const MitraLembaga = ({navigation}) => {
                 formId.id_prov,
                 formId.id_kab,
                 formId.id_kec,
-                form.id_kel,
-                form.id_rw,
-                form.id_rt,
+                formId.id_kel,
+                formId.id_rw,
+                formId.id_rt,
                 lat,
                 long,
               );

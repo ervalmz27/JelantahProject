@@ -18,7 +18,7 @@ import moment from 'moment';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const Dompet = ({navigation}) => {
+const Poin = ({navigation}) => {
   const state = useSelector(state => state.users.login);
   const [rupiah, setRupiah] = useState('');
   const [aktivitas, setAktivitas] = useState([]);
@@ -75,7 +75,7 @@ const Dompet = ({navigation}) => {
               style={{marginRight: 15}}
               size={20}
             />
-            <Text style={styles.header}>Dompet</Text>
+            <Text style={styles.header}>Poin</Text>
           </TouchableOpacity>
           <View style={styles.rowContent}>
             <View style={{}}>
@@ -86,8 +86,11 @@ const Dompet = ({navigation}) => {
                   justifyContent: 'space-between',
                   width: windowWidth * 1,
                 }}>
-                <Text style={styles.text}>Sisa Saldo</Text>
-                <TouchableOpacity
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text style={[styles.text, {marginRight: 4}]}>Poin Saya</Text>
+                  <Coin height={14} width={14} />
+                </View>
+                {/* <TouchableOpacity
                   style={styles.content}
                   onPress={() => {
                     alert('Masih dalam tahap pengembangan');
@@ -99,9 +102,8 @@ const Dompet = ({navigation}) => {
                       fontFamily: 'Poppins-Regular',
                       marginLeft: 10,
                     }}>
-                    {state[0].user_poin} Poin
-                  </Text>
-                </TouchableOpacity>
+                    
+                </TouchableOpacity> */}
               </View>
 
               <Text
@@ -112,7 +114,7 @@ const Dompet = ({navigation}) => {
                   letterSpacing: 0.5,
                   marginTop: -10,
                 }}>
-                {rupiah}
+                {state[0].user_poin} Poin
               </Text>
             </View>
           </View>
@@ -228,7 +230,7 @@ const Dompet = ({navigation}) => {
   );
 };
 
-export default Dompet;
+export default Poin;
 
 const styles = StyleSheet.create({
   background: {
