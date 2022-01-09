@@ -101,7 +101,10 @@ const User = ({navigation}) => {
         {Profil.map((item, idx) => {
           return (
             <View style={[styles.card, styles.content]}>
-              <View
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Dompet');
+                }}
                 style={{
                   flexDirection: 'row',
                 }}>
@@ -112,8 +115,13 @@ const User = ({navigation}) => {
                     {rupiah}
                   </Text>
                 </View>
-              </View>
-              <View style={styles.poin}>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.poin}
+                onPress={() => {
+                  navigation.navigate('poin');
+                }}>
                 <View
                   style={{
                     borderRadius: 100,
@@ -140,7 +148,7 @@ const User = ({navigation}) => {
                     {item.user_poin} Poin
                   </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             </View>
           );
         })}
@@ -155,7 +163,11 @@ const User = ({navigation}) => {
             Akun
           </Text>
         </View>
-        <TouchableOpacity style={styles.containerContent}>
+        <TouchableOpacity
+          style={styles.containerContent}
+          onPress={() => {
+            alert('Masih dalam tahap pengembangan');
+          }}>
           <View style={{flexDirection: 'row'}}>
             <Voucer width={24} height={24} />
             <Text style={styles.textContent}>Voucer Saya</Text>
@@ -216,7 +228,11 @@ const User = ({navigation}) => {
             <Icon name="chevron-right" />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.containerContent]}>
+        <TouchableOpacity
+          style={[styles.containerContent]}
+          onPress={() => {
+            alert('Masih dalam tahap pengembangan');
+          }}>
           <View style={{flexDirection: 'row'}}>
             <Icon name="at" size={20} color="#C7C7C7" solid />
             <Text style={styles.textContent}>ID Jelanta</Text>
@@ -294,7 +310,11 @@ const User = ({navigation}) => {
             Lainnya
           </Text>
         </View>
-        <TouchableOpacity style={[styles.containerContent, {marginTop: -10}]}>
+        <TouchableOpacity
+          style={[styles.containerContent, {marginTop: -10}]}
+          onPress={() => {
+            alert('Masih dalam tahap pengembangan');
+          }}>
           <View style={{flexDirection: 'row'}}>
             <Icon name="bell" size={20} color="#C7C7C7" solid />
             <Text style={styles.textContent}>Kelola Notifikasi</Text>
@@ -303,7 +323,11 @@ const User = ({navigation}) => {
             <Icon name="chevron-right" />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.containerContent]}>
+        <TouchableOpacity
+          style={[styles.containerContent]}
+          onPress={() => {
+            alert('Masih dalam tahap pengembangan');
+          }}>
           <View style={{flexDirection: 'row'}}>
             <Icon name="user-plus" size={20} color="#C7C7C7" solid />
             <Text style={styles.textContent}>Ajak Teman</Text>
@@ -312,7 +336,11 @@ const User = ({navigation}) => {
             <Icon name="chevron-right" />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.containerContent]}>
+        <TouchableOpacity
+          style={[styles.containerContent]}
+          onPress={() => {
+            alert('Masih dalam tahap pengembangan');
+          }}>
           <View style={{flexDirection: 'row'}}>
             <Tentang height={20} width={20} />
             <Text style={styles.textContent}>Tentang Aplikasi</Text>
@@ -321,7 +349,11 @@ const User = ({navigation}) => {
             <Icon name="chevron-right" />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.containerContent]}>
+        <TouchableOpacity
+          style={[styles.containerContent]}
+          onPress={() => {
+            alert('Masih dalam tahap pengembangan');
+          }}>
           <View style={{flexDirection: 'row'}}>
             <Bantuan height={20} width={20} />
             <Text style={styles.textContent}>Pusat Bantuan</Text>
@@ -330,7 +362,11 @@ const User = ({navigation}) => {
             <Icon name="chevron-right" />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.containerContent]}>
+        <TouchableOpacity
+          style={[styles.containerContent]}
+          onPress={() => {
+            alert('Masih dalam tahap pengembangan');
+          }}>
           <View style={{flexDirection: 'row'}}>
             <Icon name="star" size={20} color="#C7C7C7" solid />
             <Text style={styles.textContent}>Beri Penilaian Aplikasi</Text>

@@ -41,7 +41,11 @@ const Tugas = () => {
               alignItems: 'center',
               padding: 20,
             }}>
-            <TouchableOpacity style={styles.content}>
+            <TouchableOpacity
+              style={styles.content}
+              onPress={() => {
+                alert('Masih dalam tahap pengembangan');
+              }}>
               <View
                 style={{
                   flexDirection: 'column',
@@ -52,7 +56,11 @@ const Tugas = () => {
                 <Text style={styles.Textcontent}>Sedang Dikerjakan</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.content}>
+            <TouchableOpacity
+              style={styles.content}
+              onPress={() => {
+                alert('Masih dalam tahap pengembangan');
+              }}>
               <View
                 style={{
                   flexDirection: 'column',
@@ -63,7 +71,11 @@ const Tugas = () => {
                 <Text style={styles.Textcontent}>Selesai</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.content}>
+            <TouchableOpacity
+              style={styles.content}
+              onPress={() => {
+                alert('Masih dalam tahap pengembangan');
+              }}>
               <View
                 style={{
                   flexDirection: 'column',
@@ -76,7 +88,11 @@ const Tugas = () => {
             </TouchableOpacity>
           </View>
         </ImageBackground>
-        <View style={{flex: 1, alignItems: 'center', marginTop: -60}}>
+        <TouchableOpacity
+          style={{flex: 1, alignItems: 'center', marginTop: -60}}
+          onPress={() => {
+            alert('Masih dalam tahap pengembangan');
+          }}>
           <Image
             style={{
               height: 104,
@@ -87,7 +103,7 @@ const Tugas = () => {
             resizeMode="cover"
             source={require('../../assets/Images/banner_info.png')}
           />
-        </View>
+        </TouchableOpacity>
         {/* ======================== Start Tugas Terbaru ================================ */}
         <View style={{paddingHorizontal: 20, paddingVertical: 10}}>
           <Text style={styles.contentHeader}>Tugas Terbaru</Text>
@@ -114,7 +130,11 @@ const Tugas = () => {
               100 peserta
             </Text>
           </View>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => {
+              alert('Masih dalam tahap pengembangan');
+            }}>
             <Text
               style={{
                 fontFamily: 'Poppins-SemiBold',
@@ -147,7 +167,11 @@ const Tugas = () => {
               100 peserta
             </Text>
           </View>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => {
+              alert('Masih dalam tahap pengembangan');
+            }}>
             <Text
               style={{
                 fontFamily: 'Poppins-SemiBold',
@@ -185,7 +209,11 @@ const Tugas = () => {
               100 peserta
             </Text>
           </View>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => {
+              alert('Masih dalam tahap pengembangan');
+            }}>
             <Text
               style={{
                 fontFamily: 'Poppins-SemiBold',
