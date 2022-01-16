@@ -1,16 +1,23 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {StyleSheet, Text, View, Button, Dimensions} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  Dimensions,
+  PermissionsAndroid,
+} from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
-// import {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
+// import Geolocation from 'react-native-geolocation-service';
 import Header from '../../component/Header';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const alamatMaps = ({navigation}) => {
   const [getlocation, setGetlocation] = useState({
-    latitude: '',
-    longitude: '',
+    latitude: 51.5079145,
+    longitude: -0.0899163,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
@@ -21,12 +28,12 @@ const alamatMaps = ({navigation}) => {
     longitudeDelta: 0.009,
   });
   useEffect(() => {
-    MYlocation();
+    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, MYlocation();
   }, []);
 
   const MYlocation = () => {
     Geolocation.getCurrentPosition(info => {
-      console.log(info.coords);
+      console.log('nfo.coords ----> ', info.coords);
       setGetlocation({
         ...getlocation,
         latitude: info.coords.latitude,
@@ -53,13 +60,13 @@ const alamatMaps = ({navigation}) => {
       <View style={styles.container}>
         <MapView
           ref={mapRef}
-          // provider={PROVIDER_GOOGLE}  remove if not using Google Maps
+          provider={PROVIDER_GOOGLE}
           style={styles.map}
           initialRegion={{
-            latitude: -6.9294723,
-            longitude: 107.7071068,
-            latitudeDelta: 0.0009,
-            longitudeDelta: 0.0091,
+            latitude: getlocation.latitude,
+            longitude: getlocation.longitude,
+            latitudeDelta: 0.009,
+            longitudeDelta: 0.009,
           }}
           onRegionChangeComplete={region => setRegion(region)}>
           <Marker coordinate={getlocation} />
@@ -101,6 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    marginVertical: 20,
   },
   text: {
     fontFamily: 'Poppins-SemiBold',

@@ -1,6 +1,7 @@
+import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment';
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Dimensions, Image} from 'react-native';
+import React, {useEffect, useState, useCallback} from 'react';
+import {StyleSheet, Text, View, Dimensions, RefreshControl} from 'react-native';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
 import {
@@ -10,6 +11,9 @@ import {
 import Header from '../../component/Header';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+const wait = timeout => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+};
 const TerimaJadwal = ({navigation}) => {
   const token = useSelector(state => state.users.login);
   const [navbar, setNavbar] = useState(false);
@@ -18,18 +22,41 @@ const TerimaJadwal = ({navigation}) => {
   const [content, setContent] = useState('');
   const [terbaru, setTerbaru] = useState([]);
   const [contentJadwal, setContentJadwal] = useState([]);
-  useEffect(() => {
-    setNavbar(true);
-    setContent('Terbaru');
-    fetchTerimaJadwal(token[0].id_token);
-  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      setNavbar(true);
+      setContent('Terbaru');
+      fetchTerimaJadwal(token[0].id_token);
+      const willFocusSubscription = navigation.addListener('focus', () => {
+        setNavbar(true);
+        setContent('Terbaru');
+        fetchTerimaJadwal(token[0].id_token);
+      });
+
+      return willFocusSubscription;
+    }, []),
+  );
 
   const fetchTerimaJadwal = async id_token => {
     const Response = await getDataTerimaJadwal(id_token);
-    console.log('Response', JSON.stringify(Response.data.setoran));
+    console.log('Response', Response.data.setoran);
     setContentJadwal(Response.data.setoran);
     setTerbaru(Response.data.setoran[0].terbaru);
   };
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchTerimaJadwal(token[0].id_token);
+    wait(2000)
+      .then(() => {
+        setRefreshing(false);
+      })
+      .catch(err => {
+        alert(err);
+      });
+  }, []);
+
   return (
     <>
       <Header
@@ -37,6 +64,7 @@ const TerimaJadwal = ({navigation}) => {
         icon="chevron-left"
         onClick={() => navigation.goBack()}
       />
+      {/* <ScrollView></ScrollView> */}
       <View
         style={{
           flexDirection: 'row',
@@ -82,7 +110,11 @@ const TerimaJadwal = ({navigation}) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        style={{backgroundColor: '#fff'}}>
         {content == 'Terbaru' && terbaru.length > 0 ? (
           <>
             {terbaru.map((item, idx) => {
@@ -119,7 +151,7 @@ const TerimaJadwal = ({navigation}) => {
                 key={idx}
                 style={styles.profile}
                 onPress={() => {
-                  navigation.push('detailJadwal', {detail: item});
+                  navigation.push('acceptJadwal', {detail: item});
                 }}>
                 <View style={{marginLeft: 10}}>
                   <Text style={styles.nameProfile}>{item.judul}</Text>
@@ -139,13 +171,13 @@ const TerimaJadwal = ({navigation}) => {
           </View>
         ) : null}
         {content == 'Ditolak' && contentJadwal[0].ditolak.length > 0 ? (
-          contentJadwal[0].diterima.map((item, idx) => {
+          contentJadwal[0].ditolak.map((item, idx) => {
             return (
               <TouchableOpacity
                 key={idx}
                 style={styles.profile}
                 onPress={() => {
-                  navigation.push('detailJadwal', {detail: item});
+                  navigation.push('rejectJadwal', {detail: item});
                 }}>
                 <View style={{marginLeft: 10}}>
                   <Text style={styles.nameProfile}>{item.judul}</Text>

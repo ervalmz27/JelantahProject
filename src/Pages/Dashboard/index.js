@@ -105,9 +105,7 @@ const Dashboar = ({navigation}) => {
       console.log(error);
     }
   });
-  //   useCallback(() => {
-  //     // do something!
-  // });
+
   const dataProfile = async () => {
     const jsonToken = await AsyncStorage.getItem('token');
 
@@ -271,7 +269,6 @@ const Dashboar = ({navigation}) => {
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('notification');
-                setNotif(notif.replace(/[0-9]/g, ''));
               }}>
               {notif != 0 ? (
                 <View style={styles.notifit}>

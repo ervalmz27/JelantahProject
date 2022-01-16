@@ -1,12 +1,15 @@
-import React, {useEffect} from 'react';
-import {StyleSheet, ImageBackground, StatusBar, Dimensions} from 'react-native';
-import {SplashBackground} from '../../assets';
+import React, { useEffect } from 'react';
+import { StyleSheet, ImageBackground, StatusBar, Dimensions } from 'react-native';
+import { SplashBackground } from '../../assets';
 import AuthNavigator from '../../routes/Auth';
 import HomeNavigator from '../../routes/Home';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const Splash = ({navigation}) => {
+const Splash = ({ navigation }) => {
   // console.log('sssss', jsonValue);
   useEffect(() => {
     setTimeout(async () => {

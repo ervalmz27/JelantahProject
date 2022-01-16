@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,17 +10,17 @@ import {
   Alert,
   StatusBar,
 } from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {API_URL} from '../../config/env';
+import { API_URL } from '../../config/env';
 import Header from '../component/Header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useSelector, useDispatch} from 'react-redux';
-import {getLoginUsers, getUsersSuccess} from '../../Apis/actions/users';
+import { useSelector, useDispatch } from 'react-redux';
+import { getLoginUsers, getUsersSuccess } from '../../Apis/actions/users';
 import AppLoader from '../component/AppLoader';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const Login = ({navigation}) => {
+const Login = ({ navigation }) => {
   const jsonValue = AsyncStorage.getItem('token');
   const [loadingPending, setLoadingPending] = useState(false);
   const globalState = useSelector(state => state);
@@ -47,6 +47,7 @@ const Login = ({navigation}) => {
       await axios
         .post(`${API_URL}act_loginAndroid.php`, data)
         .then(res => {
+          //console.log(JSON.stringify(res));
           dispatch(getLoginUsers(res.data.data));
           res.data.data.forEach(res => {
             const mitra = res.user_level_nama;
@@ -60,6 +61,7 @@ const Login = ({navigation}) => {
               setLoadingPending(false);
             } else {
               alert('Username/Password Tidak Ditemukan');
+              setLoadingPending(false);
             }
           });
         })
@@ -97,7 +99,7 @@ const Login = ({navigation}) => {
             name="user-alt"
             size={15}
             color="#51C091"
-            style={{marginLeft: 10}}
+            style={{ marginLeft: 10 }}
           />
           <TextInput
             placeholder="Email atau Nomor HP"
@@ -106,17 +108,17 @@ const Login = ({navigation}) => {
             autoCapitalize="none"
             keyboardType="email-address"
             onChangeText={e => {
-              setForm({...form, user_id: e.toLowerCase()});
+              setForm({ ...form, user_id: e.toLowerCase() });
             }}
           />
         </View>
-        <View style={[styles.container, {justifyContent: 'space-between'}]}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={[styles.container, { justifyContent: 'space-between' }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Icon
               name="lock"
               size={15}
               color="#51C091"
-              style={{marginLeft: 10}}
+              style={{ marginLeft: 10 }}
             />
             <TextInput
               placeholder="Password"
@@ -124,7 +126,7 @@ const Login = ({navigation}) => {
               value={form.user_password}
               secureTextEntry={security}
               onChangeText={p => {
-                setForm({...form, user_password: p});
+                setForm({ ...form, user_password: p });
               }}
             />
           </View>
@@ -137,7 +139,7 @@ const Login = ({navigation}) => {
                 name="eye-slash"
                 size={15}
                 color="#51C091"
-                style={{marginLeft: 10}}
+                style={{ marginLeft: 10 }}
               />
             </TouchableOpacity>
           ) : (
@@ -149,7 +151,7 @@ const Login = ({navigation}) => {
                 name="eye"
                 size={15}
                 color="#51C091"
-                style={{marginLeft: 10}}
+                style={{ marginLeft: 10 }}
               />
             </TouchableOpacity>
           )}
@@ -157,7 +159,7 @@ const Login = ({navigation}) => {
         <TouchableOpacity
           style={styles.lupas}
           onPress={() => navigation.navigate('LupaPassword')}>
-          <Text style={[styles.textHeader, {color: '#51C091'}]}>
+          <Text style={[styles.textHeader, { color: '#51C091' }]}>
             Lupa Password?
           </Text>
         </TouchableOpacity>
@@ -170,7 +172,7 @@ const Login = ({navigation}) => {
               Alert.alert('Data Belum Diisi!');
             }
           }}>
-          <Text style={[styles.fontReguler, {color: '#fff'}]}>Masuk</Text>
+          <Text style={[styles.fontReguler, { color: '#fff' }]}>Masuk</Text>
         </TouchableOpacity>
         <View
           style={{
@@ -183,7 +185,7 @@ const Login = ({navigation}) => {
           <TouchableOpacity
             onPress={() => navigation.navigate('Registerscreen')}>
             <Text
-              style={[styles.fontReguler, {color: '#51C091', marginLeft: 5}]}>
+              style={[styles.fontReguler, { color: '#51C091', marginLeft: 5 }]}>
               Daftar
             </Text>
           </TouchableOpacity>

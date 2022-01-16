@@ -117,7 +117,7 @@ const Register = ({navigation}) => {
       <ScrollView>
         <View style={styles.header}>
           <Text style={styles.textHeader}>
-            Gabung sekarang menjadi mitra usaha kami!
+            Gabung sekarang menjadi Mitra Personal kami!
           </Text>
         </View>
 

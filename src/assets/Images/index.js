@@ -1,3 +1,3 @@
-import SplashBackground from './SplashScreen.jpeg';
+import SplashBackground from './SplashScreenNew.jpg';
 
-export {SplashBackground};
+export { SplashBackground };

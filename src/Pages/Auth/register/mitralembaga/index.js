@@ -218,7 +218,7 @@ const MitraLembaga = ({navigation}) => {
       <ScrollView>
         <View style={styles.header}>
           <Text style={styles.textHeader}>
-            Gabung sekarang menjadi mitra lembaga kami!
+            Gabung sekarang menjadi Mitra Lembaga kami!
           </Text>
         </View>
 

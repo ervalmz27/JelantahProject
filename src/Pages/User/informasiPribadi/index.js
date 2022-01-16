@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   TextInput,
+  PermissionsAndroid,
 } from 'react-native';
 import Header from '../../component/Header';
 import Upload from '../../../assets/Images/Icon/upload_img.svg';
@@ -23,8 +24,12 @@ import {
   editGender,
   editNama,
 } from '../../../Apis/api/akun/profile';
-import RNFetchBlob from 'rn-fetch-blob';
+//import RNFetchBlob from 'rn-fetch-blob';
+import {NativeModules} from 'react-native';
+
 import DateTimePicker from '@react-native-community/datetimepicker';
+import AppLoader from '../../component/AppLoader';
+const RNFetchBlob = NativeModules.RNFetchBlob;
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const InfoPribadi = ({navigation}) => {
@@ -35,6 +40,7 @@ const InfoPribadi = ({navigation}) => {
   const [gender, setGender] = useState(false);
   const [visible, setVisible] = useState(false);
   const [verifEmail, setVerifEmail] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [img, setImage] = useState({
     filePath: null,
     fileData: null,
@@ -62,6 +68,7 @@ const InfoPribadi = ({navigation}) => {
   });
   // const [uploadPath, setuploadPath] = useState('');
   useEffect(() => {
+    PermissionsAndroid.PERMISSIONS.CAMERA;
     users.forEach(el => {
       console.log('Rttttt -- >', el);
       setDataUsers(el);
@@ -100,22 +107,23 @@ const InfoPribadi = ({navigation}) => {
       } else {
         const source = {uri: response.uri};
         let path = response.assets;
-
-        path.forEach((i, idx) => {
-          const course = 'data:image/png;base64,' + i.base64;
-          ChangePhoto(users[0].id_token, course);
-
-          setImage({
-            ...img,
-            pathDefault: i.uri,
-          });
+        console.log('path -----> ', path);
+        const course = 'data:image/png;base64,' + path[0].base64;
+        ChangePhoto(users[0].id_token, course);
+        setVisible(false);
+        setImage({
+          ...img,
+          pathDefault: path[0].uri,
         });
+        setLoading(true);
+        setVisible(false);
       }
     });
   };
   const ChangePhoto = async (id_token, image) => {
     const Response = await changePP(id_token, image);
     console.log('Response ---? ', Response.data);
+    setLoading(false);
   };
 
   const onChange = (event, selectedDate) => {
@@ -203,7 +211,7 @@ const InfoPribadi = ({navigation}) => {
           <Image
             style={styles.ImageProfile}
             source={{
-              uri: IMAGE_URL + dataUsers.user_urlpp,
+              uri: img.pathDefault,
             }}
           />
           <TouchableOpacity
@@ -317,7 +325,7 @@ const InfoPribadi = ({navigation}) => {
           </TouchableOpacity>
         </View>
         {/*  ============= end No HP ======== */}
-        <View style={styles.container}>
+        {/* <View style={styles.container}>
           <View>
             <Text style={styles.Title}>Alamat</Text>
             <Text style={styles.Textcontent}>belum diatur</Text>
@@ -325,15 +333,16 @@ const InfoPribadi = ({navigation}) => {
           <TouchableOpacity>
             <Text style={styles.Title}>Atur</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
         {/*  ============= end No HP ======== */}
+        {loading == true ? <AppLoader /> : null}
       </SafeAreaView>
       <Modal
         visible={visible}
         onDismiss={() => {
           setVisible(false);
         }}
-        style={{position: 'absolute', marginTop: windowHeight * 0.88}}>
+        style={{position: 'absolute', marginTop: windowHeight * 0.85}}>
         <View style={styles.modalContainer}>
           <View style={styles.garis} />
           <View style={{padding: 24, flexDirection: 'row'}}>
@@ -429,6 +438,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    height: windowHeight * 0.2,
   },
   garis: {
     borderTopWidth: 4,

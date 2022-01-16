@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,6 +6,7 @@ import {
   ImageBackground,
   Image,
   Dimensions,
+  Linking,
 } from 'react-native';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,6 +20,7 @@ import {useSelector} from 'react-redux';
 import Voucer from '../../assets/Images/Icon/Voucer.svg';
 import Rekening from '../../assets/Images/home/Rekening.svg';
 import {IMAGE_URL} from '../../config/env';
+import {useFocusEffect} from '@react-navigation/core';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -34,20 +36,32 @@ const User = ({navigation}) => {
     AsyncStorage.removeItem('user_password');
     AsyncStorage.removeItem('token');
   };
-  useEffect(() => {
-    convert();
-    const willFocusSubscription = navigation.addListener('focus', () => {
+  useFocusEffect(
+    useCallback(() => {
+      convert();
       Profil;
-    });
+      const willFocusSubscription = navigation.addListener('focus', () => {
+        convert();
+        Profil;
+      });
 
-    return willFocusSubscription;
-  }, []);
+      return willFocusSubscription;
+    }, []),
+  );
   const convert = () => {
     const numb = Profil[0].user_wallet;
     const format = numb.toString().split('').reverse().join('');
     const convert = format.match(/\d{1,3}/g);
     const rupiah = 'Rp ' + convert.join('.').split('').reverse().join('');
     setRupiah(rupiah);
+  };
+  const openPlayStore = () => {
+    Linking.openURL(
+      `https://play.google.com/store/apps/details?id=com.jelantah`,
+    );
+  };
+  const AboutApk = () => {
+    Linking.openURL('https://jelanta.id');
   };
 
   return (
@@ -332,14 +346,17 @@ const User = ({navigation}) => {
             <Icon name="user-plus" size={20} color="#C7C7C7" solid />
             <Text style={styles.textContent}>Ajak Teman</Text>
           </View>
-          <View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{marginRight: 10, fontFamily: 'Poppins-Regular'}}>
+              {Profil[0].refferal_code}
+            </Text>
             <Icon name="chevron-right" />
           </View>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.containerContent]}
           onPress={() => {
-            alert('Masih dalam tahap pengembangan');
+            AboutApk();
           }}>
           <View style={{flexDirection: 'row'}}>
             <Tentang height={20} width={20} />
@@ -352,7 +369,7 @@ const User = ({navigation}) => {
         <TouchableOpacity
           style={[styles.containerContent]}
           onPress={() => {
-            alert('Masih dalam tahap pengembangan');
+            AboutApk();
           }}>
           <View style={{flexDirection: 'row'}}>
             <Bantuan height={20} width={20} />
@@ -365,7 +382,7 @@ const User = ({navigation}) => {
         <TouchableOpacity
           style={[styles.containerContent]}
           onPress={() => {
-            alert('Masih dalam tahap pengembangan');
+            openPlayStore();
           }}>
           <View style={{flexDirection: 'row'}}>
             <Icon name="star" size={20} color="#C7C7C7" solid />

@@ -74,15 +74,6 @@ const RegisterMitraUsaha = ({navigation}) => {
               setVisible(true);
             }
           });
-          // setForm({
-          //   ...form,
-          //   usaha_name: '',
-          //   user_email: '',
-          //   user_fullname: '',
-          //   user_nohp: '',
-          //   user_password: '',
-          //   code_ref: '',
-          // });
         });
       return Response;
     } catch (error) {
@@ -124,7 +115,7 @@ const RegisterMitraUsaha = ({navigation}) => {
       <ScrollView>
         <View style={styles.header}>
           <Text style={styles.textHeader}>
-            Gabung sekarang menjadi mitra usaha kami!
+            Gabung sekarang menjadi Mitra Usaha kami!
           </Text>
         </View>
         {/* Name Usaha */}

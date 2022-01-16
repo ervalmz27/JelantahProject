@@ -86,38 +86,6 @@ const DetailJadwal = ({navigation, route}) => {
           </View>
         </View>
 
-        {/* <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexDirection: 'row',
-            marginHorizontal: 20,
-          }}>
-          <View style={{flexDirection: 'row'}}>
-            <Image
-              source={require('../../../assets/Images/home/profile.jpg')}
-              style={styles.img}
-              resizeMode="contain"
-            />
-            <View style={{marginLeft: 10}}>
-              <Text style={styles.nameProfile}>Imam Cahyo</Text>
-              <Text style={styles.message}>{mitra.user_level_nama}</Text>
-            </View>
-          </View>
-          <TouchableOpacity
-            style={{alignItems: 'center', flexDirection: 'row'}}>
-            <Text style={{color: '#51C091', fontFamily: 'Poppins-Regular'}}>
-              Lihat Setoran
-            </Text>
-            <Icon
-              name="chevron-right"
-              color="#51C091"
-              style={{marginLeft: 5}}
-              size={15}
-            />
-          </TouchableOpacity>
-        </View> */}
-
         <View style={{marginHorizontal: 20}}>
           {/* Jenis Limbah */}
           <View style={{marginTop: 15}}>
@@ -196,6 +164,7 @@ const DetailJadwal = ({navigation, route}) => {
               placeholder=" 13:00"
               style={styles.input}
               multiline={true}
+              editable={false}
               value={moment(detail.created_date).format('HH:mm:ss')}
               // onChangeText={event => {}}
             />
@@ -223,6 +192,7 @@ const DetailJadwal = ({navigation, route}) => {
               placeholder="Berat Limbah"
               style={styles.input}
               multiline={true}
+              editable={false}
               value={detail.qty}
               // onChangeText={event => {}}
             />

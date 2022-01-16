@@ -1,78 +1,39 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
-  Image,
-  ScrollView,
   StyleSheet,
   Text,
   View,
+  ScrollView,
   TextInput,
   Dimensions,
 } from 'react-native';
 import Header from '../../component/Header';
-import Waiting from '../../../assets/Images/Icon/Waiting.svg';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import Recovery from '../../../assets/Images/Icon/Recovery.svg';
 import Tanggal from '../../../assets/Images/Icon/Tanggal.svg';
 import Jam from '../../../assets/Images/Icon/Jam.svg';
 import Timbangan from '../../../assets/Images/Icon/Timbangan.svg';
 import {useSelector} from 'react-redux';
-import QRCode from 'react-native-qrcode-svg';
+import moment from 'moment';
+import Tanda from '../../../assets/Images/Icon/Tanda.svg';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const DetailSetor = ({navigation}) => {
-  const [mitra, setMitra] = useState({});
-  const datamitra = useSelector(state => state.users.login);
-  // console.log(datamitra);
-  useEffect(() => {
-    datamitra.forEach(item => {
-      console.log(item);
-      setMitra(item);
-    });
-  }, []);
+
+const Accept = ({navigation, route}) => {
+  const {detail} = route.params;
+  console.log('detail------>', detail);
   return (
     <>
       <Header
-        name="Detail Jadwal"
+        name="Jadwal Diterima"
         icon="chevron-left"
         onClick={() => navigation.goBack()}
       />
       <ScrollView>
         <View style={styles.content}>
           <View style={styles.notif}>
-            <Waiting height={20} width={20} />
-            <Text style={styles.text}>Menunggu Disetujui</Text>
-          </View>
-        </View>
-
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-
-            marginHorizontal: 20,
-          }}>
-          <View>
-            <QRCode value="http://awesome.link.qr" />
-            <TouchableOpacity
-              style={{
-                alignItems: 'center',
-                flexDirection: 'row',
-                marginTop: 10,
-              }}
-              onPress={() => {
-                navigation.navigate('kodesetor');
-              }}>
-              <Text style={{color: '#51C091', fontFamily: 'Poppins-Regular'}}>
-                Lihat Kode QR
-              </Text>
-              <Icon
-                name="chevron-right"
-                color="#51C091"
-                style={{marginLeft: 5}}
-                size={15}
-              />
-            </TouchableOpacity>
+            <Tanda height={20} width={20} />
+            <Text style={styles.text}>Jadwal Telah Diterima</Text>
           </View>
         </View>
 
@@ -99,7 +60,8 @@ const DetailSetor = ({navigation}) => {
               placeholder="Limbah Minyak Jelantah"
               style={styles.input}
               multiline={true}
-              // value={}
+              editable={false}
+              value={detail.jenis_limbah}
               // onChangeText={event => {}}
             />
           </View>
@@ -125,7 +87,8 @@ const DetailSetor = ({navigation}) => {
               placeholder="Senin, 02 November 2021"
               style={styles.input}
               multiline={true}
-              // value={}
+              editable={false}
+              value={moment(detail.created_date).format('DD/MM/YYYY')}
               // onChangeText={event => {}}
             />
           </View>
@@ -152,7 +115,8 @@ const DetailSetor = ({navigation}) => {
               placeholder=" 13:00"
               style={styles.input}
               multiline={true}
-              // value={}
+              editable={false}
+              value={moment(detail.created_date).format('HH:mm:ss')}
               // onChangeText={event => {}}
             />
           </View>
@@ -179,18 +143,11 @@ const DetailSetor = ({navigation}) => {
               placeholder="Berat Limbah"
               style={styles.input}
               multiline={true}
-              // value={}
+              editable={false}
+              value={detail.qty}
               // onChangeText={event => {}}
             />
             <Text style={styles.gram}>gram</Text>
-          </View>
-          <View style={styles.catatan}>
-            <Text>Catatan dari Mitra RW</Text>
-            <TextInput
-              style={styles.catatanInput}
-              placeholder="Belum ada pesan disini"
-              multiline={true}
-            />
           </View>
         </View>
       </ScrollView>
@@ -198,7 +155,7 @@ const DetailSetor = ({navigation}) => {
   );
 };
 
-export default DetailSetor;
+export default Accept;
 
 const styles = StyleSheet.create({
   content: {
@@ -238,7 +195,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: 12,
     marginLeft: 5,
-    color: '#FFC727',
+    color: '#26323880',
   },
   input: {
     fontFamily: 'Poppins-Regular',

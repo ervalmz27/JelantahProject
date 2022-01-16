@@ -39,7 +39,7 @@ const JadwalSetor = ({navigation}) => {
   const GetCekJadwal = async id_token => {
     setLoading(true);
     const cekJadwal = await getDataCekJadwal(id_token);
-    console.log('cekJadwal', cekJadwal.data.setoran);
+    console.log('cekJadwal', JSON.stringify(cekJadwal.data.setoran[0]));
     setJadwal(cekJadwal.data.setoran[0].terbaru);
     setContentJadwal(cekJadwal.data.setoran);
     setLoading(false);
@@ -48,7 +48,7 @@ const JadwalSetor = ({navigation}) => {
   return (
     <>
       <Header
-        name="cek Jadwal"
+        name="Cek Jadwal"
         icon="chevron-left"
         onClick={() => navigation.goBack()}
       />
@@ -132,21 +132,21 @@ const JadwalSetor = ({navigation}) => {
           </View>
         ) : null}
 
-        {content == 'Diterima' && contentJadwal[0].diterima > 0 ? (
+        {content == 'Diterima' && contentJadwal[0].diterima.length > 0 ? (
           contentJadwal[0].diterima.map((item, indx) => {
             return (
               <TouchableOpacity
                 key={indx}
                 style={styles.profile}
                 onPress={() => {
-                  navigation.push('kodesetor', {detail: item});
+                  navigation.push('jadwalDisetujui', {detail: item});
                 }}>
-                <Image
+                {/* <Image
                   source={require('../../../assets/Images/home/profile.jpg')}
                   style={styles.img}
-                />
+                /> */}
                 <View style={{marginLeft: 10}}>
-                  <Text style={styles.nameProfile}>{item.judul}</Text>
+                  <Text style={styles.nameProfile}>{item.status}</Text>
                   <Text style={styles.message}>
                     {item.qty} {item.code_setoran} {item.tanggal} {item.jam}
                   </Text>
@@ -171,12 +171,12 @@ const JadwalSetor = ({navigation}) => {
                 onPress={() => {
                   navigation.push('kodesetor', {detail: item});
                 }}>
-                <Image
+                {/* <Image
                   source={require('../../../assets/Images/home/profile.jpg')}
                   style={styles.img}
-                />
+                /> */}
                 <View style={{marginLeft: 10}}>
-                  <Text style={styles.nameProfile}>{item.judul}</Text>
+                  <Text style={styles.nameProfile}>{item.status}</Text>
                   <Text style={styles.message}>
                     {item.qty} {item.code_setoran} {item.tanggal} {item.jam}
                   </Text>
